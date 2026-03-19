@@ -11,7 +11,10 @@ const offices = [
     address: "23 Marina Road, Lagos Island, Lagos, Nigeria",
     coords: [6.4531, 3.3958],
     directions: [
-      { from: "Murtala Muhammed Airport", time: "30 mins via Lagos-Ibadan Expressway" },
+      {
+        from: "Murtala Muhammed Airport",
+        time: "30 mins via Lagos-Ibadan Expressway",
+      },
       { from: "CMS Bus Stop", time: "10 mins walk or 5 mins drive" },
       { from: "Oshodi", time: "25 mins via Ikorodu Road" },
       { from: "Ikeja City Mall", time: "20 mins via Ikorodu Road" },
@@ -27,7 +30,10 @@ const offices = [
     address: "Opp Awolowo round about, Ikeja, Lagos, Nigeria",
     coords: [6.608, 3.356],
     directions: [
-      { from: "Murtala Muhammed Airport", time: "15 mins via Obafemi Awolowo Way" },
+      {
+        from: "Murtala Muhammed Airport",
+        time: "15 mins via Obafemi Awolowo Way",
+      },
       { from: "Ikeja City Mall", time: "5 mins walk" },
       { from: "Ojota", time: "10 mins via Ikorodu Road" },
       { from: "Oshodi", time: "10 mins via Agege Motor Road" },
