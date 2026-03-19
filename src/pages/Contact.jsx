@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { MapPin, Send, Phone, Mail } from "lucide-react";
-import ContactMap from "../components/ContactPage/contactMap";
+import ContactMap from "../components/ContactPage/contactMap"; // ✅ Correct casing
 
 const buttonPink = "rgba(253, 144, 167, 1)";
 
-// Office locations with directions from major Lagos landmarks
+// Office locations with directions
 const offices = [
   {
     name: "Head Office",
@@ -17,12 +17,6 @@ const offices = [
       },
       { from: "CMS Bus Stop", time: "10 mins walk or 5 mins drive" },
       { from: "Oshodi", time: "25 mins via Ikorodu Road" },
-      { from: "Ikeja City Mall", time: "20 mins via Ikorodu Road" },
-      { from: "Lekki Phase 1", time: "35 mins via Third Mainland Bridge" },
-      { from: "Victoria Island", time: "20 mins via Marina" },
-      { from: "Maryland", time: "20 mins via Ikorodu Road" },
-      { from: "Yaba", time: "15 mins via Herbert Macaulay" },
-      { from: "Apapa", time: "25 mins via Marine Bridge" },
     ],
   },
   {
@@ -36,12 +30,6 @@ const offices = [
       },
       { from: "Ikeja City Mall", time: "5 mins walk" },
       { from: "Ojota", time: "10 mins via Ikorodu Road" },
-      { from: "Oshodi", time: "10 mins via Agege Motor Road" },
-      { from: "Maryland", time: "12 mins via Ikorodu Road" },
-      { from: "Yaba", time: "25 mins via Agege Motor Road" },
-      { from: "CMS", time: "35 mins via Ikorodu Road / Third Mainland" },
-      { from: "Lekki", time: "45 mins via Third Mainland / Ikorodu" },
-      { from: "Victoria Island", time: "40 mins via Third Mainland" },
     ],
   },
 ];
@@ -252,6 +240,31 @@ const Contact = () => {
             Our Locations
           </h2>
           <ContactMap offices={offices} />
+        </div>
+      </div>
+
+      {/* Subscribe Section */}
+      <div className="max-w-7xl mx-auto px-6 mt-16">
+        <div className="text-center border-t border-gray-200 pt-12">
+          <h3 className="text-2xl font-semibold mb-6 text-gray-800">
+            Subscribe to get latest updates
+          </h3>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 rounded-md bg-white border border-gray-300 focus:outline-none focus:border-pink-400 text-gray-800"
+            />
+            <button
+              className="w-full sm:w-auto px-6 py-3 rounded-md text-white font-medium whitespace-nowrap transition hover:opacity-90"
+              style={{ backgroundColor: buttonPink }}
+            >
+              Subscribe
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-4">
+            We respect your privacy. Unsubscribe at any time.
+          </p>
         </div>
       </div>
     </main>
