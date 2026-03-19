@@ -4,12 +4,14 @@ import Header from "../components/Dashboard/Header";
 import SearchAndFilters from "../components/Dashboard/SearchAndFilters";
 import DataTable from "../components/Dashboard/DataTable";
 import Modal from "../components/Dashboard/Modal";
+import UserOverview from "../components/Dashboard/UserOverview";
+import UserManagement from "../components/Dashboard/UserManagement";
+import ActivityLogs from "../components/Dashboard/ActivityLogs";
 import { filterTabs } from "../components/Dashboard/constants";
-import { X } from "lucide-react";
+import { useUser } from "../context/UserContext";
+import { can } from "../utils/roles";
 
-const userRole = "admin";
-
-// Mock data (unchanged)
+// Initial mock data
 const initialProjects = [
   { id: 1, name: "PTDOS Outreach", status: "Active", date: "15-09-2025", statusColor: "green", location: "Lagos" },
   { id: 2, name: "Website Launch", status: "Completed", date: "15-09-2025", statusColor: "blue", location: "Ikeja" },
@@ -38,9 +40,9 @@ const initialVolunteers = [
 ];
 
 const Dashboard = () => {
+  const { currentUser } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Projects");
-  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [currentItem, setCurrentItem] = useState(null);
@@ -52,9 +54,8 @@ const Dashboard = () => {
   const [webinars, setWebinars] = useState(initialWebinars);
   const [volunteers, setVolunteers] = useState(initialVolunteers);
 
-  const visibleTabs = filterTabs.filter((tab) => tab.roles.includes(userRole));
+  const visibleTabs = filterTabs.filter((tab) => tab.roles.includes(currentUser.role));
 
-  // Get raw data for current filter
   const getCurrentData = () => {
     switch (activeFilter) {
       case "Projects": return projects;
@@ -66,89 +67,60 @@ const Dashboard = () => {
     }
   };
 
-  // Filter data based on search query
   const getFilteredData = useMemo(() => {
     const data = getCurrentData();
     if (!searchQuery.trim()) return data;
-
     const query = searchQuery.toLowerCase().trim();
     return data.filter((item) => {
       switch (activeFilter) {
         case "Projects":
-          return (
-            item.name.toLowerCase().includes(query) ||
-            (item.location && item.location.toLowerCase().includes(query))
-          );
+          return item.name.toLowerCase().includes(query) || (item.location && item.location.toLowerCase().includes(query));
         case "Articles":
-          return (
-            item.title.toLowerCase().includes(query) ||
-            item.author.toLowerCase().includes(query)
-          );
+          return item.title.toLowerCase().includes(query) || item.author.toLowerCase().includes(query);
         case "Events":
-          return (
-            item.name.toLowerCase().includes(query) ||
-            (item.location && item.location.toLowerCase().includes(query))
-          );
+          return item.name.toLowerCase().includes(query) || (item.location && item.location.toLowerCase().includes(query));
         case "Webinar":
-          return (
-            item.title.toLowerCase().includes(query) ||
-            item.host.toLowerCase().includes(query)
-          );
+          return item.title.toLowerCase().includes(query) || item.host.toLowerCase().includes(query);
         case "Volunteers":
-          return (
-            item.name.toLowerCase().includes(query) ||
-            item.email.toLowerCase().includes(query) ||
-            item.role.toLowerCase().includes(query)
-          );
+          return item.name.toLowerCase().includes(query) || item.email.toLowerCase().includes(query) || item.role.toLowerCase().includes(query);
         default:
           return true;
       }
     });
   }, [activeFilter, searchQuery, projects, articles, events, webinars, volunteers]);
 
-  // Global search results across all types
   const globalSearchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
-
     const query = searchQuery.toLowerCase().trim();
     const results = [];
 
-    // Search projects
     projects.forEach(item => {
       if (item.name.toLowerCase().includes(query) || (item.location && item.location.toLowerCase().includes(query))) {
         results.push({ ...item, type: "Projects", displayName: item.name });
       }
     });
-
-    // Search articles
     articles.forEach(item => {
       if (item.title.toLowerCase().includes(query) || item.author.toLowerCase().includes(query)) {
         results.push({ ...item, type: "Articles", displayName: item.title });
       }
     });
-
-    // Search events
     events.forEach(item => {
       if (item.name.toLowerCase().includes(query) || (item.location && item.location.toLowerCase().includes(query))) {
         results.push({ ...item, type: "Events", displayName: item.name });
       }
     });
-
-    // Search webinars
     webinars.forEach(item => {
       if (item.title.toLowerCase().includes(query) || item.host.toLowerCase().includes(query)) {
         results.push({ ...item, type: "Webinar", displayName: item.title });
       }
     });
-
-    // Search volunteers
     volunteers.forEach(item => {
       if (item.name.toLowerCase().includes(query) || item.email.toLowerCase().includes(query) || item.role.toLowerCase().includes(query)) {
         results.push({ ...item, type: "Volunteers", displayName: item.name });
       }
     });
 
-    return results.slice(0, 10); // Limit to 10 results for performance
+    return results.slice(0, 10);
   }, [searchQuery, projects, articles, events, webinars, volunteers]);
 
   const updateData = (newData) => {
@@ -196,81 +168,74 @@ const Dashboard = () => {
     setModalOpen(true);
   };
 
-  // Handle search result click
   const handleSearchResultClick = (result) => {
     setActiveFilter(result.type);
-    setSearchQuery(result.displayName); // Filter to show only this item
+    setSearchQuery(result.displayName);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Mobile sidebar overlay */}
-      <div className="fixed inset-0 z-40 lg:hidden pointer-events-none">
-        <div
-          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
-            sidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0"
-          }`}
-          onClick={() => setSidebarOpen(false)}
-        />
-        <div
-          className={`absolute top-0 left-0 h-full w-64 bg-white shadow-2xl flex flex-col transition-all duration-700 ease-[cubic-bezier(0.2,0.9,0.3,1.3)] ${
-            sidebarOpen
-              ? "translate-x-0 scale-100 rotate-0 skew-x-0 opacity-100 pointer-events-auto animate-wildEntrance"
-              : "-translate-x-full scale-50 -rotate-12 skew-x-12 opacity-0"
-          }`}
-          style={{ transformOrigin: "left center" }}
-        >
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-            <span className="font-semibold text-gray-800">Menu</span>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="p-2 rounded-full hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-pink-500"
-              aria-label="Close sidebar"
-            >
-              <X className="w-5 h-5 text-gray-600" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4">
+    <div className="min-h-screen bg-gray-50 flex relative overflow-hidden">
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dashboard-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <circle cx="20" cy="20" r="2" fill="#FD90A7" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dashboard-pattern)" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 flex w-full">
+        {/* Mobile sidebar overlay */}
+        <div className={`fixed inset-0 z-40 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
+          <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+          <div className="absolute top-0 left-0 h-full w-64 bg-white shadow-xl overflow-y-auto">
             <Sidebar closeSidebar={() => setSidebarOpen(false)} />
           </div>
         </div>
-      </div>
 
-      {/* Desktop sidebar */}
-      <div className="hidden lg:block w-64 bg-white shadow-md p-4 shrink-0">
-        <Sidebar />
-      </div>
+        {/* Desktop sidebar */}
+        <div className="hidden lg:block w-64 bg-white shadow-md shrink-0 border-r border-gray-200">
+          <Sidebar />
+        </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen w-full max-w-full">
-        <Header
-          userDropdownOpen={userDropdownOpen}
-          setUserDropdownOpen={setUserDropdownOpen}
-          setSidebarOpen={setSidebarOpen}
-        />
+        {/* Main content */}
+        <div className="flex-1 flex flex-col min-h-screen w-full max-w-full">
+          <Header setSidebarOpen={setSidebarOpen} />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">Admin Dashboard</h1>
-          <p className="text-gray-600 mb-6">Manage HPM content and users</p>
+          <main className="flex-1 px-4 sm:px-6 lg:px-8 py-0 overflow-x-hidden">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1D2130] mb-1 font-zodiak">Admin Dashboard</h1>
+            <p className="text-[#525560] mb-6 font-poppins">
+              Welcome back, {currentUser.name} ({currentUser.role})
+            </p>
 
-          <SearchAndFilters
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-            visibleTabs={visibleTabs}
-            onAddClick={openAddModal}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            globalSearchResults={globalSearchResults}
-            onSearchResultClick={handleSearchResultClick}
-          />
+            {/* Role-based sections */}
+            {can(currentUser, 'view_user_stats') && <UserOverview />}
+            {can(currentUser, 'view_activity_logs') && <ActivityLogs />}
+            {can(currentUser, 'manage_roles') && <UserManagement />}
 
-          <DataTable
-            data={getFilteredData}
-            activeFilter={activeFilter}
-            onEdit={openEditModal}
-            onDelete={handleDelete}
-          />
-        </main>
+            {/* Common content – always visible */}
+            <SearchAndFilters
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+              visibleTabs={visibleTabs}
+              onAddClick={openAddModal}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              globalSearchResults={globalSearchResults}
+              onSearchResultClick={handleSearchResultClick}
+            />
+
+            <DataTable
+              data={getFilteredData}
+              activeFilter={activeFilter}
+              onEdit={openEditModal}
+              onDelete={handleDelete}
+            />
+          </main>
+        </div>
       </div>
 
       {modalOpen && (
@@ -282,34 +247,6 @@ const Dashboard = () => {
           onSave={modalMode === "add" ? handleAdd : handleEdit}
         />
       )}
-
-      <style>{`
-        @keyframes wildEntrance {
-          0% {
-            transform: translateX(-100%) scale(0.3) rotate(-20deg) skewX(30deg);
-            opacity: 0;
-            filter: blur(10px);
-          }
-          40% {
-            transform: translateX(10%) scale(1.1) rotate(5deg) skewX(-10deg);
-            opacity: 0.9;
-            filter: blur(2px);
-          }
-          70% {
-            transform: translateX(-2%) scale(0.98) rotate(-2deg) skewX(3deg);
-            opacity: 1;
-            filter: blur(0);
-          }
-          100% {
-            transform: translateX(0) scale(1) rotate(0) skewX(0);
-            opacity: 1;
-            filter: blur(0);
-          }
-        }
-        .animate-wildEntrance {
-          animation: wildEntrance 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.3) forwards;
-        }
-      `}</style>
     </div>
   );
 };

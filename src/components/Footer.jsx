@@ -36,13 +36,12 @@ const Footer = () => {
     if (!email) return;
 
     setIsSubmitting(true);
-    // Simulate API call
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       toast.success("Successfully subscribed! 🎉");
       setEmail("");
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -50,12 +49,20 @@ const Footer = () => {
   };
 
   return (
-    <footer
-      className="bg-black text-white px-4 sm:px-8 md:px-16 py-16"
-      role="contentinfo"
-      aria-label="Site footer"
-    >
-      <div className="max-w-7xl mx-auto">
+    <footer className="bg-black text-white relative overflow-hidden">
+      {/* Subtle geometric pattern overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="footer-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <circle cx="30" cy="30" r="3" fill="#FD90A7" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#footer-pattern)" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-16">
         {/* Top section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Logo column */}
@@ -63,12 +70,10 @@ const Footer = () => {
             <img
               src="/FooterLogo.png"
               alt="Her Physio Movement Logo"
-              className="mb-4"
-              width="121"
-              height="65"
+              className="mb-4 w-auto h-12 md:h-14"
             />
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Empowering women through specialised physiotherapy care.
+              Empowering women through specialised physiotherapy care across Africa.
             </p>
           </div>
 
@@ -85,12 +90,12 @@ const Footer = () => {
               >
                 {section.title}
               </h4>
-              <ul className="space-y-2 text-sm text-gray-300" role="list">
+              <ul className="space-y-2 text-sm text-gray-300">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     <Link
                       to={link.path}
-                      className="hover:text-[#FD90A7] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:ring-offset-2 focus:ring-offset-black rounded-sm px-1"
+                      className="hover:text-[#FD90A7] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:ring-offset-2 focus:ring-offset-black rounded-sm"
                       aria-describedby={section.ariaId}
                     >
                       {link.name}
@@ -111,7 +116,7 @@ const Footer = () => {
               >
                 Connect
               </h4>
-              <ul className="flex flex-wrap gap-4" role="list">
+              <ul className="flex flex-wrap gap-4">
                 {[
                   { href: "https://web.facebook.com/share/p/161JYUarcj/", icon: FaFacebookF, label: "Facebook" },
                   { href: "https://www.instagram.com/p/DIKD8dFNNKI/?igsh=YmNqdDhmbm5tZGph", icon: FaInstagram, label: "Instagram" },
@@ -123,36 +128,35 @@ const Footer = () => {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#FD90A7] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:ring-offset-2 focus:ring-offset-black"
+                      className="group w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#FD90A7] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:ring-offset-2 focus:ring-offset-black"
                       aria-label={`Follow us on ${social.label} (opens in new window)`}
                     >
-                      <social.icon className="text-white text-sm" />
+                      <social.icon className="text-white text-sm group-hover:scale-110 transition-transform" />
                     </a>
                   </li>
                 ))}
               </ul>
             </nav>
 
-            {/* Enhanced Newsletter Section – fully responsive */}
+            {/* Newsletter Section */}
             <section
               aria-labelledby="newsletter-heading"
-              className="bg-gray-900/50 p-5 sm:p-6 rounded-xl border border-gray-800 w-full"
+              className="bg-gray-900/70 backdrop-blur-sm p-6 rounded-xl border border-gray-800"
             >
               <h4
                 id="newsletter-heading"
                 className="font-bold mb-2 text-white text-lg flex items-center gap-2"
               >
-                <MdEmail className="text-[#FD90A7] flex-shrink-0" />
+                <MdEmail className="text-[#FD90A7]" />
                 <span>Stay Updated</span>
               </h4>
               <p className="text-gray-400 text-sm mb-4">
-                Get the latest news and events delivered to your inbox.
+                Get the latest news, events, and resources delivered to your inbox.
               </p>
               <form
                 onSubmit={handleSubmit}
-                className="flex flex-col sm:flex-row gap-3 w-full"
+                className="flex flex-col sm:flex-row gap-3"
                 aria-label="Newsletter subscription"
-                role="form"
               >
                 <label htmlFor="email-input" className="sr-only">
                   Email address for newsletter subscription
@@ -164,19 +168,13 @@ const Footer = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting}
-                  className="w-full px-4 py-3 rounded-lg text-black placeholder-gray-400 bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition disabled:opacity-50"
                   required
-                  aria-required="true"
-                  aria-describedby="newsletter-heading email-help"
                 />
-                <span id="email-help" className="sr-only">
-                  Enter your email address to receive our latest updates and news
-                </span>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto px-6 py-3 bg-[#FD90A7] text-white rounded-lg font-semibold hover:bg-[#f77997] transform hover:scale-105 transition-all duration-200 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black shadow-lg disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
-                  aria-describedby="newsletter-heading"
+                  className="px-6 py-3 bg-gradient-to-r from-[#FD90A7] to-[#f9b8c9] text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-200 whitespace-nowrap shadow-lg disabled:opacity-50"
                 >
                   {isSubmitting ? "Subscribing..." : "Subscribe"}
                 </button>
@@ -189,8 +187,12 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center text-gray-400 text-sm">
           <p>&copy; {new Date().getFullYear()} Her Physio Movement. All rights reserved.</p>
           <div className="flex gap-6 mt-4 sm:mt-0">
-            <Link to="/privacy" className="hover:text-[#FD90A7] transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-[#FD90A7] transition-colors">Terms of Service</Link>
+            <Link to="/privacy" className="hover:text-[#FD90A7] transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="hover:text-[#FD90A7] transition-colors">
+              Terms of Service
+            </Link>
           </div>
         </div>
       </div>

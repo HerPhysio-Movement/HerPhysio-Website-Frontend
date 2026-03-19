@@ -68,36 +68,26 @@ const Navbar = () => {
               <img
                 src="/NavLogo.png"
                 alt="HPM Logo"
-                className="h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto"
+                className="h-8 md:h-10 lg:h-12 w-auto"
               />
             </NavLink>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-6">
-              <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5">
+              <div className="flex items-center gap-1 bg-gray-50 rounded-full p-1">
                 {navLinks.map((item) => (
                   <NavLink
                     key={item.path}
                     to={item.path}
                     className={({ isActive }) =>
-                      `flex items-center gap-2 px-4 py-2 text-sm rounded-full transition-all ${
+                      `px-4 py-2 text-sm font-medium rounded-full transition-all ${
                         isActive
-                          ? "bg-white text-pink-500 shadow-sm"
+                          ? "bg-white text-[#FD90A7] shadow-sm"
                           : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                       }`
                     }
                   >
-                    {({ isActive }) => (
-                      <>
-                        {isActive && (
-                          <div
-                            className="w-1 h-1 rounded-full"
-                            style={{ backgroundColor: buttonPink }}
-                          />
-                        )}
-                        {item.name}
-                      </>
-                    )}
+                    {item.name}
                   </NavLink>
                 ))}
               </div>
@@ -123,65 +113,77 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2 sm:p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors"
+              className="lg:hidden p-2 sm:p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors relative z-50"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              <div className={`transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
+                <Menu size={20} />
+              </div>
+              <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}>
+                <X size={20} />
+              </div>
             </button>
           </nav>
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden mt-4 bg-white border border-gray-200 rounded-2xl shadow-lg animate-fade-in">
-              <div className="flex flex-col p-4 sm:p-5">
-                <div className="space-y-1">
-                  {navLinks.map((item) => (
-                    <NavLink
-                      key={item.path}
-                      to={item.path}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={({ isActive }) =>
-                        `flex items-center justify-between px-4 py-3 rounded-xl transition-colors ${
-                          isActive
-                            ? "bg-pink-50 text-pink-500"
-                            : "text-gray-700 hover:bg-gray-50"
-                        }`
-                      }
-                    >
-                      {({ isActive }) => (
-                        <>
-                          <span className="font-medium">{item.name}</span>
-                          {isActive && (
+            <div className="lg:hidden fixed inset-0 top-[73px] left-0 w-full h-[calc(100vh-73px)] z-40">
+              {/* Backdrop with blur */}
+              <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-md animate-fadeIn"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+              {/* Menu panel */}
+              <div className="absolute right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto animate-slideIn">
+                <div className="flex flex-col p-6 pt-12">
+                  <div className="space-y-2">
+                    {navLinks.map((item, index) => (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={({ isActive }) =>
+                          `flex items-center justify-between px-4 py-4 rounded-xl transition-all duration-300 ${
+                            isActive
+                              ? "bg-pink-50 text-[#FD90A7]"
+                              : "text-gray-700 hover:bg-gray-50"
+                          } animate-fadeInUp`
+                        }
+                        style={{ animationDelay: `${index * 0.1}s` }}
+                      >
+                        <span className="font-medium text-lg">{item.name}</span>
+                        {({ isActive }) =>
+                          isActive && (
                             <div
                               className="w-2 h-2 rounded-full"
                               style={{ backgroundColor: buttonPink }}
                             />
-                          )}
-                        </>
-                      )}
-                    </NavLink>
-                  ))}
-                </div>
+                          )
+                        }
+                      </NavLink>
+                    ))}
+                  </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col gap-3">
-                  <NavLink
-                    to="/signin"
-                    className="block text-center px-4 py-3 rounded-full border-2 transition-all text-base font-medium"
-                    style={{ borderColor: buttonPink, color: buttonPink }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign In
-                  </NavLink>
-                  <NavLink
-                    to="/signup"
-                    className="block text-center px-4 py-3 rounded-full text-white font-medium transition-all text-base"
-                    style={{ backgroundColor: buttonPink }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign Up
-                  </NavLink>
+                  <div className="mt-8 pt-6 border-t border-gray-200 flex flex-col gap-3">
+                    <NavLink
+                      to="/signin"
+                      className="block text-center px-4 py-4 rounded-full border-2 transition-all text-base font-medium animate-fadeInUp"
+                      style={{ borderColor: buttonPink, color: buttonPink, animationDelay: '0.5s' }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign In
+                    </NavLink>
+                    <NavLink
+                      to="/signup"
+                      className="block text-center px-4 py-4 rounded-full text-white font-medium transition-all text-base animate-fadeInUp"
+                      style={{ backgroundColor: buttonPink, animationDelay: '0.6s' }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign Up
+                    </NavLink>
+                  </div>
                 </div>
               </div>
             </div>
@@ -189,6 +191,33 @@ const Navbar = () => {
         </div>
       </header>
       <div className="h-[73px]" />
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+          from { transform: translateX(100%); }
+          to { transform: translateX(0); }
+        }
+        .animate-slideIn {
+          animation: slideIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInUp {
+          opacity: 0;
+          animation: fadeInUp 0.3s ease-out forwards;
+        }
+      `}</style>
     </>
   );
 };

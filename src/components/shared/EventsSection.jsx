@@ -16,43 +16,45 @@ const EventsSection = () => {
   };
 
   return (
-    <div id="events" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="events" className="py-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <span className="inline-block bg-pink-100 text-pink-600 px-4 py-1.5 rounded-full text-sm font-medium uppercase tracking-wider mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="inline-block bg-[#FD90A7]/10 text-[#FD90A7] px-4 py-2 rounded-full text-sm font-medium uppercase tracking-wider mb-4">
             Upcoming Gatherings
           </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Our Events
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 text-lg">
             Join us in creating meaningful experiences and connections
           </p>
         </div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
           {events.map((event) => {
             const { day, month } = getDayMonth(event.date);
             return (
               <div
                 key={event.id}
-                className="group relative bg-white rounded-3xl p-8 border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                className="group bg-white rounded-2xl p-6 sm:p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
-                {/* Simple date badge */}
-                <div className="absolute top-6 right-6 bg-pink-50 rounded-lg px-3 py-1.5 text-center border border-pink-100 shadow-sm">
-                  <span className="block text-lg font-bold text-pink-600 leading-tight">{day}</span>
-                  {month && <span className="block text-xs text-gray-500 uppercase tracking-wider">{month}</span>}
-                </div>
+                <div className="flex items-start justify-between mb-4">
+                  {/* Event Badge */}
+                  <span className="inline-block bg-[#FD90A7]/10 text-[#FD90A7] px-4 py-1.5 rounded-full text-sm font-medium">
+                    {event.badge}
+                  </span>
 
-                {/* Event Badge */}
-                <div className="inline-block bg-pink-50 text-pink-600 px-4 py-1.5 rounded-full text-sm font-medium mb-4 border border-pink-100">
-                  {event.badge}
+                  {/* Date Badge */}
+                  <div className="bg-gray-50 rounded-xl px-4 py-2 text-center border border-gray-100 shadow-sm">
+                    <span className="block text-2xl font-bold text-[#FD90A7] leading-none">{day}</span>
+                    {month && <span className="block text-xs text-gray-500 uppercase tracking-wider mt-1">{month}</span>}
+                  </div>
                 </div>
 
                 {/* Event Title */}
-                <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3 pr-20">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
                   {event.title}
                 </h3>
 
@@ -64,25 +66,25 @@ const EventsSection = () => {
                 {/* Event Details with Icons */}
                 <div className="space-y-3 mb-8">
                   <div className="flex items-center text-gray-700">
-                    <Calendar className="w-5 h-5 mr-3 text-pink-500" />
-                    <span>{event.date}</span>
+                    <Calendar className="w-5 h-5 mr-3 text-[#FD90A7]" />
+                    <span className="text-sm sm:text-base">{event.date}</span>
                   </div>
                   <div className="flex items-center text-gray-700">
-                    <Clock className="w-5 h-5 mr-3 text-pink-500" />
-                    <span>{event.time}</span>
+                    <Clock className="w-5 h-5 mr-3 text-[#FD90A7]" />
+                    <span className="text-sm sm:text-base">{event.time}</span>
                   </div>
                   <div className="flex items-center text-gray-700">
-                    <MapPin className="w-5 h-5 mr-3 text-pink-500" />
-                    <span>{event.location}</span>
+                    <MapPin className="w-5 h-5 mr-3 text-[#FD90A7]" />
+                    <span className="text-sm sm:text-base">{event.location}</span>
                   </div>
                 </div>
 
                 {/* Learn More Link */}
                 <Link
                   to={event.link}
-                  className="inline-flex items-center text-pink-600 font-medium group/link"
+                  className="inline-flex items-center text-[#FD90A7] font-medium group/link"
                 >
-                  <span className="border-b border-pink-200 pb-0.5 transition-all group-hover/link:border-pink-600">
+                  <span className="border-b border-[#FD90A7]/20 pb-0.5 transition-all group-hover/link:border-[#FD90A7]">
                     Learn more
                   </span>
                   <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/link:translate-x-1" />
@@ -96,14 +98,14 @@ const EventsSection = () => {
         <div className="text-center mt-16">
           <Link
             to="/events"
-            className="inline-flex items-center bg-gray-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl"
+            className="inline-flex items-center bg-gray-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-all duration-300 shadow-md hover:shadow-lg"
           >
             View All Events
             <ArrowRight className="w-5 h-5 ml-2" />
           </Link>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
