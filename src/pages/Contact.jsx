@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MapPin, Send, Phone, Mail, Clock, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
-import ContactMap from "../components/ContactPage/contactMap";
+import ContactMap from "../components/contactPage/contactMap";
 
 const buttonPink = "rgba(253, 144, 167, 1)";
 
