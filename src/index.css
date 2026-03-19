@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+:root {
+  --color-background: #f9fafb;
+  --color-card: #ffffff;
+  --color-text: #1f2937;
+  --color-textSecondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-primary: #fd90a7;
+  --color-primaryHover: #f77997;
+  --color-sidebarBg: #ffffff;
+  --color-headerBg: #ffffff;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s, color 0.3s;
+}
