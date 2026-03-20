@@ -1,20 +1,39 @@
+/* All @imports must come first */
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Allura&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Zodiak:wght@400;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap");
 
 :root {
   --color-background: #f9fafb;
   --color-card: #ffffff;
-  --color-text: #1f2937;
-  --color-textSecondary: #6b7280;
+  --color-text: #1d2130;
+  --color-textSecondary: #525560;
   --color-border: #e5e7eb;
   --color-primary: #fd90a7;
   --color-primaryHover: #f77997;
-  --color-sidebarBg: #ffffff;
-  --color-headerBg: #ffffff;
+  --color-secondary: #ffd8e1;
+  --color-accent: #fd90a7;
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-text);
-  transition: background-color 0.3s, color 0.3s;
+  font-family: "Poppins", sans-serif;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Zodiak", serif;
+  font-weight: 700;
 }
