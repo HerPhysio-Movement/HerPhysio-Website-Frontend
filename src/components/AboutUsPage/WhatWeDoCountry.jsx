@@ -3,9 +3,7 @@ const WhatWeDoCountry = () => {
     <section className="bg-white px-4 sm:px-8 md:px-16 py-16">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row gap-12 items-center">
-          {/* Left text */}
           <div className="md:w-1/2">
-            {/* Heading with dash */}
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 sm:w-10 md:w-12 h-0.5 bg-[#1D2130]" />
               <h2 className="uppercase text-[#1D2130] font-bold text-sm tracking-[2px]">
@@ -16,17 +14,16 @@ const WhatWeDoCountry = () => {
               We are working across country
             </p>
             <p className="text-[#525560] mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse varius enim in eros elementum tristique. Duis cursus,
-              mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam
-              libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum
-              lorem imperdiet.
+              Her Physio Movement is on a mission to build women's health
+              physiotherapists across Africa through education, mentorship, and
+              community engagement. Our strategy blends online and offline
+              engagement: social media advocacy, community outreaches, training
+              programs, and collaborations with like‑minded organizations.
             </p>
             <button className="text-[#FD90A7] font-bold underline underline-offset-4 hover:no-underline transition">
               Learn more
             </button>
           </div>
-          {/* Right image */}
           <div className="md:w-1/2">
             <img
               src="/ladylooking.jpg"

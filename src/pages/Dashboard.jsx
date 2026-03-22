@@ -10,6 +10,15 @@ import ActivityLogs from "../components/Dashboard/ActivityLogs";
 import { filterTabs } from "../components/Dashboard/constants";
 import { useUser } from "../context/UserContext";
 import { can } from "../utils/roles";
+import {
+  Calendar,
+  Users,
+  FileText,
+  Video,
+  Heart,
+  PlusCircle,
+  Image,
+} from "lucide-react";
 
 // Initial mock data
 const initialProjects = [
@@ -96,8 +105,25 @@ const initialVolunteers = [
   },
 ];
 
+const initialGallery = [
+  {
+    id: 1,
+    title: "Community outreach in Lagos",
+    image: "/gallery1.jpg",
+    category: "Outreach",
+    date: "2025-03-01",
+  },
+  {
+    id: 2,
+    title: "Physiotherapy workshop",
+    image: "/gallery2.jpg",
+    category: "Training",
+    date: "2025-03-05",
+  },
+];
+
 const Dashboard = () => {
-  const { currentUser } = useUser();
+  const { currentUser, users } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Projects");
   const [modalOpen, setModalOpen] = useState(false);
@@ -110,6 +136,7 @@ const Dashboard = () => {
   const [events, setEvents] = useState(initialEvents);
   const [webinars, setWebinars] = useState(initialWebinars);
   const [volunteers, setVolunteers] = useState(initialVolunteers);
+  const [gallery, setGallery] = useState(initialGallery);
 
   const visibleTabs = filterTabs.filter((tab) =>
     tab.roles.includes(currentUser.role),
@@ -127,8 +154,35 @@ const Dashboard = () => {
         return webinars;
       case "Volunteers":
         return volunteers;
+      case "Gallery":
+        return gallery;
       default:
         return [];
+    }
+  };
+
+  const updateData = (newData) => {
+    switch (activeFilter) {
+      case "Projects":
+        setProjects(newData);
+        break;
+      case "Articles":
+        setArticles(newData);
+        break;
+      case "Events":
+        setEvents(newData);
+        break;
+      case "Webinar":
+        setWebinars(newData);
+        break;
+      case "Volunteers":
+        setVolunteers(newData);
+        break;
+      case "Gallery":
+        setGallery(newData);
+        break;
+      default:
+        break;
     }
   };
 
@@ -164,6 +218,11 @@ const Dashboard = () => {
             item.email.toLowerCase().includes(query) ||
             item.role.toLowerCase().includes(query)
           );
+        case "Gallery":
+          return (
+            item.title.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query)
+          );
         default:
           return true;
       }
@@ -176,6 +235,7 @@ const Dashboard = () => {
     events,
     webinars,
     volunteers,
+    gallery,
   ]);
 
   const globalSearchResults = useMemo(() => {
@@ -224,31 +284,17 @@ const Dashboard = () => {
         results.push({ ...item, type: "Volunteers", displayName: item.name });
       }
     });
+    gallery.forEach((item) => {
+      if (
+        item.title.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      ) {
+        results.push({ ...item, type: "Gallery", displayName: item.title });
+      }
+    });
 
     return results.slice(0, 10);
-  }, [searchQuery, projects, articles, events, webinars, volunteers]);
-
-  const updateData = (newData) => {
-    switch (activeFilter) {
-      case "Projects":
-        setProjects(newData);
-        break;
-      case "Articles":
-        setArticles(newData);
-        break;
-      case "Events":
-        setEvents(newData);
-        break;
-      case "Webinar":
-        setWebinars(newData);
-        break;
-      case "Volunteers":
-        setVolunteers(newData);
-        break;
-      default:
-        break;
-    }
-  };
+  }, [searchQuery, projects, articles, events, webinars, volunteers, gallery]);
 
   const handleAdd = (newItem) => {
     const current = getCurrentData();
@@ -291,8 +337,15 @@ const Dashboard = () => {
     setSearchQuery(result.displayName);
   };
 
-  // Track first rendered component to remove top padding
-  let isFirst = true;
+  const totalUsers = users.length;
+  const totalEvents = events.length;
+  const totalProjects = projects.length;
+  const totalVolunteers = volunteers.filter(
+    (v) => v.role === "volunteer",
+  ).length;
+  const totalGallery = gallery.length;
+
+  const canManage = can(currentUser, "manage_roles");
 
   return (
     <div className="min-h-screen bg-gray-50 flex relative overflow-hidden">
@@ -339,18 +392,134 @@ const Dashboard = () => {
           <Header setSidebarOpen={setSidebarOpen} />
 
           <main className="flex-1 px-4 sm:px-6 lg:px-8 py-0 overflow-x-hidden">
-            {/* Role-based sections with first component having no top padding */}
+            <div className="mt-4 mb-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex gap-3">
+                  {canManage && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setActiveFilter("Projects");
+                          openAddModal();
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#FD90A7] text-white rounded-full text-sm font-semibold hover:bg-[#f77997] transition"
+                      >
+                        <PlusCircle className="w-4 h-4" /> Add Project
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveFilter("Events");
+                          openAddModal();
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-[#FD90A7] text-[#FD90A7] rounded-full text-sm font-semibold hover:bg-[#FD90A7]/10 transition"
+                      >
+                        <PlusCircle className="w-4 h-4" /> Add Event
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveFilter("Gallery");
+                          openAddModal();
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-[#FD90A7] text-[#FD90A7] rounded-full text-sm font-semibold hover:bg-[#FD90A7]/10 transition"
+                      >
+                        <PlusCircle className="w-4 h-4" /> Add Image
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[#525560] font-poppins">
+                      Total Users
+                    </p>
+                    <p className="text-2xl font-bold text-[#1D2130] font-zodiak mt-1">
+                      {totalUsers}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center">
+                    <Users className="w-5 h-5 text-[#FD90A7]" />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[#525560] font-poppins">
+                      Events
+                    </p>
+                    <p className="text-2xl font-bold text-[#1D2130] font-zodiak mt-1">
+                      {totalEvents}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-[#FD90A7]" />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[#525560] font-poppins">
+                      Projects
+                    </p>
+                    <p className="text-2xl font-bold text-[#1D2130] font-zodiak mt-1">
+                      {totalProjects}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-[#FD90A7]" />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[#525560] font-poppins">
+                      Volunteers
+                    </p>
+                    <p className="text-2xl font-bold text-[#1D2130] font-zodiak mt-1">
+                      {totalVolunteers}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center">
+                    <Heart className="w-5 h-5 text-[#FD90A7]" />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[#525560] font-poppins">
+                      Gallery Images
+                    </p>
+                    <p className="text-2xl font-bold text-[#1D2130] font-zodiak mt-1">
+                      {totalGallery}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center">
+                    <Image className="w-5 h-5 text-[#FD90A7]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Role-based sections */}
             {can(currentUser, "view_user_stats") && (
-              <UserOverview noTopPadding={isFirst && (isFirst = false)} />
+              <UserOverview className="mb-8" />
             )}
             {can(currentUser, "view_activity_logs") && (
-              <ActivityLogs noTopPadding={isFirst && (isFirst = false)} />
+              <ActivityLogs className="mb-8" />
             )}
             {can(currentUser, "manage_roles") && (
-              <UserManagement noTopPadding={isFirst && (isFirst = false)} />
+              <UserManagement className="mb-8" />
             )}
 
-            {/* Common content – always visible */}
             <SearchAndFilters
               activeFilter={activeFilter}
               setActiveFilter={setActiveFilter}

@@ -1,68 +1,56 @@
 import { useState } from "react";
-import { FaLinkedin, FaTwitter, FaFacebook } from 'react-icons/fa';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { FaLinkedin, FaTwitter, FaFacebook } from "react-icons/fa";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 const teamMembers = [
   {
-    name: "Leonard John Davies",
-    role: "Founder",
-    image: "/team1.jpg",
+    name: "Modupe Laja",
+    role: "Co-founder",
+    image: "/Modupe.jpg",
     social: { linkedin: "#", twitter: "#", facebook: "#" },
   },
   {
-    name: "Francis Weber",
+    name: "Hauwa",
     role: "Vice Chairman",
-    image: "/team2.jpg",
+    image: "/Hauwa.jpg",
     social: { linkedin: "#", twitter: "#", facebook: "#" },
   },
   {
-    name: "Kyla Obrien",
+    name: "Antonia Abraham",
     role: "Head of Authority",
-    image: "/team3.jpg",
+    image: "/Antonia.jpg",
     social: { linkedin: "#", twitter: "#", facebook: "#" },
   },
   {
-    name: "Adrian Dixon",
+    name: "Chijioke Otikpa",
     role: "Support Executive",
-    image: "/team4.jpg",
+    image: "/Chijioke.jpg",
     social: { linkedin: "#", twitter: "#", facebook: "#" },
   },
   {
-    name: "Sophia Martinez",
+    name: "Joseph Adunola",
     role: "Program Director",
-    image: "/team5.jpg",
-    social: { linkedin: "#", twitter: "#", facebook: "#" },
-  },
-  {
-    name: "David Chen",
-    role: "Research Lead",
-    image: "/team6.jpg",
-    social: { linkedin: "#", twitter: "#", facebook: "#" },
-  },
-  {
-    name: "Emma Wilson",
-    role: "Community Manager",
-    image: "/team7.jpg",
-    social: { linkedin: "#", twitter: "#", facebook: "#" },
-  },
-  {
-    name: "Michael Okonkwo",
-    role: "Field Coordinator",
-    image: "/team8.jpg",
+    image: "/Joseph.jpg",
     social: { linkedin: "#", twitter: "#", facebook: "#" },
   },
 ];
 
 const TeamGrid = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % teamMembers.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + teamMembers.length) % teamMembers.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + teamMembers.length) % teamMembers.length,
+    );
   };
+
+  // Members to display on desktop (first 4)
+  const desktopMembers = teamMembers.slice(0, 4);
 
   return (
     <section className="bg-white px-4 sm:px-8 md:px-16 py-16">
@@ -71,35 +59,73 @@ const TeamGrid = () => {
           Meet our team
         </h2>
         <p className="text-[#525560] text-center max-w-2xl mx-auto mb-12">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+          varius enim in eros elementum tristique.
         </p>
 
         {/* Desktop: grid layout (hidden on mobile) */}
-        <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {teamMembers.map((member, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-4">
-              <div className="mb-4">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full aspect-square object-cover rounded-lg"
-                />
+        <div className="hidden lg:block">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {desktopMembers.map((member, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-4"
+              >
+                <div className="mb-4">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full aspect-square object-cover rounded-lg"
+                  />
+                </div>
+                <h3 className="font-bold text-lg text-[#1D2130]">
+                  {member.name}
+                </h3>
+                <p className="text-[#525560] text-sm mb-3">{member.role}</p>
+                <div className="flex justify-center gap-3 text-gray-400">
+                  <a
+                    href={member.social.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} LinkedIn`}
+                    className="hover:text-[#FD90A7] transition-colors"
+                  >
+                    <FaLinkedin className="w-4 h-4" />
+                  </a>
+                  <a
+                    href={member.social.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} Twitter`}
+                    className="hover:text-[#FD90A7] transition-colors"
+                  >
+                    <FaTwitter className="w-4 h-4" />
+                  </a>
+                  <a
+                    href={member.social.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} Facebook`}
+                    className="hover:text-[#FD90A7] transition-colors"
+                  >
+                    <FaFacebook className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
-              <h3 className="font-bold text-lg text-[#1D2130]">{member.name}</h3>
-              <p className="text-[#525560] text-sm mb-3">{member.role}</p>
-              <div className="flex justify-center gap-3 text-gray-400">
-                <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} LinkedIn`} className="hover:text-[#FD90A7] transition-colors">
-                  <FaLinkedin className="w-4 h-4" />
-                </a>
-                <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} Twitter`} className="hover:text-[#FD90A7] transition-colors">
-                  <FaTwitter className="w-4 h-4" />
-                </a>
-                <a href={member.social.facebook} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} Facebook`} className="hover:text-[#FD90A7] transition-colors">
-                  <FaFacebook className="w-4 h-4" />
-                </a>
-              </div>
+            ))}
+          </div>
+
+          {/* "View all team" button – opens modal */}
+          {teamMembers.length > 4 && (
+            <div className="text-center mt-12">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center px-6 py-3 bg-[#FD90A7] text-white rounded-full font-semibold hover:bg-[#f77997] transition"
+              >
+                View all team
+              </button>
             </div>
-          ))}
+          )}
         </div>
 
         {/* Mobile: carousel (hidden on desktop) */}
@@ -120,16 +146,38 @@ const TeamGrid = () => {
                           className="w-full aspect-square object-cover rounded-lg"
                         />
                       </div>
-                      <h3 className="font-bold text-lg text-[#1D2130]">{member.name}</h3>
-                      <p className="text-[#525560] text-sm mb-3">{member.role}</p>
+                      <h3 className="font-bold text-lg text-[#1D2130]">
+                        {member.name}
+                      </h3>
+                      <p className="text-[#525560] text-sm mb-3">
+                        {member.role}
+                      </p>
                       <div className="flex justify-center gap-3 text-gray-400">
-                        <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} LinkedIn`} className="hover:text-[#FD90A7] transition-colors">
+                        <a
+                          href={member.social.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${member.name} LinkedIn`}
+                          className="hover:text-[#FD90A7] transition-colors"
+                        >
                           <FaLinkedin className="w-4 h-4" />
                         </a>
-                        <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} Twitter`} className="hover:text-[#FD90A7] transition-colors">
+                        <a
+                          href={member.social.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${member.name} Twitter`}
+                          className="hover:text-[#FD90A7] transition-colors"
+                        >
                           <FaTwitter className="w-4 h-4" />
                         </a>
-                        <a href={member.social.facebook} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} Facebook`} className="hover:text-[#FD90A7] transition-colors">
+                        <a
+                          href={member.social.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${member.name} Facebook`}
+                          className="hover:text-[#FD90A7] transition-colors"
+                        >
                           <FaFacebook className="w-4 h-4" />
                         </a>
                       </div>
@@ -162,7 +210,7 @@ const TeamGrid = () => {
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
                   className={`w-2 h-2 rounded-full transition ${
-                    idx === currentIndex ? 'bg-[#FD90A7] w-4' : 'bg-gray-300'
+                    idx === currentIndex ? "bg-[#FD90A7] w-4" : "bg-gray-300"
                   }`}
                   aria-label={`Go to member ${idx + 1}`}
                 />
@@ -171,6 +219,79 @@ const TeamGrid = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for "View all team" */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+            <h3 className="text-2xl font-bold text-[#1D2130] mb-6 text-center">
+              Full Team
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {teamMembers.map((member, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition p-4"
+                >
+                  <div className="mb-4">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full aspect-square object-cover rounded-lg"
+                    />
+                  </div>
+                  <h3 className="font-bold text-lg text-[#1D2130]">
+                    {member.name}
+                  </h3>
+                  <p className="text-[#525560] text-sm mb-3">{member.role}</p>
+                  <div className="flex justify-center gap-3 text-gray-400">
+                    <a
+                      href={member.social.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${member.name} LinkedIn`}
+                      className="hover:text-[#FD90A7] transition-colors"
+                    >
+                      <FaLinkedin className="w-4 h-4" />
+                    </a>
+                    <a
+                      href={member.social.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${member.name} Twitter`}
+                      className="hover:text-[#FD90A7] transition-colors"
+                    >
+                      <FaTwitter className="w-4 h-4" />
+                    </a>
+                    <a
+                      href={member.social.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${member.name} Facebook`}
+                      className="hover:text-[#FD90A7] transition-colors"
+                    >
+                      <FaFacebook className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

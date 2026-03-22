@@ -1,37 +1,32 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Menu, X, Search } from "lucide-react";
 
 const buttonPink = "rgba(253, 144, 167, 1)";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024 && isMobileMenuOpen) {
+      if (window.innerWidth >= 1024 && isMobileMenuOpen)
         setIsMobileMenuOpen(false);
-      }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
@@ -44,6 +39,15 @@ const Navbar = () => {
     { name: "Resources", path: "/resources" },
     { name: "Contact", path: "/contact-us" },
   ];
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   return (
     <>
@@ -63,8 +67,12 @@ const Navbar = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center justify-between">
-            {/* Logo */}
-            <NavLink to="/" aria-label="Homepage" className="flex items-center">
+            {/* Logo with extra margin */}
+            <NavLink
+              to="/"
+              aria-label="Homepage"
+              className="flex items-center mr-6"
+            >
               <img
                 src="/NavLogo.png"
                 alt="HPM Logo"
@@ -72,74 +80,88 @@ const Navbar = () => {
               />
             </NavLink>
 
+            {/* Search bar (visible on all devices) */}
+            <form
+              onSubmit={handleSearch}
+              className="relative mx-6 flex-1 max-w-md"
+            >
+              <input
+                type="text"
+                placeholder="Search events, articles, webinars..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 pl-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] text-sm"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#FD90A7] text-sm font-medium"
+              ></button>
+            </form>
+
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-6">
-              <div className="flex items-center gap-1 bg-gray-50 rounded-full p-1">
+              <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5">
                 {navLinks.map((item) => (
                   <NavLink
                     key={item.path}
                     to={item.path}
                     className={({ isActive }) =>
-                      `px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                      `flex items-center gap-2 px-5 py-2 text-sm rounded-full transition-all ${
                         isActive
-                          ? "bg-white text-[#FD90A7] shadow-sm"
+                          ? "bg-white text-pink-500 shadow-sm"
                           : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                       }`
                     }
                   >
-                    {item.name}
+                    {({ isActive }) => (
+                      <>
+                        {isActive && (
+                          <div
+                            className="w-1 h-1 rounded-full"
+                            style={{ backgroundColor: buttonPink }}
+                          />
+                        )}
+                        {item.name}
+                      </>
+                    )}
                   </NavLink>
                 ))}
               </div>
 
-              {/* Desktop Auth Buttons */}
+              {/* Only Volunteer Sign Up button */}
               <div className="flex items-center gap-3">
                 <NavLink
-                  to="/signin"
-                  className="px-5 py-2 rounded-full border-2 transition-all duration-200 hover:bg-pink-50 text-sm font-medium whitespace-nowrap"
-                  style={{ borderColor: buttonPink, color: buttonPink }}
+                  to="/volunteer-signup"
+                  className="px-5 py-2 rounded-full bg-[#FD90A7] text-white font-medium transition-all duration-200 hover:shadow-lg hover:opacity-90 text-sm whitespace-nowrap"
                 >
-                  Sign In
-                </NavLink>
-                <NavLink
-                  to="/signup"
-                  className="px-5 py-2 rounded-full text-white font-medium transition-all duration-200 hover:shadow-lg hover:opacity-90 text-sm whitespace-nowrap"
-                  style={{ backgroundColor: buttonPink }}
-                >
-                  Sign Up
+                  Volunteer Sign Up
                 </NavLink>
               </div>
             </div>
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2 sm:p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors relative z-50"
+              className="lg:hidden p-2 sm:p-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <div className={`transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
-                <Menu size={20} />
-              </div>
-              <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}>
-                <X size={20} />
-              </div>
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </nav>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu (unchanged) */}
           {isMobileMenuOpen && (
             <div className="lg:hidden fixed inset-0 top-[73px] left-0 w-full h-[calc(100vh-73px)] z-40">
-              {/* Backdrop with blur */}
               <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-md animate-fadeIn"
+                className="absolute inset-0 bg-black/40 backdrop-blur-md"
                 onClick={() => setIsMobileMenuOpen(false)}
               />
-              {/* Menu panel */}
-              <div className="absolute right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto animate-slideIn">
+              <div className="absolute right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto">
                 <div className="flex flex-col p-6 pt-12">
                   <div className="space-y-2">
-                    {navLinks.map((item, index) => (
+                    {navLinks.map((item) => (
                       <NavLink
                         key={item.path}
                         to={item.path}
@@ -147,11 +169,10 @@ const Navbar = () => {
                         className={({ isActive }) =>
                           `flex items-center justify-between px-4 py-4 rounded-xl transition-all duration-300 ${
                             isActive
-                              ? "bg-pink-50 text-[#FD90A7]"
+                              ? "bg-pink-50 text-pink-500"
                               : "text-gray-700 hover:bg-gray-50"
-                          } animate-fadeInUp`
+                          }`
                         }
-                        style={{ animationDelay: `${index * 0.1}s` }}
                       >
                         <span className="font-medium text-lg">{item.name}</span>
                         {({ isActive }) =>
@@ -165,23 +186,13 @@ const Navbar = () => {
                       </NavLink>
                     ))}
                   </div>
-
-                  <div className="mt-8 pt-6 border-t border-gray-200 flex flex-col gap-3">
+                  <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col gap-3">
                     <NavLink
-                      to="/signin"
-                      className="block text-center px-4 py-4 rounded-full border-2 transition-all text-base font-medium animate-fadeInUp"
-                      style={{ borderColor: buttonPink, color: buttonPink, animationDelay: '0.5s' }}
+                      to="/volunteer-signup"
+                      className="block text-center px-4 py-3 rounded-full bg-[#FD90A7] text-white font-medium transition-all text-base"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Sign In
-                    </NavLink>
-                    <NavLink
-                      to="/signup"
-                      className="block text-center px-4 py-4 rounded-full text-white font-medium transition-all text-base animate-fadeInUp"
-                      style={{ backgroundColor: buttonPink, animationDelay: '0.6s' }}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Sign Up
+                      Volunteer Sign Up
                     </NavLink>
                   </div>
                 </div>
@@ -191,33 +202,6 @@ const Navbar = () => {
         </div>
       </header>
       <div className="h-[73px]" />
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        @keyframes slideIn {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
-        }
-        .animate-slideIn {
-          animation: slideIn 0.3s ease-out forwards;
-        }
-
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeInUp {
-          opacity: 0;
-          animation: fadeInUp 0.3s ease-out forwards;
-        }
-      `}</style>
     </>
   );
 };

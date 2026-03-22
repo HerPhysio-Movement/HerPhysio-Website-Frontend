@@ -1,5 +1,4 @@
-// src/components/AboutUsPage/Awards.jsx
-import { FaTrophy, FaGlobe, FaMedal, FaRibbon } from 'react-icons/fa';
+import { FaTrophy, FaGlobe, FaMedal, FaRibbon } from "react-icons/fa";
 
 const awards = [
   {
@@ -32,7 +31,6 @@ const Awards = () => {
   return (
     <section className="bg-white px-4 sm:px-8 md:px-16 py-16">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="inline-block bg-[#FD90A7]/10 text-[#FD90A7] px-4 py-2 rounded-full text-sm font-medium uppercase tracking-wider mb-4">
             Recognition
@@ -41,18 +39,16 @@ const Awards = () => {
             Our Key Pillars
           </h2>
           <p className="text-[#525560] text-lg">
-            Celebrated for our commitment to women's health and community impact.
+            Celebrated for our commitment to women's health and community
+            impact.
           </p>
         </div>
-
-        {/* Awards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {awards.map((award, index) => (
             <div
               key={index}
               className="group bg-gray-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
-              {/* Icon with circular background */}
               <div className="flex items-center justify-center w-14 h-14 bg-[#FD90A7]/10 rounded-xl mb-4 group-hover:bg-[#FD90A7]/20 transition-colors mx-auto">
                 {award.icon}
               </div>
@@ -63,9 +59,7 @@ const Awards = () => {
                 <h3 className="font-bold text-lg text-[#1D2130] mb-1">
                   {award.title}
                 </h3>
-                <p className="text-sm text-[#525560]">
-                  {award.location}
-                </p>
+                <p className="text-sm text-[#525560]">{award.location}</p>
               </div>
             </div>
           ))}

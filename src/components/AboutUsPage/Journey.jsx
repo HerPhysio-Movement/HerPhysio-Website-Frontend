@@ -15,10 +15,10 @@ const Journey = () => {
               How we raised ₦34M
             </h3>
             <p className="text-[#525560] mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse varius enim in eros elementum tristique. Duis cursus,
-              mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam
-              libero vitae erat.
+              Through grassroots fundraising, partnerships, and the generosity
+              of our community, we've raised over 34 million Naira to support
+              women's health initiatives. Every donation goes directly to
+              outreach programs, training, and resources.
             </p>
             <button className="text-[#FD90A7] font-bold underline underline-offset-4 hover:no-underline transition">
               Learn more

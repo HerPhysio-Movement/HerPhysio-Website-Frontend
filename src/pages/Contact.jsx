@@ -4,23 +4,22 @@ import {
   Send,
   Phone,
   Mail,
-  Clock,
-  Facebook,
-  Instagram,
-  Twitter,
-  Linkedin,
+  Heart,
+  HandHeart,
+  Handshake,
 } from "lucide-react";
 import ContactMap from "../components/ContactPage/contactMap";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const buttonPink = "rgba(253, 144, 167, 1)";
 
-// Office locations with directions
+// Office locations with directions (kept for map, but removed from UI)
 const offices = [
   {
     name: "Head Office",
     address: "23 Marina Road, Lagos Island, Lagos, Nigeria",
     coords: [6.4531, 3.3958],
-    hours: "Mon–Fri, 9am – 5pm",
     directions: [
       {
         from: "Murtala Muhammed Airport",
@@ -34,7 +33,6 @@ const offices = [
     name: "Branch Office",
     address: "Opp Awolowo round about, Ikeja, Lagos, Nigeria",
     coords: [6.608, 3.356],
-    hours: "Mon–Sat, 10am – 4pm",
     directions: [
       {
         from: "Murtala Muhammed Airport",
@@ -54,6 +52,7 @@ const Contact = () => {
     message: "",
   });
   const [focused, setFocused] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,10 +66,30 @@ const Contact = () => {
     setFocused({ ...focused, [e.target.name]: false });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    alert("Message sent (demo)");
+    setIsSubmitting(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log(formData);
+      toast.success("Message sent! We'll get back to you soon.");
+      setFormData({ firstName: "", lastName: "", email: "", message: "" });
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGetInvolved = (type) => {
+    if (type === "donate") {
+      toast("Donation feature coming soon!");
+    } else if (type === "volunteer") {
+      window.location.href = "/volunteer-signup";
+    } else if (type === "partner") {
+      toast("Partnership opportunities – contact us directly.");
+    }
   };
 
   return (
@@ -129,8 +148,7 @@ const Contact = () => {
                   {/* First Name */}
                   <div className="relative">
                     <label
-                      htmlFor="firstName"
-                      className={`absolute left-4 transition-all duration-200 ${
+                      className={`absolute left-4 transition-all duration-200 font-poppins ${
                         focused.firstName || formData.firstName
                           ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                           : "top-3 text-gray-400"
@@ -140,13 +158,13 @@ const Contact = () => {
                     </label>
                     <input
                       type="text"
-                      id="firstName"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins disabled:opacity-50"
                       required
                     />
                   </div>
@@ -154,8 +172,7 @@ const Contact = () => {
                   {/* Last Name */}
                   <div className="relative">
                     <label
-                      htmlFor="lastName"
-                      className={`absolute left-4 transition-all duration-200 ${
+                      className={`absolute left-4 transition-all duration-200 font-poppins ${
                         focused.lastName || formData.lastName
                           ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                           : "top-3 text-gray-400"
@@ -165,13 +182,13 @@ const Contact = () => {
                     </label>
                     <input
                       type="text"
-                      id="lastName"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins disabled:opacity-50"
                       required
                     />
                   </div>
@@ -179,8 +196,7 @@ const Contact = () => {
                   {/* Email */}
                   <div className="relative">
                     <label
-                      htmlFor="email"
-                      className={`absolute left-4 transition-all duration-200 ${
+                      className={`absolute left-4 transition-all duration-200 font-poppins ${
                         focused.email || formData.email
                           ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                           : "top-3 text-gray-400"
@@ -190,13 +206,13 @@ const Contact = () => {
                     </label>
                     <input
                       type="email"
-                      id="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins disabled:opacity-50"
                       required
                     />
                   </div>
@@ -204,8 +220,7 @@ const Contact = () => {
                   {/* Message */}
                   <div className="relative">
                     <label
-                      htmlFor="message"
-                      className={`absolute left-4 transition-all duration-200 ${
+                      className={`absolute left-4 transition-all duration-200 font-poppins ${
                         focused.message || formData.message
                           ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                           : "top-3 text-gray-400"
@@ -214,32 +229,37 @@ const Contact = () => {
                       Message
                     </label>
                     <textarea
-                      id="message"
                       name="message"
                       rows="4"
                       value={formData.message}
                       onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition resize-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins disabled:opacity-50 resize-none"
                       required
-                    ></textarea>
+                    />
                   </div>
 
-                  {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full py-3 px-6 rounded-full text-white font-semibold hover:opacity-90 transition shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className="w-full py-3 px-6 rounded-full text-white font-semibold hover:opacity-90 transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-poppins disabled:opacity-50"
                     style={{ backgroundColor: buttonPink }}
                   >
-                    <Send className="w-5 h-5" />
-                    Send Message
+                    {isSubmitting ? (
+                      "Sending..."
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" /> Send Message
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
             </div>
 
-            {/* Right: Contact Info */}
+            {/* Right: Contact Info + Get Involved */}
             <div className="space-y-6">
               {/* Let's Talk Card */}
               <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition">
@@ -248,13 +268,13 @@ const Contact = () => {
                 </h3>
                 <div className="space-y-4">
                   <a
-                    href="tel:+2341234567890"
+                    href="tel:+2347089198901"
                     className="flex items-center gap-3 text-gray-600 hover:text-[#FD90A7] transition group"
                   >
                     <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center group-hover:bg-[#FD90A7]/20">
                       <Phone className="w-5 h-5 text-[#FD90A7]" />
                     </div>
-                    <span>+234 123 456 7890</span>
+                    <span>+234 708 919 8901</span>
                   </a>
                   <a
                     href="mailto:info@womensphysiocare.org"
@@ -263,86 +283,48 @@ const Contact = () => {
                     <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center group-hover:bg-[#FD90A7]/20">
                       <Mail className="w-5 h-5 text-[#FD90A7]" />
                     </div>
-                    <span>info@womensphysiocare.org</span>
+                    <span>herphysiomovement@gmail.com</span>
                   </a>
                 </div>
               </div>
 
-              {/* Head Office Card */}
-              <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition">
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-[#FD90A7]" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#1D2130] text-lg mb-1">
-                      {offices[0].name}
-                    </h3>
-                    <p className="text-gray-600 mb-2">{offices[0].address}</p>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <Clock className="w-4 h-4" />
-                      <span>{offices[0].hours}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Branch Office Card */}
-              <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition">
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-[#FD90A7]" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#1D2130] text-lg mb-1">
-                      {offices[1].name}
-                    </h3>
-                    <p className="text-gray-600 mb-2">{offices[1].address}</p>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <Clock className="w-4 h-4" />
-                      <span>{offices[1].hours}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Social Links */}
+              {/* Get Involved */}
               <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
-                <h3 className="text-lg font-bold text-[#1D2130] mb-4">
-                  Follow us
+                <h3 className="text-xl font-bold text-[#1D2130] mb-4">
+                  Get Involved
                 </h3>
-                <div className="flex gap-4">
-                  <a
-                    href="#"
-                    className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center hover:bg-[#FD90A7] hover:text-white transition"
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <button
+                    onClick={() => handleGetInvolved("donate")}
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-[#FD90A7]/10 text-[#FD90A7] rounded-xl hover:bg-[#FD90A7] hover:text-white transition"
                   >
-                    <Facebook className="w-5 h-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center hover:bg-[#FD90A7] hover:text-white transition"
+                    <Heart className="w-5 h-5" />
+                    <span className="font-medium">Donate</span>
+                  </button>
+                  <Link
+                    to="/volunteer-signup"
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-[#FD90A7]/10 text-[#FD90A7] rounded-xl hover:bg-[#FD90A7] hover:text-white transition"
                   >
-                    <Instagram className="w-5 h-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center hover:bg-[#FD90A7] hover:text-white transition"
+                    <HandHeart className="w-5 h-5" />
+                    <span className="font-medium">Volunteer</span>
+                  </Link>
+                  <button
+                    onClick={() => handleGetInvolved("partner")}
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-[#FD90A7]/10 text-[#FD90A7] rounded-xl hover:bg-[#FD90A7] hover:text-white transition"
                   >
-                    <Twitter className="w-5 h-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center hover:bg-[#FD90A7] hover:text-white transition"
-                  >
-                    <Linkedin className="w-5 h-5" />
-                  </a>
+                    <Handshake className="w-5 h-5" />
+                    <span className="font-medium">Partner</span>
+                  </button>
                 </div>
+                <p className="text-xs text-gray-500 mt-4 text-center">
+                  Your support helps us reach more women and transform lives.
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Full‑Width Map Section */}
+        {/* Full‑width Map Section (unchanged) */}
         <div className="w-full bg-gray-100 py-12 mt-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8">

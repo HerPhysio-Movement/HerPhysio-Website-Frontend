@@ -1,5 +1,6 @@
 /* All @imports must come first */
 @import "tailwindcss";
+@import "react-datepicker/dist/react-datepicker.css";
 @import url("https://fonts.googleapis.com/css2?family=Allura&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Zodiak:wght@400;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
