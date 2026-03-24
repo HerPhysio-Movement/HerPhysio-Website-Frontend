@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 
 const HomeHero = () => {
-  const [isFlipped, setIsFlipped] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [targetSlide, setTargetSlide] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const slides = [
     {
@@ -50,44 +48,28 @@ const HomeHero = () => {
     },
   ];
 
-  // Auto‑rotate every 2 seconds, but not during hover or animation
+  const nextSlide = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setTimeout(() => setIsTransitioning(false), 600);
+  };
+
+  const prevSlide = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setTimeout(() => setIsTransitioning(false), 600);
+  };
+
+  // Auto‑rotate every 4 seconds, pause on hover
   useEffect(() => {
-    if (isHovering || isAnimating) return;
+    if (isHovering) return;
     const interval = setInterval(() => {
-      const newIndex = (currentSlide + 1) % slides.length;
-      startFlip(newIndex);
-    }, 2000);
+      nextSlide();
+    }, 4000);
     return () => clearInterval(interval);
-  }, [isHovering, isAnimating, currentSlide, slides.length]);
-
-  const startFlip = (newIndex) => {
-    if (isAnimating) return;
-    setTargetSlide(newIndex);
-    setIsAnimating(true);
-    setIsFlipped(true);
-    setTimeout(() => {
-      setCurrentSlide(newIndex);
-      setIsFlipped(false);
-      setIsAnimating(false);
-      setTargetSlide(null);
-    }, 600);
-  };
-
-  const handleNext = () => {
-    const newIndex = (currentSlide + 1) % slides.length;
-    startFlip(newIndex);
-  };
-
-  const handlePrev = () => {
-    const newIndex = (currentSlide - 1 + slides.length) % slides.length;
-    startFlip(newIndex);
-  };
-
-  const frontContent = slides[currentSlide];
-  const backContent =
-    targetSlide !== null
-      ? slides[targetSlide]
-      : slides[(currentSlide + 1) % slides.length];
+  }, [isHovering]);
 
   return (
     <section
@@ -96,72 +78,50 @@ const HomeHero = () => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* Enhanced overlay */}
       <div className="absolute inset-0 bg-black/20 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Flip container */}
-          <div
-            className="flip-container transition-all duration-600 ease-in-out"
-            style={{
-              perspective: "1200px",
-              transformStyle: "preserve-3d",
-              minHeight: "420px",
-            }}
-          >
-            <div
-              className={`flipper relative w-full transition-transform duration-600 ease-in-out ${
-                isFlipped ? "rotate-y-180" : ""
-              }`}
-              style={{
-                transformStyle: "preserve-3d",
-                transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
-              {/* Front side */}
+          {/* Slides container with crossfade + scale */}
+          <div className="relative min-h-[420px] md:min-h-[480px]">
+            {slides.map((slide, idx) => (
               <div
-                className="front absolute inset-0 backface-hidden"
-                style={{ backfaceVisibility: "hidden" }}
+                key={idx}
+                className={`absolute inset-0 transition-all duration-600 ease-out ${
+                  idx === currentSlide
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-95 pointer-events-none"
+                }`}
               >
-                <div className="border border-[rgba(253,144,167,0.8)] rounded-3xl p-6 sm:p-8 md:p-10 shadow-[0_0_30px_rgba(253,144,167,0.3)]">
-                  <h1 className="leading-tight mb-4">{frontContent.title}</h1>
+                <div
+                  className="rounded-3xl p-6 sm:p-8 md:p-10 shadow-[0_0_20px_rgba(253,144,167,0.1)]"
+                  style={{
+                    boxShadow:
+                      "0 0 0 1px rgba(253,144,167,0.25), 0 0 20px rgba(253,144,167,0.1)",
+                  }}
+                >
+                  <h1 className="leading-tight mb-4">{slide.title}</h1>
                   <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-                    {frontContent.description}
+                    {slide.description}
                   </p>
                 </div>
               </div>
-              {/* Back side */}
-              <div
-                className="back absolute inset-0 backface-hidden rotate-y-180"
-                style={{
-                  backfaceVisibility: "hidden",
-                  transform: "rotateY(180deg)",
-                }}
-              >
-                <div className="border border-[rgba(253,144,167,0.8)] rounded-3xl p-6 sm:p-8 md:p-10 shadow-[0_0_30px_rgba(253,144,167,0.3)]">
-                  <h1 className="leading-tight mb-4">{backContent.title}</h1>
-                  <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-                    {backContent.description}
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Navigation buttons */}
           <div className="flex justify-center gap-4 mt-8">
             <button
-              onClick={handlePrev}
-              disabled={isAnimating}
+              onClick={prevSlide}
+              disabled={isTransitioning}
               className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 disabled:opacity-50"
               aria-label="Previous slide"
             >
               ←
             </button>
             <button
-              onClick={handleNext}
-              disabled={isAnimating}
+              onClick={nextSlide}
+              disabled={isTransitioning}
               className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 disabled:opacity-50"
               aria-label="Next slide"
             >
@@ -175,11 +135,13 @@ const HomeHero = () => {
               <button
                 key={idx}
                 onClick={() => {
-                  if (idx === currentSlide) return;
-                  if (idx > currentSlide) handleNext();
-                  else handlePrev();
+                  if (idx === currentSlide || isTransitioning) return;
+                  if (idx > currentSlide) {
+                    nextSlide();
+                  } else {
+                    prevSlide();
+                  }
                 }}
-                disabled={isAnimating}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   idx === currentSlide
                     ? "bg-[#FD90A7] w-4"
@@ -193,26 +155,14 @@ const HomeHero = () => {
       </div>
 
       <style jsx>{`
-        .rotate-y-180 {
-          transform: rotateY(180deg);
+        .transition-all {
+          transition-property: all;
         }
-        .backface-hidden {
-          backface-visibility: hidden;
+        .duration-600 {
+          transition-duration: 600ms;
         }
-        .flip-container {
-          perspective: 1200px;
-        }
-        .flipper {
-          transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-          transform-style: preserve-3d;
-          position: relative;
-          width: 100%;
-        }
-        .front,
-        .back {
-          width: 100%;
-          top: 0;
-          left: 0;
+        .ease-out {
+          transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
         }
       `}</style>
     </section>
