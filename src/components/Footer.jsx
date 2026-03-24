@@ -1,3 +1,4 @@
+// src/components/Footer.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
@@ -50,7 +51,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-black text-white relative overflow-hidden">
-      {/* Subtle geometric pattern overlay */}
+      {/* subtle pattern overlay */}
       <div className="absolute inset-0 opacity-5">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -106,8 +107,8 @@ const Footer = () => {
             </nav>
           ))}
 
-          {/* Social & Newsletter column */}
-          <div className="lg:col-span-3 space-y-8">
+          {/* Social & Newsletter column – now wider */}
+          <div className="lg:col-span-4 space-y-8">
             {/* Social links */}
             <nav aria-labelledby="social-nav-heading">
               <h4
@@ -138,7 +139,7 @@ const Footer = () => {
               </ul>
             </nav>
 
-            {/* Newsletter Section */}
+            {/* Newsletter Section – now properly responsive */}
             <section
               aria-labelledby="newsletter-heading"
               className="bg-gray-900/70 backdrop-blur-sm p-6 rounded-xl border border-gray-800"
@@ -155,7 +156,7 @@ const Footer = () => {
               </p>
               <form
                 onSubmit={handleSubmit}
-                className="flex flex-col sm:flex-row gap-3"
+                className="flex flex-col sm:flex-row gap-3 items-stretch"
                 aria-label="Newsletter subscription"
               >
                 <label htmlFor="email-input" className="sr-only">
@@ -168,13 +169,13 @@ const Footer = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting}
-                  className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition disabled:opacity-50"
+                  className="flex-1 min-w-0 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition disabled:opacity-50"
                   required
                 />
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-3 bg-gradient-to-r from-[#FD90A7] to-[#f9b8c9] text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-200 whitespace-nowrap shadow-lg disabled:opacity-50"
+                  className="px-6 py-3 bg-gradient-to-r from-[#FD90A7] to-[#f9b8c9] text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-200 whitespace-nowrap shadow-lg disabled:opacity-50 flex-shrink-0"
                 >
                   {isSubmitting ? "Subscribing..." : "Subscribe"}
                 </button>
@@ -187,12 +188,8 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center text-gray-400 text-sm">
           <p>&copy; {new Date().getFullYear()} Her Physio Movement. All rights reserved.</p>
           <div className="flex gap-6 mt-4 sm:mt-0">
-            <Link to="/privacy" className="hover:text-[#FD90A7] transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="hover:text-[#FD90A7] transition-colors">
-              Terms of Service
-            </Link>
+            <Link to="/privacy" className="hover:text-[#FD90A7] transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-[#FD90A7] transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

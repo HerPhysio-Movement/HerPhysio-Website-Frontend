@@ -107,7 +107,7 @@ const Community = () => {
   // How to get involved steps
   const steps = [
     {
-      title: "Sign up",
+      title: "Volunteer",
       description: "Create a free account – it takes two minutes.",
     },
     {

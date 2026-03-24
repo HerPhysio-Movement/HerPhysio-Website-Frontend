@@ -9,13 +9,13 @@ const buttonPink = "rgba(253, 144, 167, 1)";
 const VolunteerSignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    f_name: "",
+    l_name: "",
     email: "",
-    password: "",
-    phone: "",
+    p_number: "",
+    motivation_note: "",
+    interest: "",
   });
-
   const [focused, setFocused] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,9 +35,19 @@ const VolunteerSignUp = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      // Simulate API call
+      // Prepare payload matching backend
+      const payload = {
+        f_name: formData.f_name,
+        l_name: formData.l_name,
+        email: formData.email,
+        p_number: formData.p_number,
+        role: "volunteers",
+        motivation_note: formData.motivation_note,
+        interest: formData.interest,
+      };
+      // Simulate API call – replace with actual fetch
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      // In a real app, send data to backend
+      console.log("Volunteer signup payload:", payload);
       toast.success("Volunteer application submitted! 🎉");
       navigate("/");
     } catch (error) {
@@ -73,7 +83,7 @@ const VolunteerSignUp = () => {
                 <div className="relative">
                   <label
                     className={`absolute left-4 transition-all duration-200 font-poppins ${
-                      focused.firstName || formData.firstName
+                      focused.f_name || formData.f_name
                         ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                         : "top-3 text-gray-400"
                     }`}
@@ -82,8 +92,8 @@ const VolunteerSignUp = () => {
                   </label>
                   <input
                     type="text"
-                    name="firstName"
-                    value={formData.firstName}
+                    name="f_name"
+                    value={formData.f_name}
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
@@ -97,7 +107,7 @@ const VolunteerSignUp = () => {
                 <div className="relative">
                   <label
                     className={`absolute left-4 transition-all duration-200 font-poppins ${
-                      focused.lastName || formData.lastName
+                      focused.l_name || formData.l_name
                         ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                         : "top-3 text-gray-400"
                     }`}
@@ -106,8 +116,8 @@ const VolunteerSignUp = () => {
                   </label>
                   <input
                     type="text"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="l_name"
+                    value={formData.l_name}
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
@@ -145,7 +155,7 @@ const VolunteerSignUp = () => {
                 <div className="relative">
                   <label
                     className={`absolute left-4 transition-all duration-200 font-poppins ${
-                      focused.phone || formData.phone
+                      focused.p_number || formData.p_number
                         ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                         : "top-3 text-gray-400"
                     }`}
@@ -154,8 +164,8 @@ const VolunteerSignUp = () => {
                   </label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    name="p_number"
+                    value={formData.p_number}
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
@@ -165,32 +175,53 @@ const VolunteerSignUp = () => {
                   />
                 </div>
 
-                {/* Password */}
+                {/* Motivation Note */}
                 <div className="relative">
                   <label
                     className={`absolute left-4 transition-all duration-200 font-poppins ${
-                      focused.password || formData.password
+                      focused.motivation_note || formData.motivation_note
                         ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                         : "top-3 text-gray-400"
                     }`}
                   >
-                    Password
+                    Why do you want to volunteer?
                   </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
+                  <textarea
+                    name="motivation_note"
+                    rows="3"
+                    value={formData.motivation_note}
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     disabled={isSubmitting}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins disabled:opacity-50 resize-none"
+                    required
+                  />
+                </div>
+
+                {/* Interest */}
+                <div className="relative">
+                  <label
+                    className={`absolute left-4 transition-all duration-200 font-poppins ${
+                      focused.interest || formData.interest
+                        ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
+                        : "top-3 text-gray-400"
+                    }`}
+                  >
+                    Areas of interest (e.g., outreach, admin, training)
+                  </label>
+                  <input
+                    type="text"
+                    name="interest"
+                    value={formData.interest}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    disabled={isSubmitting}
+                    placeholder="e.g., outreach, admin, training"
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins disabled:opacity-50"
                     required
-                    minLength={6}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Must be at least 6 characters
-                  </p>
                 </div>
 
                 <button

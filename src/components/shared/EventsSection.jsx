@@ -3,25 +3,6 @@ import { Calendar, MapPin, Clock, ArrowRight } from "lucide-react";
 import { events as defaultEvents } from "../../constants";
 import { useUser } from "../../context/UserContext";
 
-// Helper function to highlight matching text
-const highlightText = (text, query) => {
-  if (!query || !text) return text;
-  const regex = new RegExp(
-    `(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-    "gi",
-  );
-  const parts = text.split(regex);
-  return parts.map((part, i) =>
-    regex.test(part) ? (
-      <mark key={i} className="bg-[#FD90A7]/20 text-[#1D2130] px-0.5 rounded">
-        {part}
-      </mark>
-    ) : (
-      part
-    ),
-  );
-};
-
 const EventsSection = ({
   showHeading = true,
   events = defaultEvents,
@@ -54,6 +35,24 @@ const EventsSection = ({
     }
   };
 
+  const highlightText = (text, query) => {
+    if (!query || !text) return text;
+    const regex = new RegExp(
+      `(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi",
+    );
+    const parts = text.split(regex);
+    return parts.map((part, i) =>
+      regex.test(part) ? (
+        <mark key={i} className="bg-[#FD90A7]/20 text-[#1D2130] px-0.5 rounded">
+          {part}
+        </mark>
+      ) : (
+        part
+      ),
+    );
+  };
+
   return (
     <section id="events" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,9 +64,7 @@ const EventsSection = ({
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
               Our Events
             </h2>
-            <p className="text-gray-600 text-lg">
-              Seminar | Panel Session | Skills Training | Outreach
-            </p>
+            {/* Removed the subtitle line */}
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">

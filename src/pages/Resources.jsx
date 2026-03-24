@@ -22,9 +22,7 @@ const Resources = () => {
               New: Free Pelvic Health Webinar Series
             </h3>
             <p className="text-[#525560]">
-              Join us for a four‑part series with leading physiotherapists.
-              First session: "Understanding Your Pelvic Floor" – available on
-              demand now.
+              Join us for a four‑part series with leading physiotherapists. First session: "Understanding Your Pelvic Floor" – available on demand now.
             </p>
           </div>
         </div>
@@ -37,13 +35,10 @@ const Resources = () => {
             {/* Left text */}
             <div className="lg:w-1/2">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1D2130] mb-4">
-                Our goal is to provide inclusive care for women with special
-                needs
+                Our goal is to provide inclusive care for women with special needs
               </h1>
               <p className="text-[#525560] text-lg mb-6">
-                We believe every woman deserves access to compassionate, expert
-                care. Our resources are designed to educate, empower, and
-                support you – no matter where you are on your journey.
+                We believe every woman deserves access to compassionate, expert care. Our resources are designed to educate, empower, and support you – no matter where you are on your journey.
               </p>
               <button className="text-[#FD90A7] font-bold underline underline-offset-4 hover:no-underline transition">
                 Read more about our mission
@@ -81,7 +76,9 @@ const Resources = () => {
                         <h3 className="font-bold text-[#1D2130] text-base mb-1">
                           {item.headline}
                         </h3>
-                        <p className="text-[#525560] text-sm">{item.text}</p>
+                        <p className="text-[#525560] text-sm">
+                          {item.text}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -159,8 +156,7 @@ const Resources = () => {
             </h2>
           </div>
           <p className="text-[#525560] text-lg mb-8 max-w-2xl">
-            Missed a live session? Catch up on our most popular webinars, led by
-            expert physiotherapists.
+            Missed a live session? Catch up on our most popular webinars, led by expert physiotherapists.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -194,12 +190,12 @@ const Resources = () => {
                 key={idx}
                 className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-lg transition group"
               >
-                {/* Image container – fills width without gaps */}
-                <div className="relative w-full h-48 rounded-xl mb-4 overflow-hidden bg-gray-100">
+                {/* Image container – full width, flexible height, no cropping */}
+                <div className="relative w-full rounded-xl mb-4 overflow-hidden bg-gray-100">
                   <img
                     src={webinar.image}
                     alt={webinar.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <a
@@ -253,8 +249,7 @@ const Resources = () => {
               Articles & Insights
             </h2>
             <p className="text-[#525560] text-lg">
-              Practical advice, stories, and expert perspectives on women's
-              health.
+              Practical advice, stories, and expert perspectives on women's health.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
