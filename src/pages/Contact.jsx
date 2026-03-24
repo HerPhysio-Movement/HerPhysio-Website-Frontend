@@ -8,7 +8,7 @@ import {
   HandHeart,
   Handshake,
 } from "lucide-react";
-import ContactMap from "../components/ContactPage/ContactMap";
+import ContactMap from "../components/contactPage/contactMap";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
