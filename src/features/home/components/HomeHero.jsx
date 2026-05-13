@@ -163,7 +163,7 @@ const HomeHero = () => {
 
               <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
                 <a
-                  href="#what-we-do"
+                  href="what-we-do"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-500 hover:scale-105 hover:shadow-lg"
                   style={{ backgroundColor: slide.accent }}
                 >
