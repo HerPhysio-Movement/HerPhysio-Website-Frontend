@@ -1,9 +1,9 @@
+// src/App.jsx
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './features/shared/components/Navbar';
 import Footer from './features/shared/components/Footer';
-import { DashboardProvider } from './context/DashboardContext';
+import { DashboardProvider } from './context/DashboardContext';   // ← added
 
-// Pages
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
 import Events from './pages/Events';
@@ -24,6 +24,7 @@ import AdminSignUp from './pages/AdminSignUp';
 import Partner from './pages/Partner';
 import Gallery from './pages/Gallery';
 import UserDashboard from './pages/UserDashboard';
+import Donate from './pages/Donate';
 
 const App = () => (
   <>
@@ -31,7 +32,6 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/about-us" element={<AboutUs />} />
-      <Route path="/what-we-do" element={<AboutUs />} />
       <Route path="/events" element={<Events />} />
       <Route path="/projects" element={<Projects />} />
       <Route path="/community" element={<Community />} />
@@ -41,7 +41,7 @@ const App = () => (
       <Route path="/signin" element={<SignIn />} />
       <Route path="/partner" element={<Partner />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/dashboard" element={<DashboardProvider><Dashboard /></DashboardProvider>} />
+      <Route path="/dashboard" element={<DashboardProvider><Dashboard /></DashboardProvider>} /> {/* ← wrapped */}
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/blog" element={<Blog />} />
@@ -50,6 +50,7 @@ const App = () => (
       <Route path="/admin/signin" element={<AdminSignIn />} />
       <Route path="/admin/signup" element={<AdminSignUp />} />
       <Route path="/user-dashboard" element={<UserDashboard />} />
+      <Route path="/donate" element={<Donate />} />
     </Routes>
     <Footer />
   </>
