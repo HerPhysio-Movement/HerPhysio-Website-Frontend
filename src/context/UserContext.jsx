@@ -1,170 +1,171 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-
-const initialUsers = [
-  {
-    id: 1,
-    name: "Antonia Abraham",
-    email: "antonia@hpm.org",
-    role: "admin",
-    joined: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "John Doe",
-    email: "john@example.com",
-    role: "member",
-    joined: "2024-02-10",
-  },
-  {
-    id: 3,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "volunteer",
-    joined: "2024-03-05",
-  },
-  {
-    id: 4,
-    name: "Michael Okonkwo",
-    email: "michael@example.com",
-    role: "member",
-    joined: "2024-04-20",
-  },
-  {
-    id: 5,
-    name: "Sarah Johnson",
-    email: "sarah@example.com",
-    role: "volunteer",
-    joined: "2024-05-12",
-  },
-  {
-    id: 6,
-    name: "David Chen",
-    email: "david@example.com",
-    role: "admin",
-    joined: "2024-06-01",
-  },
-];
-
-const initialLogs = [
-  {
-    id: 1,
-    action: "User registered",
-    user: "John Doe",
-    timestamp: "2024-10-01 09:30",
-    performedBy: "System",
-  },
-  {
-    id: 2,
-    action: "Role changed",
-    user: "Jane Smith",
-    details: "Member → Volunteer",
-    timestamp: "2024-10-02 14:15",
-    performedBy: "Antonia Abraham",
-  },
-  {
-    id: 3,
-    action: "User registered",
-    user: "Michael Okonkwo",
-    timestamp: "2024-10-03 11:20",
-    performedBy: "System",
-  },
-];
+import { createContext, useContext, useState, useEffect } from 'react';
+import { authAPI, setAuthToken, removeAuthToken, getAuthToken } from '../services/authAPI';
+import { roleAPI } from '../services/roleAPI';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem("currentUser");
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [users, setUsers] = useState(() => {
-    const saved = localStorage.getItem("users");
-    return saved ? JSON.parse(saved) : initialUsers;
-  });
-  const [activityLogs, setActivityLogs] = useState(() => {
-    const saved = localStorage.getItem("activityLogs");
-    return saved ? JSON.parse(saved) : initialLogs;
-  });
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activityLogs, setActivityLogs] = useState([]);
+  const [users, setUsers] = useState([]); // for admin overview
 
+  // Load user on mount
   useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
-
-  useEffect(() => {
-    localStorage.setItem("activityLogs", JSON.stringify(activityLogs));
-  }, [activityLogs]);
-
-  useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    const token = getAuthToken();
+    if (token) {
+      const loadUser = async () => {
+        try {
+          // Try to fetch as admin first, then as regular user
+          let userData;
+          try {
+            userData = await authAPI.getAdminMe();
+          } catch (adminErr) {
+            try {
+              userData = await authAPI.getUserMe();
+            } catch (userErr) {
+              console.error('Failed to load user data:', userErr);
+              removeAuthToken();
+              setIsLoading(false);
+              return;
+            }
+          }
+          setCurrentUser(userData);
+          // If admin, fetch all users
+          if (userData.role === 'admin' || userData.role === 'superadmin') {
+            const allUsers = await roleAPI.getAllUsers();
+            setUsers(allUsers.users || allUsers || []);
+          }
+        } catch (error) {
+          console.error('Auth check failed:', error);
+          removeAuthToken();
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      loadUser();
     } else {
-      localStorage.removeItem("currentUser");
+      setIsLoading(false);
     }
-  }, [currentUser]);
+  }, []);
 
-  const updateUserRole = (userId, newRole, performedBy) => {
-    const user = users.find((u) => u.id === userId);
-    if (!user) return;
-
-    const oldRole = user.role;
-    setUsers(users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
-
-    const log = {
-      id: Date.now(),
-      action: "Role changed",
-      user: user.name,
-      details: `${oldRole} → ${newRole}`,
-      timestamp: new Date().toLocaleString(),
-      performedBy: performedBy || currentUser?.name,
-    };
-    setActivityLogs([log, ...activityLogs]);
-  };
-
-  const addUserLog = (action, userName, details = "") => {
-    const log = {
+  const addActivityLog = (action, details = '') => {
+    const newLog = {
       id: Date.now(),
       action,
-      user: userName,
       details,
+      user: currentUser?.email || 'Unknown',
       timestamp: new Date().toLocaleString(),
-      performedBy: currentUser?.name,
+      performedBy: currentUser?.email || 'System',
     };
-    setActivityLogs([log, ...activityLogs]);
+    setActivityLogs((prev) => [newLog, ...prev].slice(0, 50));
   };
 
-  const login = (email, password) => {
-    // Dummy validation – in real app, verify with backend
-    const user = users.find((u) => u.email === email);
-    if (user && password === "demo") {
-      setCurrentUser(user);
-      addUserLog("User logged in", user.name);
-      return true;
+  const login = async (email, password) => {
+    try {
+      const response = await authAPI.userLogin({ email, password });
+      const token = response.access_token;
+      if (token) {
+        setAuthToken(token);
+        const userData = await authAPI.getUserMe();
+        setCurrentUser(userData);
+        addActivityLog('User logged in', email);
+        return userData;
+      }
+      throw new Error('No access token received');
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
     }
-    return false;
+  };
+
+  const adminLogin = async (email, password) => {
+    try {
+      const response = await authAPI.adminLogin({ email, password });
+      // Backend returns { idToken, refreshToken, expiresIn, admin, message }
+      const token = response.idToken || response.access_token;
+      if (token) {
+        setAuthToken(token);
+        // Fetch admin user data
+        const adminData = await authAPI.getAdminMe();
+        setCurrentUser(adminData);
+        // Fetch all users for admin dashboard
+        const allUsers = await roleAPI.getAllUsers();
+        setUsers(allUsers.users || allUsers || []);
+        addActivityLog('Admin logged in', email);
+        return adminData;
+      }
+      throw new Error('No token received from server');
+    } catch (error) {
+      console.error('Admin login failed:', error);
+      throw error;
+    }
+  };
+
+  const signup = async (userData) => {
+    try {
+      await authAPI.userSignup(userData);
+      return await login(userData.email, userData.password);
+    } catch (error) {
+      console.error('Signup failed:', error);
+      throw error;
+    }
+  };
+
+  const adminSignup = async (email, password) => {
+    try {
+      const response = await authAPI.adminSignup({ email, password, role: 'admin' });
+      addActivityLog('Admin account created', email);
+      return response;
+    } catch (error) {
+      console.error('Admin signup failed:', error);
+      throw error;
+    }
+  };
+
+  const promoteUserToAdmin = async (userId) => {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+    try {
+      await roleAPI.promoteUserToAdmin(userId);
+      // Refresh users list after promotion
+      const allUsers = await roleAPI.getAllUsers();
+      setUsers(allUsers.users || allUsers || []);
+      addActivityLog('User promoted to admin', `User ID: ${userId}`);
+      return true;
+    } catch (error) {
+      console.error('Promotion failed:', error);
+      throw new Error(`Promotion failed: ${error.message}`);
+    }
   };
 
   const logout = () => {
-    if (currentUser) {
-      addUserLog("User logged out", currentUser.name);
-    }
+    removeAuthToken();
     setCurrentUser(null);
+    setUsers([]);
+    setActivityLogs([]);
+    addActivityLog('User logged out');
   };
 
-  return (
-    <UserContext.Provider
-      value={{
-        currentUser,
-        users,
-        activityLogs,
-        updateUserRole,
-        addUserLog,
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  const value = {
+    currentUser,
+    isLoading,
+    users,
+    activityLogs,
+    login,
+    adminLogin,
+    signup,
+    adminSignup,
+    promoteUserToAdmin,
+    logout,
+  };
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) throw new Error('useUser must be used within UserProvider');
+  return context;
+};

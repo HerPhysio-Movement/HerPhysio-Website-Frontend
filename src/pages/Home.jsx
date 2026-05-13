@@ -1,56 +1,32 @@
-import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import HomeHero from "../components/HomePage/HomeHero";
-import KnowAboutUs from "../components/HomePage/KnowAboutUs";
-import Partners from "../components/HomePage/Partners";
-import WhatWeDo from "../components/HomePage/WhatWeDo";
-import ProjectsDone from "../components/HomePage/ProjectsDone";
-import ImpactStats from "../components/HomePage/ImpactStats";
-import ContributionCTA from "../components/HomePage/ContributionCTA";
-import EventsSection from "../components/shared/EventsSection";
-import { events } from "../constants";
+// src/pages/Home.jsx
+import HomeHero from '../features/home/components/HomeHero';
+import KnowAboutUs from '../features/home/components/KnowAboutUs';
+import Partners from '../features/home/components/Partners';
+import WhatWeDo from '../features/home/components/WhatWeDo';
+import ProjectsDone from '../features/home/components/ProjectsDone';
+import ContributionCTA from '../features/home/components/ContributionCTA';
+import EventsSection from '../features/events/components/EventsSection';
+import FaqSection from '../features/home/components/FaqSection';
+import Features from '../features/home/components/Features';
+import Testimonials from '../features/home/components/Testimonials';
+import HealthTips from '../features/home/components/HealthTips';
+import MythBusters from '../features/home/components/MythBusters';
 
 const Home = () => {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const initialSearch = searchParams.get("search") || "";
-  const eventsRef = useRef(null);
-
-  const [searchTerm, setSearchTerm] = useState(initialSearch);
-
-  useEffect(() => {
-    setSearchTerm(initialSearch);
-  }, [initialSearch]);
-
-  // Scroll to events section if there's a search term
-  useEffect(() => {
-    if (searchTerm && eventsRef.current) {
-      eventsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [searchTerm]);
-
-  const filteredEvents = events.filter(
-    (event) =>
-      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.description.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
   return (
     <main id="main-content">
       <HomeHero />
       <KnowAboutUs />
       <Partners />
       <WhatWeDo />
+      <MythBusters />
       <ProjectsDone />
-      <ImpactStats />
+      <Features />
+      <HealthTips />
       <ContributionCTA />
-      <div ref={eventsRef}>
-        <EventsSection
-          events={filteredEvents}
-          showHeading={true}
-          highlight={searchTerm}
-        />
-      </div>
+      <EventsSection />
+      <Testimonials />
+      <FaqSection />
     </main>
   );
 };

@@ -4,10 +4,18 @@ export const ROLES = {
   ADMIN: 'admin',
   VOLUNTEER: 'volunteer',
   MEMBER: 'member',
+  SUPERADMIN: 'superadmin',
 };
 
 // Permissions map
 const PERMISSIONS = {
+  [ROLES.SUPERADMIN]: [
+    'view_user_stats',
+    'manage_roles',
+    'view_activity_logs',
+    'manage_content',
+    'view_all_dashboard',
+  ],
   [ROLES.ADMIN]: [
     'view_user_stats',
     'manage_roles',
@@ -33,5 +41,6 @@ export const hasPermission = (role, permission) => {
 };
 
 export const can = (user, permission) => {
+  if (!user) return false;
   return hasPermission(user.role, permission);
 };

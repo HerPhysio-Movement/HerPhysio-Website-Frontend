@@ -1,24 +1,22 @@
-import KnowAboutUs from "../components/HomePage/KnowAboutUs";
-import MissionVision from "../components/AboutUsPage/MissionVision";
-import WhatWeDoCountry from "../components/AboutUsPage/WhatWeDoCountry";
-import WhatWeDoSpecial from "../components/AboutUsPage/WhatWeDoSpecial";
-import Awards from "../components/AboutUsPage/Awards";
-import Journey from "../components/AboutUsPage/Journey";
-import TeamGrid from "../components/AboutUsPage/TeamGrid";
-import ContributionCTA from "../components/HomePage/ContributionCTA";
-import EventsSection from "../components/shared/EventsSection";
-import Partners from "../components/HomePage/Partners";
+import KnowAboutUs from '../features/home/components/KnowAboutUs';
+import MissionVision from '../features/about/components/MissionVision';
+import Supporters from '../features/about/components/Supporters';
+import WhatWeDoCountry from '../features/about/components/WhatWeDoCountry';
+import WhatWeDoSpecial from '../features/about/components/WhatWeDoSpecial';
+import KeyPillars from '../features/about/components/KeyPillars';
+import TeamGrid from '../features/about/components/TeamGrid';
+import ContributionCTA from '../features/home/components/ContributionCTA';
+import EventsSection from '../features/events/components/EventsSection';
 
 const AboutUs = () => {
   return (
     <main id="main-content">
       <KnowAboutUs />
       <MissionVision />
-      <Partners />
+      <Supporters />
       <WhatWeDoCountry />
       <WhatWeDoSpecial />
-      <Awards />
-      <Journey />
+      <KeyPillars />
       <TeamGrid />
       <ContributionCTA />
       <EventsSection />

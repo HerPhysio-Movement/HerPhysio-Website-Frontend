@@ -1,0 +1,225 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Play, BookOpen } from 'lucide-react';
+import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
+import { SectionHeader, BackgroundParticles } from './SectionComponents';
+
+/**
+ * Section: Webinar Recordings (fetches from API)
+ */
+export const WebinarsSection = ({ webinars = [] }) => {
+  const [selectedWebinar, setSelectedWebinar] = useState(null);
+
+  if (webinars.length === 0) return null;
+
+  const rotations = ['-rotate-3', 'rotate-0', 'rotate-2'];
+  const zIndices = ['z-10', 'z-20', 'z-15'];
+
+  return (
+    <section id="webinars" className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+      <BackgroundParticles variant="webinars" />
+
+      <div className="relative max-w-7xl mx-auto">
+        <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
+          <div>
+            <h2 className="uppercase text-[#1D2130] font-bold text-sm tracking-[2px] mb-2">
+              Webinar Recordings
+            </h2>
+            <p className="text-[#525560] text-lg max-w-2xl">
+              Missed a live session? Explore our library – expert talks on demand.
+            </p>
+          </div>
+          <Link 
+            to="/webinars" 
+            className="text-sm text-[#FD90A7] hover:underline flex items-center gap-1"
+          >
+            View all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {webinars.slice(0, 3).map((webinar, idx) => (
+            <FloatingCard
+              key={webinar.id}
+              item={webinar}
+              isSelected={selectedWebinar?.id === webinar.id}
+              onSelect={() => setSelectedWebinar(webinar)}
+              rotation={rotations[idx]}
+              zIndex={zIndices[idx]}
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#FD90A7]/10 flex items-center justify-center flex-shrink-0">
+                  <Play className="w-6 h-6 text-[#FD90A7]" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-[#1D2130] mb-1 line-clamp-1">
+                    {webinar.title}
+                  </h3>
+                  <p className="text-xs text-[#FD90A7] font-medium mb-2">
+                    {webinar.host || 'Expert Speaker'}
+                  </p>
+                  <p className="text-gray-500 text-sm line-clamp-2">
+                    {webinar.description}
+                  </p>
+                  <div className="mt-3 text-xs text-[#FD90A7] opacity-0 group-hover:opacity-100 transition">
+                    Click to watch →
+                  </div>
+                </div>
+              </div>
+            </FloatingCard>
+          ))}
+        </div>
+      </div>
+
+      {/* Webinar Modal */}
+      <ResourceModal
+        item={selectedWebinar}
+        isOpen={!!selectedWebinar}
+        onClose={() => setSelectedWebinar(null)}
+        maxWidth="max-w-2xl"
+        hasImage={true}
+        imageUrl={selectedWebinar?.image_url}
+      >
+        {selectedWebinar && (
+          <>
+            <h3 className="text-2xl font-bold text-[#1D2130] mb-2">
+              {selectedWebinar.title}
+            </h3>
+            <p className="text-sm text-[#FD90A7] font-medium mb-3">
+              Presented by {selectedWebinar.host || 'Expert Speaker'}
+            </p>
+            <p className="text-gray-600 leading-relaxed mb-6">
+              {selectedWebinar.description}
+            </p>
+            {selectedWebinar.link && (
+              <a
+                href={selectedWebinar.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#FD90A7] text-white rounded-full hover:bg-[#f77997] transition"
+              >
+                <Play className="w-4 h-4" /> Watch Recording
+              </a>
+            )}
+          </>
+        )}
+      </ResourceModal>
+    </section>
+  );
+};
+
+/**
+ * Section: Articles & Insights (fetches from API)
+ */
+export const ArticlesSection = ({ articles = [] }) => {
+  const [selectedArticle, setSelectedArticle] = useState(null);
+
+  if (articles.length === 0) return null;
+
+  const publishedArticles = articles.filter(article => article.status === 'published');
+  if (publishedArticles.length === 0) return null;
+
+  const rotations = ['-rotate-2', 'rotate-1', 'rotate-2'];
+  const zIndices = ['z-10', 'z-20', 'z-15'];
+
+  return (
+    <section className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-white overflow-hidden">
+      <BackgroundParticles variant="articles" />
+
+      <div className="relative max-w-7xl mx-auto">
+        <SectionHeader
+          tag="From our blog"
+          title="Articles & Insights"
+          subtitle="Practical advice, stories, and expert perspectives."
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {publishedArticles.slice(0, 3).map((article, idx) => (
+            <FloatingCard
+              key={article.id}
+              item={article}
+              isSelected={selectedArticle?.id === article.id}
+              onSelect={() => setSelectedArticle(article)}
+              rotation={rotations[idx]}
+              zIndex={zIndices[idx]}
+            >
+              <CardContent
+                icon={BookOpen}
+                title={article.title}
+                description={
+                  <>
+                    <div className="text-xs text-gray-400 mb-1">
+                      {article.created_at
+                        ? new Date(article.created_at).toLocaleDateString()
+                        : 'Recent'}
+                    </div>
+                    <p className="line-clamp-3">
+                      {article.excerpt || article.content?.substring(0, 100)}
+                    </p>
+                  </>
+                }
+                bgColor="#FD90A7/10"
+                color="#FD90A7"
+                showHoverText={true}
+              />
+            </FloatingCard>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#FD90A7] hover:underline"
+          >
+            View all articles <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Article Modal */}
+      <ResourceModal
+        item={selectedArticle}
+        isOpen={!!selectedArticle}
+        onClose={() => setSelectedArticle(null)}
+        maxWidth="max-w-2xl"
+        hasImage={true}
+        imageUrl={selectedArticle?.image_url}
+      >
+        {selectedArticle && (
+          <>
+            <h3 className="text-2xl font-bold text-[#1D2130] mb-2">
+              {selectedArticle.title}
+            </h3>
+            <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+              <span>By {selectedArticle.author || 'Her Physio'}</span>
+              <span>•</span>
+              <span>
+                {selectedArticle.created_at
+                  ? new Date(selectedArticle.created_at).toLocaleDateString()
+                  : 'Recent'}
+              </span>
+            </div>
+            {selectedArticle.image_url && (
+              <img
+                src={selectedArticle.image_url}
+                alt={selectedArticle.title}
+                className="w-full h-48 object-cover rounded-lg mb-4"
+              />
+            )}
+            <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed">
+              <p>{selectedArticle.content || selectedArticle.excerpt}</p>
+            </div>
+            <div className="mt-6 pt-4 border-t border-gray-100 flex justify-end">
+              <button
+                onClick={() => setSelectedArticle(null)}
+                className="px-4 py-2 bg-[#FD90A7] text-white rounded-full hover:bg-[#f77997] transition"
+              >
+                Close
+              </button>
+            </div>
+          </>
+        )}
+      </ResourceModal>
+    </section>
+  );
+};

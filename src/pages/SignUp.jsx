@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
+import { useUser } from "../context/UserContext";
 
 const buttonPink = "rgba(253, 144, 167, 1)";
 
 const SignUp = () => {
+  const { signup } = useUser();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    f_name: "",
+    l_name: "",
     email: "",
     password: "",
   });
@@ -31,26 +34,39 @@ const SignUp = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const userData = {
+        ...formData,
+        role: "user",
+      };
+      await signup(userData);
       toast.success("Account created successfully! 🎉");
-      // Redirect or update auth state here
+      navigate("/user-dashboard");
     } catch (error) {
-		console.log(error)
-      toast.error("Something went wrong. Please try again.");
+      console.log(error);
+      toast.error(error.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <main id="main-content" className="bg-gray-50 min-h-screen relative overflow-hidden">
+    <main
+      id="main-content"
+      className="bg-gray-50 min-h-screen relative overflow-hidden"
+    >
       {/* Subtle brand pattern background */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="signup-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <pattern
+              id="signup-pattern"
+              x="0"
+              y="0"
+              width="40"
+              height="40"
+              patternUnits="userSpaceOnUse"
+            >
               <circle cx="20" cy="20" r="2" fill={buttonPink} />
             </pattern>
           </defs>
@@ -86,9 +102,9 @@ const SignUp = () => {
                   {/* First Name */}
                   <div className="relative">
                     <label
-                      htmlFor="firstName"
+                      htmlFor="f_name"
                       className={`absolute left-4 transition-all duration-200 font-poppins ${
-                        focused.firstName || formData.firstName
+                        focused.f_name || formData.f_name
                           ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                           : "top-3 text-gray-400"
                       }`}
@@ -97,9 +113,9 @@ const SignUp = () => {
                     </label>
                     <input
                       type="text"
-                      id="firstName"
-                      name="firstName"
-                      value={formData.firstName}
+                      id="f_name"
+                      name="f_name"
+                      value={formData.f_name}
                       onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
@@ -112,9 +128,9 @@ const SignUp = () => {
                   {/* Last Name */}
                   <div className="relative">
                     <label
-                      htmlFor="lastName"
+                      htmlFor="l_name"
                       className={`absolute left-4 transition-all duration-200 font-poppins ${
-                        focused.lastName || formData.lastName
+                        focused.l_name || formData.l_name
                           ? "text-xs -top-2 bg-white px-2 text-[#FD90A7]"
                           : "top-3 text-gray-400"
                       }`}
@@ -123,9 +139,9 @@ const SignUp = () => {
                     </label>
                     <input
                       type="text"
-                      id="lastName"
-                      name="lastName"
-                      value={formData.lastName}
+                      id="l_name"
+                      name="l_name"
+                      value={formData.l_name}
                       onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
@@ -212,7 +228,10 @@ const SignUp = () => {
                 {/* Sign In Link */}
                 <p className="text-center text-sm text-gray-600 mt-6 font-poppins">
                   Already have an account?{" "}
-                  <Link to="/signin" className="text-[#FD90A7] hover:underline font-medium">
+                  <Link
+                    to="/signin"
+                    className="text-[#FD90A7] hover:underline font-medium"
+                  >
                     Sign in
                   </Link>
                 </p>
@@ -229,7 +248,8 @@ const SignUp = () => {
                   Join Our Community
                 </h3>
                 <p className="text-[#525560] text-sm font-poppins">
-                  Get access to resources, events, and a network of women supporting women.
+                  Get access to resources, events, and a network of women
+                  supporting women.
                 </p>
               </div>
             </div>
