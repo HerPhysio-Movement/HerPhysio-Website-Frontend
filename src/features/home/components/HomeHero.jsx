@@ -35,7 +35,7 @@ const slides = [
     title: 'Movement Is Medicine.',
     sub: 'Free workshops, mentorship & community outreach that transform lives.',
     accent: '#F0A020',
-    image: '/movement.jpg',
+    image: '/movee.jpg',
     imageAlt: 'Pregnant woman moving – movement is medicine',
     fact: 'Regular physical activity during pregnancy lowers the risk of gestational diabetes by 30%.',
     source: 'ACOG (2020)',
