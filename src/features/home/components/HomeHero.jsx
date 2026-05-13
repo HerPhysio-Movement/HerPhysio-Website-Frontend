@@ -90,34 +90,18 @@ const StatItem = ({ end, label, icon: Icon, suffix = '', accent }) => {
 const HomeHero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [fade, setFade] = useState(true);
-  const [typedText, setTypedText] = useState('');
-  const [charIndex, setCharIndex] = useState(0);
 
+  // Auto‑rotate every 6 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setFade(false);
       setTimeout(() => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
         setFade(true);
-      }, 400);
+      }, 350);
     }, 6000);
     return () => clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    setTypedText('');
-    setCharIndex(0);
-  }, [currentSlide]);
-
-  useEffect(() => {
-    if (charIndex < slides[currentSlide].title.length) {
-      const timeout = setTimeout(() => {
-        setTypedText((prev) => prev + slides[currentSlide].title[charIndex]);
-        setCharIndex((i) => i + 1);
-      }, 40);
-      return () => clearTimeout(timeout);
-    }
-  }, [charIndex, currentSlide]);
 
   const slide = slides[currentSlide];
 
@@ -149,73 +133,83 @@ const HomeHero = () => {
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          {/* Text */}
-          <div className="text-center lg:text-left">
+          {/* Text column – cross‑fade + subtle slide */}
+          <div className="text-center lg:text-left relative min-h-[420px]">
             <div
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold mb-8 transition-colors duration-500"
-              style={{ backgroundColor: `${slide.accent}14`, color: slide.accent }}
-            >
-              <span className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: slide.accent }} />
-              Non‑Profit Organisation
-            </div>
-
-            <h1
-              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#1A1A1A] leading-tight mb-6 transition-opacity duration-500 ${
-                fade ? 'opacity-100' : 'opacity-0'
+              className={`transition-all duration-500 ease-out ${
+                fade
+                  ? 'opacity-100 translate-x-0'
+                  : 'opacity-0 translate-x-6'
               }`}
             >
-              {typedText}
-              <span className="animate-pulse transition-colors duration-500" style={{ color: slide.accent }}>|</span>
-            </h1>
-
-            <p
-              className={`text-lg sm:text-xl text-[#A19390] mb-10 max-w-xl mx-auto lg:mx-0 transition-opacity duration-500 ${
-                fade ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              {slide.sub}
-            </p>
-
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-              <a
-                href="#what-we-do"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-500 hover:scale-105 hover:shadow-lg"
-                style={{ backgroundColor: slide.accent }}
+              <div
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold mb-8 transition-colors duration-500"
+                style={{ backgroundColor: `${slide.accent}14`, color: slide.accent }}
               >
-                What we do <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href="/volunteer-signup"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold border-2 transition-all duration-500 hover:scale-105"
-                style={{ borderColor: slide.accent, color: slide.accent }}
-              >
-                Volunteer with us
-              </a>
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: slide.accent }}
+                />
+                Non‑Profit Organisation
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#1A1A1A] leading-tight mb-6">
+                {slide.title}
+              </h1>
+
+              <p className="text-lg sm:text-xl text-[#A19390] mb-10 max-w-xl mx-auto lg:mx-0">
+                {slide.sub}
+              </p>
+
+              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                <a
+                  href="#what-we-do"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-500 hover:scale-105 hover:shadow-lg"
+                  style={{ backgroundColor: slide.accent }}
+                >
+                  What we do <ArrowRight className="w-4 h-4" />
+                </a>
+                <a
+                  href="/volunteer-signup"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold border-2 transition-all duration-500 hover:scale-105"
+                  style={{ borderColor: slide.accent, color: slide.accent }}
+                >
+                  Volunteer with us
+                </a>
+              </div>
             </div>
           </div>
 
-          {/* Image */}
+          {/* Image column – auto height, full content, no extra spaces */}
           <div className="flex justify-center lg:justify-end">
             <div
-              className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl transition-all duration-700"
+              className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl transition-shadow duration-700"
               style={{
                 boxShadow: `0 25px 40px -15px ${slide.accent}30`,
-                opacity: fade ? 1 : 0,
-                transform: fade ? 'scale(1)' : 'scale(0.98)',
               }}
             >
-              <img
-                src={slide.image}
-                alt={slide.imageAlt}
-                className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105"
-              />
+              {/* Image – no fixed height, natural aspect ratio */}
+              <div
+                className={`transition-opacity duration-500 ease-out ${
+                  fade ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <img
+                  src={slide.image}
+                  alt={slide.imageAlt}
+                  className="w-full h-auto"
+                />
+              </div>
+
+              {/* Gradient overlay – constant */}
               <div
                 className="absolute inset-0"
                 style={{
                   background: `linear-gradient(to top, ${slide.accent}18, transparent 60%)`,
+                  pointerEvents: 'none',
                 }}
               />
-              {/* Fact badge – replaced static text */}
+              {/* Fact badge */}
               <div className="absolute bottom-4 left-4 right-4 bg-white/85 backdrop-blur-md rounded-xl p-3 border border-[#F3E4E2] flex items-start gap-2">
                 <LibraryBig className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: slide.accent }} />
                 <div>
@@ -246,7 +240,7 @@ const HomeHero = () => {
                 setTimeout(() => {
                   setCurrentSlide(idx);
                   setFade(true);
-                }, 400);
+                }, 350);
               }}
               className="h-2.5 rounded-full transition-all duration-500"
               style={{
