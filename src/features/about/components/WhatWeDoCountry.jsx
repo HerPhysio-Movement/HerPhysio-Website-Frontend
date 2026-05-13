@@ -23,7 +23,7 @@ const WhatWeDoCountry = () => {
               Her Physio Movement is on a mission to build women's health physiotherapists across Africa through education, mentorship, and community engagement. Our strategy blends online and offline engagement: social media advocacy, community outreaches, training programs, and collaborations with like‑minded organizations.
             </p>
             <Link
-              to="/what-we-do"
+              to="/about-us"
               className="inline-flex items-center gap-2 text-[#FD90A7] font-semibold group hover:gap-3 transition-all duration-300"
             >
               Learn more <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

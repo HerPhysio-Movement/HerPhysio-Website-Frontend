@@ -1,6 +1,7 @@
 // src/features/home/components/HomeHero.jsx
 
 import { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Users, LibraryBig } from 'lucide-react';
 
 const slides = [
@@ -163,19 +164,19 @@ const HomeHero = () => {
 
               <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
                 <a
-                  href="what-we-do"
+                  href="#what-we-do"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-500 hover:scale-105 hover:shadow-lg"
                   style={{ backgroundColor: slide.accent }}
                 >
                   What we do <ArrowRight className="w-4 h-4" />
                 </a>
-                <a
-                  href="/volunteer-signup"
+                <Link
+                  to="/volunteer-signup"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold border-2 transition-all duration-500 hover:scale-105"
                   style={{ borderColor: slide.accent, color: slide.accent }}
                 >
                   Volunteer with us
-                </a>
+                </Link>
               </div>
             </div>
           </div>
