@@ -17,7 +17,7 @@ const slides = [
     title: 'Your Pelvic Health Matters.',
     sub: 'Expert care, compassionate support & evidence‑based resources for every stage of life.',
     accent: '#6020F0',
-    image: '/pelvic.jpg',
+    image: '/pelvicc.jpg',
     imageAlt: 'Pelvic health representation',
     fact: 'Pelvic floor disorders affect 1 in 4 women globally, yet most cases go untreated.',
     source: 'IUGA (2022)',
