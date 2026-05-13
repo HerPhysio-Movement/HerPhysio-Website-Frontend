@@ -1,7 +1,6 @@
 // src/features/home/components/HomeHero.jsx
 
 import { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Users, LibraryBig } from 'lucide-react';
 
 const slides = [
@@ -16,7 +15,7 @@ const slides = [
   },
   {
     title: 'Your Pelvic Health Matters.',
-    sub: 'Expert care, compassionate support & evidence‑based resources for every stage of life.',
+    sub: 'From adolescence through menopause, your pelvic floor deserves expert, compassionate care. We offer evidence‑based resources, personalised guidance, and a supportive community for every stage of life.',
     accent: '#6020F0',
     image: '/pelvicc.jpg',
     imageAlt: 'Pelvic health representation',
@@ -138,19 +137,14 @@ const HomeHero = () => {
           <div className="text-center lg:text-left relative min-h-[420px]">
             <div
               className={`transition-all duration-500 ease-out ${
-                fade
-                  ? 'opacity-100 translate-x-0'
-                  : 'opacity-0 translate-x-6'
+                fade ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-6'
               }`}
             >
               <div
                 className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold mb-8 transition-colors duration-500"
                 style={{ backgroundColor: `${slide.accent}14`, color: slide.accent }}
               >
-                <span
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: slide.accent }}
-                />
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: slide.accent }} />
                 Non‑Profit Organisation
               </div>
 
@@ -170,39 +164,37 @@ const HomeHero = () => {
                 >
                   What we do <ArrowRight className="w-4 h-4" />
                 </a>
-                <Link
-                  to="/volunteer-signup"
+                <a
+                  href="/volunteer-signup"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold border-2 transition-all duration-500 hover:scale-105"
                   style={{ borderColor: slide.accent, color: slide.accent }}
                 >
                   Volunteer with us
-                </Link>
+                </a>
               </div>
             </div>
           </div>
 
-          {/* Image column – auto height, full content, no extra spaces */}
+          {/* Image column – fixed height, object-cover, uniform */}
           <div className="flex justify-center lg:justify-end">
             <div
-              className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl transition-shadow duration-700"
+              className="relative w-full max-w-lg h-72 sm:h-80 lg:h-96 rounded-2xl overflow-hidden shadow-2xl transition-shadow duration-700"
               style={{
                 boxShadow: `0 25px 40px -15px ${slide.accent}30`,
               }}
             >
-              {/* Image – no fixed height, natural aspect ratio */}
               <div
-                className={`transition-opacity duration-500 ease-out ${
+                className={`absolute inset-0 transition-opacity duration-500 ease-out ${
                   fade ? 'opacity-100' : 'opacity-0'
                 }`}
               >
                 <img
                   src={slide.image}
                   alt={slide.imageAlt}
-                  className="w-full h-auto"
+                  className="w-full h-full object-cover"
                 />
               </div>
 
-              {/* Gradient overlay – constant */}
               <div
                 className="absolute inset-0"
                 style={{
@@ -210,7 +202,6 @@ const HomeHero = () => {
                   pointerEvents: 'none',
                 }}
               />
-              {/* Fact badge */}
               <div className="absolute bottom-4 left-4 right-4 bg-white/85 backdrop-blur-md rounded-xl p-3 border border-[#F3E4E2] flex items-start gap-2">
                 <LibraryBig className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: slide.accent }} />
                 <div>
