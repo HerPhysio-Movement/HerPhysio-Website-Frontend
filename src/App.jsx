@@ -2,7 +2,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './features/shared/components/Navbar';
 import Footer from './features/shared/components/Footer';
-import { DashboardProvider } from './context/DashboardContext';   // ← added
+import ScrollToTop from './features/shared/components/ScrollToTop';
 
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
@@ -15,6 +15,7 @@ import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
+import { DashboardProvider } from './context/DashboardContext'; // for wrapper
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Blog from './pages/Blog';
@@ -41,7 +42,14 @@ const App = () => (
       <Route path="/signin" element={<SignIn />} />
       <Route path="/partner" element={<Partner />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/dashboard" element={<DashboardProvider><Dashboard /></DashboardProvider>} /> {/* ← wrapped */}
+      <Route
+        path="/dashboard"
+        element={
+          <DashboardProvider>
+            <Dashboard />
+          </DashboardProvider>
+        }
+      />
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/blog" element={<Blog />} />
@@ -53,6 +61,7 @@ const App = () => (
       <Route path="/donate" element={<Donate />} />
     </Routes>
     <Footer />
+    <ScrollToTop />   {/* ← new floating button */}
   </>
 );
 

@@ -1,8 +1,7 @@
 // src/features/home/components/Partners.jsx
-
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const partners = [
   {
@@ -29,16 +28,65 @@ const partners = [
 ];
 
 const Partners = () => {
-  // Only hover-based state
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const autoTimer = useRef(null);
 
-  // Close popup on mouse leave
-  const handleMouseEnter = (idx) => setHoveredIndex(idx);
-  const handleMouseLeave = () => setHoveredIndex(null);
+  const total = partners.length;
+
+  // Auto‑rotate every 4 seconds, but pause on hover / interaction
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    autoTimer.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % total);
+    }, 4000);
+    return () => clearInterval(autoTimer.current);
+  }, [isAutoPlaying, total]);
+
+  const goTo = (index) => {
+    setActiveIndex((index + total) % total);
+    setIsAutoPlaying(false);
+    clearInterval(autoTimer.current);
+    // Resume after 8 seconds of no interaction
+    const resumeTimer = setTimeout(() => setIsAutoPlaying(true), 8000);
+    return () => clearTimeout(resumeTimer);
+  };
+
+  const next = () => goTo(activeIndex + 1);
+  const prev = () => goTo(activeIndex - 1);
+
+  // Compute coverflow styles for each card
+  const getCardStyle = (index) => {
+    const offset = index - activeIndex;
+    const absOffset = Math.abs(offset);
+
+    const translateX = offset * 50;   // horizontal spread (percentage of card width)
+    const scale = 1 - absOffset * 0.15;
+    const rotateY = offset * 45;      // degrees
+    const zIndex = 10 - absOffset;
+    const opacity = 1 - absOffset * 0.4;
+    const blur = absOffset > 0 ? `blur(${absOffset * 2}px)` : 'none';
+    const brightness = absOffset > 0 ? 0.8 : 1;
+
+    return {
+      transform: `translateX(${translateX}%) scale(${scale}) perspective(1000px) rotateY(${rotateY}deg)`,
+      zIndex,
+      opacity,
+      filter: blur,
+      transition: 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
+      pointerEvents: absOffset === 0 ? 'auto' : 'none',
+    };
+  };
+
+  const activePartner = partners[activeIndex];
 
   return (
-    <section className="relative py-24 overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Faint background texture */}
+    <section
+      className="relative py-24 overflow-hidden bg-white"
+      onMouseEnter={() => setIsAutoPlaying(false)}
+      onMouseLeave={() => setIsAutoPlaying(true)}
+    >
+      {/* Subtle texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
@@ -49,7 +97,8 @@ const Partners = () => {
       />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        {/* Header */}
+        <div className="text-center mb-14">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#F3E4E2] text-sm font-semibold text-[#F08020] mb-5">
             <span className="w-2 h-2 rounded-full bg-[#F08020]" />
             Trusted by Partners
@@ -63,56 +112,91 @@ const Partners = () => {
           </p>
         </div>
 
-        {/* Partners grid – no cards, clean alignment */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
-          {partners.map((partner, idx) => (
-            <div
-              key={idx}
-              className="relative flex flex-col items-center text-center px-4 py-6 transition-all duration-300"
-              onMouseEnter={() => handleMouseEnter(idx)}
-              onMouseLeave={handleMouseLeave}
-            >
-              {/* Logo – always full color, no hover effect */}
-              <img
-                src={partner.logo}
-                alt={partner.name}
-                className="h-12 w-auto object-contain mb-3"
-              />
-              <h3 className="text-lg font-semibold text-[#1A1A1A]">
-                {partner.name}
-              </h3>
-              <p className="text-xs text-[#A19390] mt-1">{partner.description}</p>
+        {/* Coverflow container */}
+        <div className="relative flex items-center justify-center py-8">
+          {/* Left arrow */}
+          <button
+            onClick={prev}
+            className="absolute left-0 z-20 p-2 rounded-full bg-white/90 border border-[#F3E4E2] text-[#A19390] hover:text-[#FD90A7] hover:border-[#FD90A7] transition shadow-sm"
+            aria-label="Previous partner"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
 
-              {/* Detail modal – only on hover */}
-              {hoveredIndex === idx && (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-white/95 backdrop-blur-md border border-[#F3E4E2] rounded-2xl shadow-2xl p-5 w-72 md:w-80 animate-modal-pop">
-                  <button
-                    onClick={() => setHoveredIndex(null)}
-                    className="absolute top-2 right-2 p-1 rounded-full hover:bg-[#F3E4E2] transition"
-                  >
-                    <X className="w-4 h-4 text-[#A19390]" />
-                  </button>
-                  <div className="flex items-center gap-3 mb-3">
-                    <img src={partner.logo} alt={partner.name} className="h-8 w-auto" />
-                    <h4 className="font-bold text-[#1A1A1A]">{partner.name}</h4>
-                  </div>
-                  <p className="text-sm text-[#A19390] leading-relaxed">
-                    {partner.detail}
+          {/* Cards */}
+          <div className="relative w-full max-w-2xl h-72 sm:h-80 flex items-center justify-center">
+            {partners.map((partner, idx) => (
+              <div
+                key={partner.name}
+                className="absolute w-48 sm:w-56"
+                style={{
+                  ...getCardStyle(idx),
+                  left: '50%',
+                  top: '50%',
+                  transformOrigin: 'center center',
+                  marginLeft: '-6rem',  // half of w-48
+                  marginTop: '-3.5rem',
+                }}
+              >
+                <div className="bg-white/80 backdrop-blur-md border border-[#F3E4E2] rounded-xl shadow-lg p-6 flex flex-col items-center">
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="h-14 w-auto object-contain mb-3"
+                  />
+                  <h3 className="text-sm font-semibold text-[#1A1A1A] text-center line-clamp-1">
+                    {partner.name}
+                  </h3>
+                  <p className="text-xs text-[#A19390] mt-1 text-center line-clamp-2">
+                    {partner.description}
                   </p>
-                  <Link
-                    to="/partner"
-                    className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-[#F08020] hover:underline"
-                    onClick={() => setHoveredIndex(null)}
-                  >
-                    Learn more <ArrowRight className="w-3 h-3" />
-                  </Link>
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Right arrow */}
+          <button
+            onClick={next}
+            className="absolute right-0 z-20 p-2 rounded-full bg-white/90 border border-[#F3E4E2] text-[#A19390] hover:text-[#FD90A7] hover:border-[#FD90A7] transition shadow-sm"
+            aria-label="Next partner"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Active partner detail card */}
+        <div className="text-center mt-8 max-w-lg mx-auto">
+          <div className="bg-white/70 backdrop-blur-md border border-[#F3E4E2] rounded-xl p-5 shadow-md">
+            <h3 className="text-xl font-bold text-[#1A1A1A] mb-2">{activePartner.name}</h3>
+            <p className="text-sm text-[#A19390] leading-relaxed">{activePartner.detail}</p>
+            <Link
+              to="/partner"
+              className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-[#F08020] hover:underline"
+            >
+              Learn more <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Dots indicator */}
+        <div className="flex justify-center gap-2 mt-6">
+          {partners.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => goTo(idx)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                idx === activeIndex
+                  ? 'w-6 bg-[#FD90A7]'
+                  : 'w-2 bg-[#F3E4E2] hover:bg-[#FD90A7]/50'
+              }`}
+              aria-label={`Go to partner ${idx + 1}`}
+            />
           ))}
         </div>
 
-        <div className="text-center mt-16">
+        {/* Become a partner */}
+        <div className="text-center mt-10">
           <Link
             to="/partner"
             className="inline-flex items-center gap-2 text-[#F08020] font-medium text-sm hover:gap-3 transition-all group"
@@ -122,17 +206,6 @@ const Partners = () => {
           </Link>
         </div>
       </div>
-
-      {/* Modal pop animation */}
-      <style>{`
-        @keyframes modal-pop {
-          0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-          100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        .animate-modal-pop {
-          animation: modal-pop 0.3s ease-out;
-        }
-      `}</style>
     </section>
   );
 };

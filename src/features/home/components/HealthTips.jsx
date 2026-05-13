@@ -13,14 +13,9 @@ const tips = [
   { id: 8, text: 'Sleep on your side with a pillow between knees to align hips and reduce pelvic pain.', source: 'The Chartered Society of Physiotherapy (CSP)' },
   { id: 9, text: 'Avoid high‑impact exercises immediately after childbirth; start with pelvic floor rehab.', source: 'Royal College of Obstetricians and Gynaecologists (RCOG)' },
   { id: 10, text: 'Use correct lifting technique: bend your knees, keep back straight, engage core.', source: 'Occupational Safety and Health Administration (OSHA)' },
-  { id: 11, text: 'Menopause can weaken pelvic floor – discuss hormone therapy and physiotherapy.', source: 'North American Menopause Society (NAMS)' },
-  { id: 12, text: 'Manage chronic cough (e.g., asthma, smoking) to reduce repeated pelvic floor strain.', source: 'American Lung Association (ALA)' },
-  { id: 13, text: 'Try biofeedback therapy to improve awareness and control of pelvic floor muscles.', source: 'International Continence Society (ICS)' },
-  { id: 14, text: 'Avoid constipation by staying active and eating enough fibre – strain damages pelvic floor.', source: 'Cleveland Clinic' },
-  { id: 15, text: 'Seek pelvic floor physiotherapy before and after pregnancy – prevention is key.', source: 'American College of Obstetricians and Gynecologists (ACOG)' },
 ];
 
-// Vibrant pastel palette – each card gets a distinct, soft colour
+// Vibrant pastel palette – each card gets a distinct, soft colour (now 10 entries)
 const cardColors = [
   '#FFF5F7', // soft pink
   '#FFF3EB', // peach cream
@@ -32,17 +27,14 @@ const cardColors = [
   '#F0FFF4', // honeydew
   '#F3F0FF', // periwinkle
   '#FFF4F4', // rose white
-  '#F6FFF6', // spring green
-  '#F9F6FF', // lilac cloud
-  '#FFF7ED', // creamsicle
-  '#F0FAFF', // baby blue
-  '#FDF0FF', // thistle
 ];
 
 const HealthTips = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 }); // relative to active card
   const autoSwipeRef = useRef(null);
+  const activeCardRef = useRef(null);
 
   const totalTips = tips.length;
 
@@ -52,24 +44,20 @@ const HealthTips = () => {
     setTimeout(() => {
       setCurrentIndex(index);
       setSwipeDirection(null);
-    }, 300);
+    }, 350);
   };
 
   const nextTip = () => {
-    if (currentIndex < totalTips - 1) {
-      goTo(currentIndex + 1);
-    }
+    if (currentIndex < totalTips - 1) goTo(currentIndex + 1);
   };
 
   const prevTip = () => {
-    goTo(currentIndex - 1);
+    if (currentIndex > 0) goTo(currentIndex - 1);
   };
 
-  // Auto‑swipe every 2.8 seconds
+  // Auto‑swipe every 3.5 seconds (a bit slower for the 3D feel)
   useEffect(() => {
-    autoSwipeRef.current = setInterval(() => {
-      nextTip();
-    }, 2800);
+    autoSwipeRef.current = setInterval(nextTip, 3500);
     return () => clearInterval(autoSwipeRef.current);
   }, [currentIndex]);
 
@@ -87,6 +75,20 @@ const HealthTips = () => {
     }
   };
 
+  // Mouse tracking for the active card (3D tilt)
+  const handleMouseMove = (e) => {
+    if (!activeCardRef.current) return;
+    const rect = activeCardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;  // -0.5 .. 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePos({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setMousePos({ x: 0, y: 0 });
+  };
+
+  // Generate visible cards with 3D transforms
   const getVisibleCards = () => {
     const cards = [];
     for (let i = -2; i <= 2; i++) {
@@ -101,7 +103,7 @@ const HealthTips = () => {
   const visibleCards = getVisibleCards();
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
+    <section className="relative py-20 md:py-28 overflow-hidden bg-white">
       {/* Subtle texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
@@ -121,11 +123,11 @@ const HealthTips = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-3">Health Tips For You</h2>
           <div className="w-16 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
           <p className="text-[#A19390] text-sm max-w-md mx-auto">
-            Swipe through 15 powerful pelvic health tips.
+            Swipe through 10 powerful pelvic health tips.
           </p>
         </div>
 
-        {/* Card Fan Swiper */}
+        {/* 3D Card Carousel */}
         <div className="relative flex items-center justify-center" style={{ perspective: '1200px' }}>
           {/* Left arrow */}
           <button
@@ -140,18 +142,37 @@ const HealthTips = () => {
           {/* Cards container */}
           <div
             className="relative w-full max-w-md mx-auto"
-            style={{ height: '340px' }}
+            style={{ height: '380px' }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
             {visibleCards.map(({ index, offset }) => {
               const isCurrent = offset === 0;
-              const scale = 1 - Math.abs(offset) * 0.1;
-              const translateX = offset * 20;
-              const translateY = Math.abs(offset) * 5;
-              const rotate = offset * 4;
+              const scale = 1 - Math.abs(offset) * 0.12;
+              const translateZ = isCurrent ? 50 : 0;
+              const rotateY = offset * 30; // side cards rotate away
+              const translateX = offset * 25; // shift horizontally
+              const translateY = Math.abs(offset) * 3;
               const zIndex = 10 - Math.abs(offset);
-              const opacity = 1 - Math.abs(offset) * 0.35;
+              const opacity = 1 - Math.abs(offset) * 0.4;
+              const blur = Math.abs(offset) > 0 ? `blur(${Math.abs(offset) * 1.5}px)` : 'none';
+
+              // For the active card, incorporate mouse tilt
+              let extraTilt = {};
+              if (isCurrent) {
+                const tiltX = mousePos.y * 8; // up/down tilt
+                const tiltY = mousePos.x * -8; // left/right tilt
+                extraTilt = {
+                  transform: `translateX(${translateX}%) translateY(${translateY}px) rotateY(${rotateY}deg) scale(${scale}) translateZ(${translateZ}px) rotateX(${tiltX}deg) rotateY(${rotateY + tiltY}deg)`,
+                  boxShadow: `${mousePos.x * 10}px ${mousePos.y * 10}px 20px rgba(0,0,0,0.1), 0 25px 40px -15px rgba(0,0,0,0.15)`,
+                };
+              } else {
+                extraTilt = {
+                  transform: `translateX(${translateX}%) translateY(${translateY}px) rotateY(${rotateY}deg) scale(${scale}) translateZ(${translateZ}px)`,
+                };
+              }
 
               const tip = tips[index];
               const bgColor = cardColors[index % cardColors.length];
@@ -159,14 +180,16 @@ const HealthTips = () => {
               return (
                 <div
                   key={tip.id}
-                  className={`absolute inset-0 w-full transition-all duration-300 ease-out ${
+                  ref={isCurrent ? activeCardRef : null}
+                  className={`absolute inset-0 w-full transition-all duration-[0.4s] ease-out ${
                     isCurrent ? 'pointer-events-auto' : 'pointer-events-none'
                   }`}
                   style={{
-                    transform: `translateX(${translateX}%) translateY(${translateY}px) rotate(${rotate}deg) scale(${scale})`,
                     zIndex,
                     opacity,
-                    filter: isCurrent ? 'none' : 'blur(0.4px)',
+                    filter: blur,
+                    ...extraTilt,
+                    transitionProperty: 'transform, opacity, filter, box-shadow',
                   }}
                 >
                   <div
