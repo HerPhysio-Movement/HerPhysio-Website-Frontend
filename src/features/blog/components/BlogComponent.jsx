@@ -1,36 +1,31 @@
+// src/features/blog/components/BlogComponent.jsx
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useUser } from '../../../context/UserContext';
 import { blogAPI } from '../../../services/blogAPI';
-import toast from 'react-hot-toast';
+import {
+  Sparkles,
+  BookOpen,
+  User,
+  Calendar,
+  ArrowRight,
+  X,
+} from 'lucide-react';
 
 const BlogComponent = () => {
-  const { currentUser } = useUser();
   const [articles, setArticles] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    excerpt: '',
-    image_url: '',
-    author: currentUser?.f_name ? `${currentUser.f_name} ${currentUser.l_name || ''}`.trim() : 'Admin',
-    email: currentUser?.email || '',
-    status: 'published',
-  });
   const [loading, setLoading] = useState(true);
-
-  const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'superadmin';
+  const [selectedArticle, setSelectedArticle] = useState(null);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         const data = await blogAPI.getAllBlogsPublic();
         const articlesArray = data.blogs || (Array.isArray(data) ? data : []);
-        const published = articlesArray.filter(article => article.status === 'published');
+        const published = articlesArray.filter(
+          (article) => article.status === 'published'
+        );
         setArticles(published);
       } catch (error) {
         console.error('Failed to load articles:', error);
-        toast.error('Failed to load articles');
       } finally {
         setLoading(false);
       }
@@ -38,135 +33,153 @@ const BlogComponent = () => {
     fetchArticles();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!isAdmin) {
-      toast.error('Only admins can create articles');
-      return;
-    }
-    try {
-      await blogAPI.createBlog(formData);
-      toast.success('Article published');
-      setFormData({
-        title: '',
-        content: '',
-        excerpt: '',
-        image_url: '',
-        author: currentUser?.f_name ? `${currentUser.f_name} ${currentUser.l_name || ''}`.trim() : 'Admin',
-        email: currentUser?.email || '',
-        status: 'published',
-      });
-      setShowForm(false);
-      // Refresh the list
-      const data = await blogAPI.getAllBlogsPublic();
-      const articlesArray = data.blogs || (Array.isArray(data) ? data : []);
-      setArticles(articlesArray.filter(a => a.status === 'published'));
-    } catch (error) {
-      console.log(error);
-      toast.error('Failed to publish article');
-    }
-  };
-
   if (loading) {
-    return <div className="pt-20 text-center">Loading articles...</div>;
+    return (
+      <div className="min-h-screen bg-[#FFFAF9] flex items-center justify-center">
+        <div className="animate-pulse text-[#FD90A7] text-lg">
+          Loading articles...
+        </div>
+      </div>
+    );
   }
 
   return (
-    <main className="pt-20 pb-16 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
-          <h1 className="text-3xl font-bold text-[#1D2130]">Blog</h1>
-          {isAdmin && (
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="px-4 py-2 bg-[#FD90A7] text-white rounded-full hover:bg-[#f77997] transition"
-            >
-              {showForm ? 'Cancel' : 'New Article'}
-            </button>
-          )}
-        </div>
+    <main className="min-h-screen bg-[#FFFAF9] pt-20 pb-16">
+      {/* Hero header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
+        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#F3E4E2] text-sm font-semibold text-[#F08020] mb-5">
+          <Sparkles className="w-4 h-4" />
+          Our Blog
+        </span>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4">
+          Articles & Insights
+        </h1>
+        <div className="w-20 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
+        <p className="text-[#A19390] max-w-xl mx-auto text-lg">
+          Practical advice, stories, and expert perspectives on women’s health
+          and physiotherapy.
+        </p>
+      </div>
 
-        {showForm && isAdmin && (
-          <div className="bg-white rounded-xl p-6 mb-8 border border-gray-200 shadow-sm">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                name="title"
-                placeholder="Title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent"
-                required
-              />
-              <textarea
-                name="excerpt"
-                placeholder="Short excerpt (optional)"
-                value={formData.excerpt}
-                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FD90A7]"
-                rows="2"
-              />
-              <textarea
-                name="content"
-                placeholder="Full content"
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FD90A7]"
-                rows="6"
-                required
-              />
-              <input
-                type="url"
-                name="image_url"
-                placeholder="Image URL"
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FD90A7]"
-              />
-              <button
-                type="submit"
-                className="px-5 py-2 bg-[#FD90A7] text-white rounded-full hover:bg-[#f77997] transition"
-              >
-                Publish
-              </button>
-            </form>
-          </div>
-        )}
-
+      {/* Articles grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {articles.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">No articles yet.</div>
+          <div className="text-center py-20 bg-white/40 backdrop-blur-sm rounded-2xl border border-[#F3E4E2]">
+            <BookOpen className="w-16 h-16 text-[#F3E4E2] mx-auto mb-4" />
+            <p className="text-[#A19390] text-lg">
+              No articles yet. Check back soon!
+            </p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map((article) => (
-              <div key={article.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition">
+              <article
+                key={article.id}
+                className="group bg-white/60 backdrop-blur-md border border-[#F3E4E2] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer"
+                onClick={() => setSelectedArticle(article)}
+              >
                 {article.image_url && (
-                  <img
-                    src={article.image_url}
-                    alt={article.title}
-                    className="w-full h-48 object-cover"
-                  />
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={article.image_url}
+                      alt={article.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
                 )}
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-[#1D2130] mb-2">{article.title}</h2>
-                  <p className="text-sm text-gray-500 mb-2">
-                    By {article.author || 'Her Physio'} on{' '}
-                    {article.created_at ? new Date(article.created_at).toLocaleDateString() : 'Recent'}
+                <div className="p-5 flex flex-col flex-1">
+                  <h2 className="text-xl font-bold text-[#1A1A1A] mb-2 line-clamp-2 group-hover:text-[#FD90A7] transition-colors">
+                    {article.title}
+                  </h2>
+                  <div className="flex items-center gap-3 text-xs text-[#A19390] mb-3">
+                    <span className="flex items-center gap-1">
+                      <User className="w-3 h-3" />
+                      {article.author || 'Her Physio'}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {article.created_at
+                        ? new Date(article.created_at).toLocaleDateString(
+                            'en-US',
+                            {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            }
+                          )
+                        : 'Recent'}
+                    </span>
+                  </div>
+                  <p className="text-[#A19390] text-sm leading-relaxed line-clamp-3 flex-1">
+                    {article.excerpt || article.content?.substring(0, 120)}
                   </p>
-                  <p className="text-gray-600 line-clamp-3">
-                    {article.excerpt || article.content?.substring(0, 150)}
-                  </p>
-                  <Link
-                    to={`/blog/${article.id}`}
-                    className="text-[#FD90A7] font-medium mt-4 inline-block hover:underline"
-                  >
-                    Read more →
-                  </Link>
+                  <div className="mt-4 flex items-center text-sm font-medium text-[#FD90A7] group-hover:gap-2 transition-all">
+                    Read more
+                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}
       </div>
+
+      {/* Article Modal */}
+      {selectedArticle && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300"
+          onClick={() => setSelectedArticle(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#F3E4E2]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 sm:p-6 flex justify-between items-center border-b border-[#F3E4E2]">
+              <h2 className="text-2xl font-bold text-[#1A1A1A] pr-8">
+                {selectedArticle.title}
+              </h2>
+              <button
+                onClick={() => setSelectedArticle(null)}
+                className="p-2 rounded-lg hover:bg-[#F3E4E2] transition text-[#A19390]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center gap-4 text-sm text-[#A19390] mb-4">
+                <span className="flex items-center gap-1">
+                  <User className="w-4 h-4" />
+                  {selectedArticle.author || 'Her Physio'}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  {selectedArticle.created_at
+                    ? new Date(selectedArticle.created_at).toLocaleDateString(
+                        'en-US',
+                        {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        }
+                      )
+                    : 'Recent'}
+                </span>
+              </div>
+              {selectedArticle.image_url && (
+                <img
+                  src={selectedArticle.image_url}
+                  alt={selectedArticle.title}
+                  className="w-full h-64 object-cover rounded-xl mb-6"
+                />
+              )}
+              <div className="prose prose-sm max-w-none text-[#1A1A1A] leading-relaxed whitespace-pre-line">
+                {selectedArticle.content}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
