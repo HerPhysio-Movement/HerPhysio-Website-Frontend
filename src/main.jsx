@@ -1,7 +1,7 @@
 // src/main.jsx
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';   // changed
+import { BrowserRouter } from 'react-router-dom';   // back to original
 import { Toaster } from 'react-hot-toast';
 import App from './App';
 import { ThemeProvider } from './context/ThemeContext';
@@ -10,7 +10,7 @@ import './styles/globals.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <HashRouter>                                {/* changed */}
+    <BrowserRouter>
       <ThemeProvider>
         <UserProvider>
           <App />
@@ -24,6 +24,6 @@ createRoot(document.getElementById('root')).render(
           />
         </UserProvider>
       </ThemeProvider>
-    </HashRouter>
+    </BrowserRouter>
   </StrictMode>
 );
