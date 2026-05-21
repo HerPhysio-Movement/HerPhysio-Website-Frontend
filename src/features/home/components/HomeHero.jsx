@@ -1,248 +1,196 @@
 // src/features/home/components/HomeHero.jsx
+import { Star, ArrowRight, ArrowUpRight } from 'lucide-react';
 
-import { useEffect, useState, useRef } from 'react';
-import { ArrowRight, Heart, Shield, Users, LibraryBig } from 'lucide-react';
+/* ------------------------------------------------------------------ */
+/*  Splash images – replace with your own Black women photos           */
+/* ------------------------------------------------------------------ */
+const portraitMain   = '/Antonia.jpg'; 
+const portraitSecond = '/Modupe.jpg';
+const avatar1        = '/Joseph.jpg';
+const avatar2        = '/Chijioke.jpg';
+const avatar3        = '/womenHealth.jpg';
 
-const slides = [
-  {
-    title: 'Every Woman Deserves to Know Her Body.',
-    sub: 'Bringing health education & physiotherapy to marginalised communities across Africa.',
-    accent: '#F08020',
-    image: '/body.jpg',
-    imageAlt: 'Woman learning about her body',
-    fact: 'Only 1 in 3 women in low‑income countries can name a single pelvic organ.',
-    source: 'WHO (2022)',
-  },
-  {
-    title: 'Your Pelvic Health Matters.',
-    sub: 'From adolescence through menopause, your pelvic floor deserves expert, compassionate care. We offer evidence‑based resources, personalised guidance, and a supportive community for every stage of life.',
-    accent: '#6020F0',
-    image: '/pelvicc.jpg',
-    imageAlt: 'Pelvic health representation',
-    fact: 'Pelvic floor disorders affect 1 in 4 women globally, yet most cases go untreated.',
-    source: 'IUGA (2022)',
-  },
-  {
-    title: 'Together, We Shift the Narrative.',
-    sub: 'Building a new generation of women’s health physiotherapists and changemakers.',
-    accent: '#3070F0',
-    image: '/together.jpg',
-    imageAlt: 'Women standing together',
-    fact: 'Women’s health physiotherapy can reduce persistent pelvic pain by up to 80%.',
-    source: 'JWH (2021)',
-  },
-  {
-    title: 'Movement Is Medicine.',
-    sub: 'Free workshops, mentorship & community outreach that transform lives.',
-    accent: '#F0A020',
-    image: '/movee.jpg',
-    imageAlt: 'Pregnant woman moving – movement is medicine',
-    fact: 'Regular physical activity during pregnancy lowers the risk of gestational diabetes by 30%.',
-    source: 'ACOG (2020)',
-  },
+const partners = [
+  { name: 'Her Mobility',        logo: '/rnrn.jpg' },
+  { name: 'NeuroRehab Academia', logo: '/neuro.jpg' },
+  { name: 'New Seed Foundation', logo: '/newseed.jpg' },
 ];
 
-/* ---------- Stat counter ---------- */
-const StatItem = ({ end, label, icon: Icon, suffix = '', accent }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          let start = 0;
-          const step = end / (2000 / 16);
-          const timer = setInterval(() => {
-            start += step;
-            if (start >= end) {
-              setCount(end);
-              clearInterval(timer);
-            } else setCount(Math.floor(start));
-          }, 16);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.6 }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [end]);
-
-  return (
-    <div ref={ref} className="text-center px-4 py-5">
-      <div
-        className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3 transition-colors duration-500"
-        style={{ backgroundColor: `${accent}12` }}
-      >
-        <Icon className="w-6 h-6 transition-colors duration-500" style={{ color: accent }} />
-      </div>
-      <p className="text-3xl font-bold text-[#1A1A1A]">
-        {count.toLocaleString()}
-        {suffix}
-      </p>
-      <p className="text-sm text-[#A19390] mt-1">{label}</p>
-    </div>
-  );
-};
-
-/* ---------- Main Hero ---------- */
 const HomeHero = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [fade, setFade] = useState(true);
-
-  // Auto‑rotate every 6 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setCurrentSlide((prev) => (prev + 1) % slides.length);
-        setFade(true);
-      }, 350);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const slide = slides[currentSlide];
-
-  const statAccents = {
-    women: '#F08020',
-    communities: '#6020F0',
-    volunteers: '#3070F0',
-  };
-
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-[#FFFAF9] pt-20 pb-12 md:pt-28 md:pb-20">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(180deg, #FFFFFF 0%, #FFFAF9 40%, #FFF3EB 80%, #FFEFE7 100%)`,
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 30% 20%, #F0A020 1px, transparent 1px),
-                              radial-gradient(circle at 70% 60%, #6020F0 1px, transparent 1px)`,
-            backgroundSize: '80px 80px',
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          {/* Text column – cross‑fade + subtle slide */}
-          <div className="text-center lg:text-left relative min-h-[420px]">
-            <div
-              className={`transition-all duration-500 ease-out ${
-                fade ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-6'
-              }`}
-            >
-              <div
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold mb-8 transition-colors duration-500"
-                style={{ backgroundColor: `${slide.accent}14`, color: slide.accent }}
-              >
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: slide.accent }} />
-                Non‑Profit Organisation
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#1A1A1A] leading-tight mb-6">
-                {slide.title}
+    <section className="relative bg-[#F9F9F6] px-0 sm:px-4 md:px-6 lg:px-8 pt-2 pb-12 md:pt-4 md:pb-16">
+      <div className="w-full max-w-7xl mx-auto">
+        {/* ---------- MAIN CARD WRAPPER – full width on mobile, rounded on larger screens ---------- */}
+        <div className="bg-white border border-gray-100 rounded-none sm:rounded-[24px] md:rounded-[24px] shadow-2xl px-4 sm:px-6 md:px-10 pt-4 md:pt-6 pb-8 md:pb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* ========== LEFT COLUMN (span 5) ========== */}
+            <div className="lg:col-span-5 text-center lg:text-left">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0B132B] leading-tight mb-6">
+                Every Woman Deserves{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FD90A7] to-[#C7365B]">
+                  Top‑Tier Health Care
+                </span>
               </h1>
-
-              <p className="text-lg sm:text-xl text-[#A19390] mb-10 max-w-xl mx-auto lg:mx-0">
-                {slide.sub}
+              <p className="text-lg text-[#8A8E99] mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Her Physio Movement brings expert‑led courses, compassionate mentorship,
+                and community support to women across Africa – because your pelvic health matters.
               </p>
 
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+              {/* CTA buttons */}
+              <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-10">
                 <a
                   href="#what-we-do"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white transition-all duration-500 hover:scale-105 hover:shadow-lg"
-                  style={{ backgroundColor: slide.accent }}
+                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#FCD172] text-[#0B132B] rounded-xl font-bold shadow-md hover:shadow-lg transition transform hover:scale-105"
                 >
-                  What we do <ArrowRight className="w-4 h-4" />
+                  Learn More <ArrowRight className="w-5 h-5" />
                 </a>
                 <a
                   href="/volunteer-signup"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold border-2 transition-all duration-500 hover:scale-105"
-                  style={{ borderColor: slide.accent, color: slide.accent }}
+                  className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-[#0B132B] text-[#0B132B] rounded-xl font-semibold hover:bg-[#0B132B] hover:text-white transition"
                 >
-                  Volunteer with us
+                  Get Started <ArrowRight className="w-5 h-5" />
                 </a>
               </div>
-            </div>
-          </div>
 
-          {/* Image column – fixed height, object-cover, uniform */}
-          <div className="flex justify-center lg:justify-end">
-            <div
-              className="relative w-full max-w-lg h-72 sm:h-80 lg:h-96 rounded-2xl overflow-hidden shadow-2xl transition-shadow duration-700"
-              style={{
-                boxShadow: `0 25px 40px -15px ${slide.accent}30`,
-              }}
-            >
-              <div
-                className={`absolute inset-0 transition-opacity duration-500 ease-out ${
-                  fade ? 'opacity-100' : 'opacity-0'
-                }`}
-              >
-                <img
-                  src={slide.image}
-                  alt={slide.imageAlt}
-                  className="w-full h-full object-cover"
-                />
+              {/* Social Proof Metric */}
+              <div className="inline-block">
+                <p className="text-sm font-semibold text-[#8A8E99] mb-1">
+                  Trusted By{' '}
+                  <span className="inline-block ml-1 text-[#FD90A7]">
+                    <ArrowUpRight className="w-4 h-4" />
+                  </span>
+                </p>
+                <p className="text-3xl font-black text-[#0B132B]">100k+</p>
+                <p className="text-sm text-[#8A8E99]">Active Women Impacted</p>
+              </div>
+            </div>
+
+            {/* ========== RIGHT COLUMN – Responsive Bento Grid ========== */}
+            <div className="lg:col-span-7">
+              {/* ---- Desktop / Tablet layout (absolute) – adjusted for tablet visibility ---- */}
+              <div className="hidden md:block relative h-[550px]">
+                {/* Image Card 1 */}
+                <div className="absolute left-0 top-0 w-56 md:w-64 lg:w-72 h-72 md:h-80 rounded-[10px] overflow-hidden bg-[#FD90A7]/10 shadow-xl">
+                  <img src={portraitMain} alt="Smiling woman physiotherapist" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-[#0B132B] shadow">
+                    Compassionate Care
+                    <p className="text-xs text-[#8A8E99] font-normal">Dr. Amina O.</p>
+                  </div>
+                </div>
+
+                {/* Image Card 2 – moved slightly to avoid overlap on tablet */}
+                <div className="absolute right-0 md:right-4 lg:right-0 top-8 w-44 md:w-48 lg:w-56 h-56 md:h-64 rounded-[10px] overflow-hidden bg-[#FCD172] shadow-xl">
+                  <img src={portraitSecond} alt="Woman with glasses" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-[#0B132B] shadow">
+                    Evidence‑Based
+                    <p className="text-xs text-[#8A8E99] font-normal">PT. Grace O.</p>
+                  </div>
+                </div>
+
+                {/* Metric Badge – repositioned for tablet */}
+                <div className="absolute right-0 md:right-4 lg:right-0 top-0 w-40 md:w-44 bg-[#FD90A7] text-white rounded-[10px] p-4 shadow-xl z-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-green-400" />
+                    <span className="text-lg font-bold">100k+</span>
+                  </div>
+                  <p className="text-xs opacity-90">Women Empowered</p>
+                  <div className="absolute bottom-2 right-2">
+                    <ArrowUpRight className="w-4 h-4 text-white/80" />
+                  </div>
+                </div>
+
+                {/* Rating Component – centered */}
+                <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white rounded-[10px] shadow-2xl p-4 flex items-center gap-4 z-20">
+                  <div>
+                    <p className="text-2xl font-black text-[#0B132B]">4.9</p>
+                    <div className="flex gap-0.5 mt-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center -space-x-2">
+                    <img src={avatar1} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                    <img src={avatar2} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                    <img src={avatar3} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                    <div className="w-8 h-8 rounded-full bg-[#0B132B] flex items-center justify-center text-white text-xs font-bold border-2 border-white">
+                      247
+                    </div>
+                  </div>
+                </div>
+
+                {/* Circular Badge */}
+                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border-2 border-[#0B132B] bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg z-10">
+                  <ArrowUpRight className="w-6 h-6 text-[#FD90A7]" />
+                </div>
               </div>
 
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(to top, ${slide.accent}18, transparent 60%)`,
-                  pointerEvents: 'none',
-                }}
-              />
-              <div className="absolute bottom-4 left-4 right-4 bg-white/85 backdrop-blur-md rounded-xl p-3 border border-[#F3E4E2] flex items-start gap-2">
-                <LibraryBig className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: slide.accent }} />
-                <div>
-                  <p className="text-sm font-medium text-[#1A1A1A] leading-relaxed">
-                    {slide.fact}
-                  </p>
-                  <p className="text-xs text-[#A19390] mt-1">— {slide.source}</p>
+              {/* ---- Mobile layout (flex stacked) – full width images, no overlap ---- */}
+              <div className="md:hidden flex flex-col gap-6">
+                <div className="w-full rounded-[10px] overflow-hidden bg-[#FD90A7]/10 shadow-xl">
+                  <img src={portraitMain} alt="Smiling woman physiotherapist" className="w-full h-56 object-cover" />
+                  <div className="p-4 bg-white/90 backdrop-blur-sm text-sm font-semibold text-[#0B132B]">
+                    Compassionate Care
+                    <p className="text-xs text-[#8A8E99] font-normal">Dr. Amina O.</p>
+                  </div>
+                </div>
+                <div className="w-full rounded-[10px] overflow-hidden bg-[#FCD172] shadow-xl">
+                  <img src={portraitSecond} alt="Woman with glasses" className="w-full h-56 object-cover" />
+                  <div className="p-4 bg-white/90 backdrop-blur-sm text-sm font-semibold text-[#0B132B]">
+                    Evidence‑Based
+                    <p className="text-xs text-[#8A8E99] font-normal">PT. Grace O.</p>
+                  </div>
+                </div>
+                <div className="bg-[#FD90A7] text-white rounded-[10px] p-5 shadow-xl">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-green-400" />
+                    <span className="text-2xl font-bold">100k+</span>
+                  </div>
+                  <p className="text-sm opacity-90">Women Empowered</p>
+                </div>
+                <div className="bg-white rounded-[10px] shadow-2xl p-5 flex items-center gap-4">
+                  <div>
+                    <p className="text-2xl font-black text-[#0B132B]">4.9</p>
+                    <div className="flex gap-0.5 mt-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center -space-x-2">
+                    <img src={avatar1} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                    <img src={avatar2} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                    <img src={avatar3} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                    <div className="w-8 h-8 rounded-full bg-[#0B132B] flex items-center justify-center text-white text-xs font-bold border-2 border-white">
+                      247
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <div className="w-20 h-20 rounded-full border-2 border-[#0B132B] bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                    <ArrowUpRight className="w-6 h-6 text-[#FD90A7]" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Stats */}
-        <div className="mt-16 lg:mt-20 grid grid-cols-3 max-w-2xl mx-auto">
-          <StatItem end={100} label="Women Impacted" icon={Heart} suffix="k+" accent={statAccents.women} />
-          <StatItem end={20} label="Communities Reached" icon={Shield} suffix="+" accent={statAccents.communities} />
-          <StatItem end={200} label="Active Volunteers" icon={Users} suffix="+" accent={statAccents.volunteers} />
-        </div>
-
-        {/* Indicators */}
-        <div className="flex justify-center mt-12 gap-2">
-          {slides.map((s, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setFade(false);
-                setTimeout(() => {
-                  setCurrentSlide(idx);
-                  setFade(true);
-                }, 350);
-              }}
-              className="h-2.5 rounded-full transition-all duration-500"
-              style={{
-                backgroundColor: idx === currentSlide ? s.accent : '#F3E4E2',
-                width: idx === currentSlide ? '2.5rem' : '0.625rem',
-                boxShadow: idx === currentSlide ? `0 0 6px ${s.accent}80` : 'none',
-              }}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
+          {/* ---------- TRUST BAR / FOOTER ---------- */}
+          <div className="mt-12 pt-8 border-t border-gray-200">
+            <p className="text-center text-sm font-semibold text-[#8A8E99] mb-4">
+              Over 100k+ Smart Women trusting our care
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-8 opacity-50 hover:opacity-100 transition-opacity duration-300">
+              {partners.map((partner) => (
+                <img
+                  key={partner.name}
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="h-8 w-auto grayscale hover:grayscale-0 transition-all duration-300"
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

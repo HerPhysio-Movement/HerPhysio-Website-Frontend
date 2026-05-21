@@ -1,20 +1,149 @@
 // src/features/events/components/EventsSection.jsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Clock, ArrowRight, Sparkles } from 'lucide-react';
+import {
+  ArrowRight,
+  Sparkles,
+  Users,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Clock,
+  MapPin,
+} from 'lucide-react';
 import { eventAPI } from '../../../services/eventAPI';
 import { useUser } from '../../../context/UserContext';
 
+/* ---------- Mini Calendar Component ---------- */
+const CalendarDate = ({ dateString }) => {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: 'short' });
+  return (
+    <div className="flex flex-col items-center bg-white rounded-xl shadow-md overflow-hidden w-14 h-16">
+      <div className="bg-[#FD90A7] text-white w-full text-center text-xs font-semibold py-0.5">{month}</div>
+      <div className="flex-1 flex items-center justify-center">
+        <span className="text-xl font-black text-gray-800">{day}</span>
+      </div>
+    </div>
+  );
+};
+
+/* ---------- Countdown Timer ---------- */
+const CountdownTimer = ({ targetDate }) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  useEffect(() => {
+    if (!targetDate) return;
+    const interval = setInterval(() => {
+      const now = new Date();
+      const distance = new Date(targetDate).getTime() - now.getTime();
+      if (distance <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        clearInterval(interval);
+        return;
+      }
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000),
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  if (!targetDate || timeLeft.days + timeLeft.hours + timeLeft.minutes + timeLeft.seconds <= 0) return null;
+
+  return (
+    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-[#FD90A7]/30">
+      <Clock className="w-4 h-4 text-[#FD90A7]" />
+      <span className="text-sm font-semibold text-gray-700">
+        {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+      </span>
+    </div>
+  );
+};
+
+/* ---------- Registration Modal ---------- */
+const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) => {
+  const [email, setEmail] = useState(currentUser?.email || '');
+  const [name, setName] = useState(currentUser?.f_name || '');
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (currentUser) {
+      setEmail(currentUser.email || '');
+      setName(currentUser.f_name || '');
+    }
+  }, [currentUser]);
+
+  if (!isOpen || !event) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await onRegister(event.id, { email, name });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+      <div className="bg-white rounded-[20px] shadow-2xl max-w-md w-full p-6 md:p-8 border border-gray-100 animate-modal-pop" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-gray-900">Register for Event</h2>
+          <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-100 text-gray-400"><X className="w-5 h-5" /></button>
+        </div>
+        {!currentUser ? (
+          <div className="text-center space-y-4">
+            <p className="text-gray-600 text-sm">Please sign in to register.</p>
+            <Link to="/signin" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FD90A7] text-white rounded-full font-semibold hover:bg-[#F77997] transition" onClick={onClose}>
+              Sign In <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="bg-[#FD90A7]/5 rounded-2xl p-4 mb-4">
+              <p className="text-sm font-semibold text-gray-900">{event.event_name}</p>
+              <p className="text-xs text-gray-500 mt-1">{event.event_date} • {event.event_time}</p>
+              <p className="text-xs text-gray-400 mt-1">{event.venue || 'Online'}</p>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Your Name</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
+            </div>
+            <button type="submit" disabled={submitting} className="w-full py-2.5 bg-[#FD90A7] text-white rounded-full font-semibold hover:bg-[#F77997] transition flex items-center justify-center gap-2 disabled:opacity-60">
+              {submitting ? 'Registering...' : 'Confirm Registration'} <ArrowRight className="w-4 h-4" />
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ---------- Main EventsSection ---------- */
 const EventsSection = ({ showHeading = true }) => {
   const { currentUser } = useUser();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const scrollContainerRef = useRef(null);
-  const [showScrollHint, setShowScrollHint] = useState(true);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
+  const [activeEventIndex, setActiveEventIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const [swipeDirection, setSwipeDirection] = useState(null);
+  const [showRegModal, setShowRegModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const sectionRef = useRef(null);
+  const carouselRef = useRef(null);
+  const touchStartX = useRef(0);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -30,208 +159,282 @@ const EventsSection = ({ showHeading = true }) => {
     fetchEvents();
   }, []);
 
-  // Hide scroll hint after 3 seconds
   useEffect(() => {
-    if (!loading && events.length > 0) {
-      const timer = setTimeout(() => setShowScrollHint(false), 3000);
-      return () => clearTimeout(timer);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const goTo = useCallback((index) => {
+    if (index === activeEventIndex || events.length === 0) return;
+    setSwipeDirection(index > activeEventIndex ? 'right' : 'left');
+    setTimeout(() => { setActiveEventIndex(index); setSwipeDirection(null); }, 400);
+  }, [activeEventIndex, events.length]);
+
+  const nextEvent = () => goTo((activeEventIndex + 1) % events.length);
+  const prevEvent = () => goTo((activeEventIndex - 1 + events.length) % events.length);
+
+  const handleTouchStart = (e) => { touchStartX.current = e.changedTouches[0].screenX; };
+  const handleTouchEnd = (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const distance = touchStartX.current - touchEndX;
+    if (Math.abs(distance) > 50) {
+      if (distance > 0) nextEvent();
+      else prevEvent();
     }
-  }, [loading, events]);
-
-  // Horizontal drag scroll
-  const handleMouseDown = (e) => {
-    isDragging.current = true;
-    startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
-    scrollLeft.current = scrollContainerRef.current.scrollLeft;
-    scrollContainerRef.current.style.cursor = 'grabbing';
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    e.preventDefault();
-    const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
-  };
+  const handleRegisterClick = (event) => { setSelectedEvent(event); setShowRegModal(true); };
 
-  const handleMouseUp = () => {
-    isDragging.current = false;
-    scrollContainerRef.current.style.cursor = 'grab';
-  };
-
-  const registerEvent = async (eventId) => {
-    if (!currentUser) {
-      alert('Please sign in to register.');
-      return;
-    }
+  const handleRegistration = async (eventId, { email, name }) => {
     try {
       await eventAPI.registerForEvent({
-        f_name: currentUser.f_name,
-        l_name: currentUser.l_name,
-        email: currentUser.email,
+        f_name: name || currentUser?.f_name,
+        l_name: currentUser?.l_name || '',
+        email: email || currentUser?.email,
         event_id: eventId,
       });
+      setShowRegModal(false);
       alert('Registered successfully!');
     } catch (error) {
       alert('Registration failed: ' + error.message);
     }
   };
 
-  const getDayMonth = (dateString) => {
-    const date = new Date(dateString);
-    return { day: date.getDate(), month: date.toLocaleString('default', { month: 'short' }) };
-  };
+  const totalEvents = events.length;
+  const upcomingEvents = events.filter((e) => new Date(e.event_date) >= new Date()).length;
+  const totalRegistrations = events.reduce((sum, e) => sum + (e.registrations || 0), 0);
+  const nextUpcomingEvent = events.find((e) => new Date(e.event_date) >= new Date());
+  const currentEvent = events[activeEventIndex];
 
   if (loading) {
     return (
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="animate-pulse text-[#FD90A7]">Loading events...</div>
-        </div>
+      <section className="py-20 px-4 bg-[#F4F6F8]" ref={sectionRef}>
+        <div className="max-w-7xl mx-auto text-center"><div className="animate-pulse text-[#FD90A7]">Loading events...</div></div>
       </section>
     );
   }
 
   if (error) {
     return (
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-7xl mx-auto text-center text-red-500">
-          Error loading events: {error}
-        </div>
+      <section className="py-20 px-4 bg-[#F4F6F8]" ref={sectionRef}>
+        <div className="max-w-7xl mx-auto text-center text-red-500">Error loading events: {error}</div>
       </section>
     );
   }
 
-  if (events.length === 0) {
-    return null;
-  }
-
   return (
-    <section className="py-20 px-4 sm:px-8 lg:px-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        {/* Section header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 bg-[#FD90A7]/10 px-4 py-2 rounded-full text-sm font-medium text-[#FD90A7] mb-4">
-            <Sparkles className="w-4 h-4" />
-            <span>Join Us</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-4">Our Events</h2>
-          <div className="w-16 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
-          <p className="text-[#525560] text-lg max-w-2xl mx-auto">
+    <section ref={sectionRef} className="relative py-20 md:py-28 overflow-hidden bg-[#F4F6F8]">
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-10 left-10 w-3 h-3 bg-[#FD90A7] rounded-full opacity-40 animate-float-slow" />
+        <div className="absolute bottom-20 right-16 w-4 h-4 bg-[#6020F0] rounded-full opacity-30 animate-float-slow-delayed" />
+        <div className="absolute top-1/3 right-1/4 w-2.5 h-2.5 bg-[#FCD172] rounded-full opacity-50 animate-float-slower" />
+        <div className="absolute bottom-1/3 left-1/3 w-3.5 h-3.5 bg-[#C7365B] rounded-full opacity-30 animate-float-slow" />
+        <div className="absolute top-2/3 right-1/3 w-2 h-2 bg-[#FD90A7] rounded-full opacity-40 animate-float-slow-delayed" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className={`text-center mb-12 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md border border-white/30 rounded-full text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
+            <Sparkles className="w-4 h-4" /> Our Events
+          </span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-4 tracking-tight max-w-4xl mx-auto">
             Come learn something new, connect with experts, and be part of the movement.
-          </p>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#FD90A7] via-[#6020F0] to-[#FCD172] mx-auto mb-4 rounded-full" />
+          <p className="text-gray-500 max-w-xl mx-auto text-lg">Explore our upcoming events and secure your spot today.</p>
+          {nextUpcomingEvent && (
+            <div className="mt-4">
+              <CountdownTimer targetDate={nextUpcomingEvent.event_date} />
+              <p className="text-xs text-gray-400 mt-1">until next event</p>
+            </div>
+          )}
         </div>
 
-        {/* Horizontal scrollable events */}
-        <div className="relative">
-          {/* Scroll hint */}
-          <div
-            className={`absolute top-1/2 -translate-y-1/2 right-4 z-20 bg-black/60 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm transition-opacity duration-500 ${
-              showScrollHint ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
-          >
-            ← Drag to explore →
-          </div>
+        {/* Asymmetric Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Left Column – Stats & Upcoming Ledger (span 5) */}
+          <div className={`lg:col-span-5 space-y-6 order-2 lg:order-1 transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 max-w-sm mx-auto lg:mx-0 relative">
+              {nextUpcomingEvent && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] text-white text-xs font-semibold px-4 py-1 rounded-full shadow-lg animate-pulse-glow">
+                  Next: {nextUpcomingEvent.event_name.substring(0, 20)}...
+                </div>
+              )}
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 mt-2"><Users className="w-5 h-5 text-[#FD90A7]" /> Event Stats</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#FD90A7]/5 rounded-2xl p-4"><p className="text-3xl font-black text-[#FD90A7]">{totalEvents}</p><p className="text-xs text-gray-500">Total Events</p></div>
+                <div className="bg-[#6020F0]/5 rounded-2xl p-4"><p className="text-3xl font-black text-[#6020F0]">{upcomingEvents}</p><p className="text-xs text-gray-500">Upcoming</p></div>
+                <div className="bg-[#FCD172]/10 rounded-2xl p-4 col-span-2"><p className="text-2xl font-black text-gray-900">{totalRegistrations}+</p><p className="text-xs text-gray-500">Attendees & Growing</p></div>
+              </div>
+            </div>
 
-          <div
-            ref={scrollContainerRef}
-            className="flex gap-8 overflow-x-auto pb-8 scrollbar-hide cursor-grab snap-x snap-mandatory"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          >
-            {events.map((event) => {
-              const { day, month } = getDayMonth(event.event_date);
-              return (
-                <div
-                  key={event.id}
-                  className="relative flex-shrink-0 w-80 md:w-96 snap-start group"
-                  style={{ transformStyle: 'preserve-3d' }}
-                >
-                  <div
-                    className="relative bg-white/80 backdrop-blur-sm rounded-md border border-gray-100 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
-                    style={{
-                      transform: 'perspective(1200px) rotateX(0deg) rotateY(0deg)',
-                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    }}
-                    onMouseMove={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const x = (e.clientX - rect.left) / rect.width - 0.5;
-                      const y = (e.clientY - rect.top) / rect.height - 0.5;
-                      e.currentTarget.style.transform = `perspective(1200px) rotateY(${x * 8}deg) rotateX(${y * -6}deg) translateZ(10px)`;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = '';
-                    }}
-                  >
-                    {/* Gradient top border */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B]" />
-
-                    {/* Date ribbon */}
-                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded px-3 py-1 shadow-sm text-center border border-gray-100">
-                      <div className="text-2xl font-bold text-[#FD90A7] leading-none">{day}</div>
-                      <div className="text-xs uppercase text-gray-500">{month}</div>
-                    </div>
-
-                    {/* Content – increased top padding to prevent overlap */}
-                    <div className="p-5 pt-20">
-                      <h3 className="text-xl font-bold text-[#1D2130] group-hover:text-[#FD90A7] transition-colors line-clamp-1 mt-2">
-                        {event.event_name}
-                      </h3>
-                      <div className="space-y-3 mt-4 text-sm text-gray-500">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-[#FD90A7]" />
-                          <span>{event.event_date}</span>
+            {events.length > 1 && (
+              <div className="bg-[#0B0F12] text-white rounded-[32px] p-6 max-w-sm mx-auto lg:mx-0">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">Upcoming Events</h3>
+                <div className="space-y-3">
+                  {events.filter(e => new Date(e.event_date) >= new Date()).slice(0, 3).map((ev, idx) => (
+                    <div
+                      key={ev.id}
+                      onClick={() => goTo(events.indexOf(ev))}
+                      className={`ledger-row-item flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                        events.indexOf(ev) === activeEventIndex ? 'bg-[#FD90A7] text-white' : 'hover:bg-white/5'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-[#FD90A7]/20 flex items-center justify-center text-xs font-bold">
+                          {events.indexOf(ev) + 1}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-[#FD90A7]" />
-                          <span>{event.event_time}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-[#FD90A7]" />
-                          <span className="line-clamp-1">{event.venue || 'Online / TBD'}</span>
+                        <div>
+                          <p className="text-sm font-medium line-clamp-1">{ev.event_name}</p>
+                          <p className="text-xs text-gray-400">{ev.event_date} • {ev.event_time}</p>
                         </div>
                       </div>
-                      {event.description && (
-                        <p className="text-gray-500 text-sm mt-4 line-clamp-2">{event.description}</p>
-                      )}
+                      <ArrowRight className="w-4 h-4 opacity-50" />
                     </div>
-
-                    {/* Register button */}
-                    <div className="p-5 pt-0">
-                      <button
-                        onClick={() => registerEvent(event.id)}
-                        className="w-full py-2.5 bg-transparent border border-[#FD90A7] text-[#FD90A7] rounded-md font-semibold text-sm hover:bg-[#FD90A7] hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
-                      >
-                        Register
-                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                      </button>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              );
-            })}
-          </div>
-        </div>
+              </div>
+            )}
 
-        {/* View all events link */}
-        <div className="text-center mt-10">
-          <Link
-            to="/events"
-            className="inline-flex items-center gap-2 text-[#FD90A7] font-semibold group hover:gap-3 transition-all"
-          >
-            <span>View all events</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+            <Link
+              to="/events"
+              className="w-full max-w-sm mx-auto lg:mx-0 inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#FD90A7] text-white rounded-full font-semibold shadow-lg hover:bg-[#F77997] transition transform hover:scale-105"
+            >
+              View All Events <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+
+          {/* Right Column – 3D Cover‑Flow Carousel (span 7) */}
+          <div className={`lg:col-span-7 order-1 lg:order-2 transition-all duration-700 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            <div className="relative w-full max-w-2xl mx-auto" style={{ perspective: '1200px' }}>
+              {/* Navigation arrows */}
+              {events.length > 1 && (
+                <>
+                  <button onClick={prevEvent} className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 border border-gray-200 text-gray-500 hover:text-[#FD90A7] hover:border-[#FD90A7] shadow-sm transition">
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button onClick={nextEvent} className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/90 border border-gray-200 text-gray-500 hover:text-[#FD90A7] hover:border-[#FD90A7] shadow-sm transition">
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+
+              {/* Carousel container with manual swipe */}
+              <div
+                ref={carouselRef}
+                className="flex justify-center items-center min-h-[420px] overflow-hidden"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                {events.map((ev, idx) => {
+                  const offset = idx - activeEventIndex;
+                  const absOffset = Math.abs(offset);
+                  const scale = 1 - absOffset * 0.15;
+                  const rotateY = offset * 30;
+                  const translateX = offset * 30;
+                  const zIndex = 10 - absOffset;
+                  const opacity = 1 - absOffset * 0.35;
+                  const blur = absOffset > 0 ? `blur(${absOffset * 2}px)` : 'none';
+
+                  return (
+                    <div
+                      key={ev.id}
+                      className="absolute w-72 sm:w-80 cursor-pointer transition-all duration-500 ease-out"
+                      style={{
+                        transform: `translateX(${translateX}%) scale(${scale}) perspective(1000px) rotateY(${rotateY}deg)`,
+                        zIndex,
+                        opacity,
+                        filter: blur,
+                        pointerEvents: absOffset === 0 ? 'auto' : 'none',
+                      }}
+                      onClick={() => goTo(idx)}
+                    >
+                      <div className="bg-white rounded-[24px] shadow-xl overflow-hidden border border-gray-100 group">
+                        {/* Image */}
+                        <div className="relative h-44 overflow-hidden">
+                          {ev.image_url ? (
+                            <img src={ev.image_url} alt={ev.event_name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-[#FD90A7]/20 to-[#6020F0]/20 flex items-center justify-center">
+                              <Sparkles className="w-8 h-8 text-[#FD90A7]/50" />
+                            </div>
+                          )}
+                          <div className="absolute top-3 left-3">
+                            <CalendarDate dateString={ev.event_date} />
+                          </div>
+                          {/* Progress chip */}
+                          <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm rounded-full px-2.5 py-0.5 text-xs font-semibold text-[#FD90A7] shadow">
+                            {idx + 1}/{events.length}
+                          </div>
+                        </div>
+                        {/* Card body */}
+                        <div className="p-5">
+                          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">{ev.event_name}</h3>
+                          <div className="space-y-1.5 text-sm text-gray-500">
+                            <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#6020F0]" />{ev.event_time || 'TBA'}</div>
+                            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#FCD172]" />{ev.venue || 'Online'}</div>
+                            {ev.description && <p className="text-xs text-gray-400 mt-2 line-clamp-2">{ev.description}</p>}
+                          </div>
+                          <div className="mt-4 flex items-center gap-3">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleRegisterClick(ev); }}
+                              className="flex-1 py-2.5 bg-[#FD90A7] text-white rounded-full font-semibold text-sm hover:bg-[#F77997] transition flex items-center justify-center gap-2 animate-pulse-glow"
+                            >
+                              Register <ArrowRight className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <p className="text-center text-[10px] text-gray-400 mt-1.5">← Swipe to explore →</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Dot indicators */}
+              {events.length > 1 && (
+                <div className="flex justify-center gap-2 mt-6">
+                  {events.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => goTo(idx)}
+                      className={`h-2 rounded-full transition-all duration-300 ${idx === activeEventIndex ? 'w-6 bg-[#FD90A7]' : 'w-2 bg-gray-300 hover:bg-[#FD90A7]/50'}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
+      <RegistrationModal isOpen={showRegModal} onClose={() => setShowRegModal(false)} event={selectedEvent} currentUser={currentUser} onRegister={handleRegistration} />
+
+      <style>{`
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-modal-pop { animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+        @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(253,144,167,0.4); } 50% { box-shadow: 0 0 0 10px rgba(253,144,167,0); } }
+        .animate-float-slow { animation: floatSlow 6s ease-in-out infinite; }
+        .animate-float-slow-delayed { animation: floatSlow 8s ease-in-out infinite 2s; }
+        .animate-float-slower { animation: floatSlower 10s ease-in-out infinite; }
+        @keyframes floatSlow { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-12px) translateX(6px); } }
+        @keyframes floatSlower { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-8px) translateX(-4px); } }
+        .ledger-row-item { transition: background-color 0.4s ease, transform 0.3s ease; }
+        .ledger-row-item:hover { transform: translateX(4px); }
       `}</style>
     </section>
   );

@@ -5,9 +5,7 @@ import SymptomFinder from '../features/home/components/SymptomFinder';          
 import KnowAboutUs from '../features/home/components/KnowAboutUs';
 import Partners from '../features/home/components/Partners';
 import WhatWeDo from '../features/home/components/WhatWeDo';
-import MythBusters from '../features/home/components/MythBusters';
 import ProjectsDone from '../features/home/components/ProjectsDone';
-import Features from '../features/home/components/Features';
 import HealthTips from '../features/home/components/HealthTips';
 import ContributionCTA from '../features/home/components/ContributionCTA';
 import EventsSection from '../features/events/components/EventsSection';
@@ -23,9 +21,7 @@ const Home = () => {
       <KnowAboutUs />
       <Partners />
       <WhatWeDo />
-      <MythBusters />
       <ProjectsDone />
-      <Features />
       <HealthTips />
       <ContributionCTA />
       <EventsSection />

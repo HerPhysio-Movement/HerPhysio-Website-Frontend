@@ -1,251 +1,456 @@
 // src/features/home/components/HealthTips.jsx
 import { useState, useEffect, useRef } from 'react';
-import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Lightbulb,
+  BookOpen,
+  X,
+  Sparkles,
+  Heart,
+  Brain,
+  Activity,
+  Stethoscope,
+  Smile,
+} from 'lucide-react';
 
 const tips = [
-  { id: 1, text: 'Stay hydrated – drink at least 8 glasses of water daily for optimal pelvic health.', source: 'World Health Organization (WHO)' },
-  { id: 2, text: 'Practice deep breathing exercises to reduce stress and improve core stability.', source: 'American Physical Therapy Association (APTA)' },
-  { id: 3, text: 'Kegel exercises can help strengthen pelvic floor muscles – do them correctly.', source: 'National Health Service (NHS UK)' },
-  { id: 4, text: 'Good posture reduces back pain – keep your spine aligned when sitting or standing.', source: 'Mayo Clinic' },
-  { id: 5, text: 'Regular gentle movement, like walking or Pilates, supports joint health and circulation.', source: 'Harvard Health' },
-  { id: 6, text: 'Avoid holding urine for long periods – it weakens pelvic floor muscles.', source: 'Continence Foundation of Australia' },
-  { id: 7, text: 'Incorporate fibre‑rich foods to prevent constipation and reduce pelvic pressure.', source: 'Academy of Nutrition and Dietetics' },
-  { id: 8, text: 'Sleep on your side with a pillow between knees to align hips and reduce pelvic pain.', source: 'The Chartered Society of Physiotherapy (CSP)' },
-  { id: 9, text: 'Avoid high‑impact exercises immediately after childbirth; start with pelvic floor rehab.', source: 'Royal College of Obstetricians and Gynaecologists (RCOG)' },
-  { id: 10, text: 'Use correct lifting technique: bend your knees, keep back straight, engage core.', source: 'Occupational Safety and Health Administration (OSHA)' },
+  { id: 1, text: 'Stay hydrated – drink at least 8 glasses of water daily for optimal pelvic health.', source: 'World Health Organization (WHO)', icon: Heart },
+  { id: 2, text: 'Practice deep breathing exercises to reduce stress and improve core stability.', source: 'American Physical Therapy Association (APTA)', icon: Brain },
+  { id: 3, text: 'Kegel exercises can help strengthen pelvic floor muscles – do them correctly.', source: 'National Health Service (NHS UK)', icon: Activity },
+  { id: 4, text: 'Good posture reduces back pain – keep your spine aligned when sitting or standing.', source: 'Mayo Clinic', icon: Stethoscope },
+  { id: 5, text: 'Regular gentle movement, like walking or Pilates, supports joint health and circulation.', source: 'Harvard Health', icon: Smile },
+  { id: 6, text: 'Avoid holding urine for long periods – it weakens pelvic floor muscles.', source: 'Continence Foundation of Australia', icon: Activity },
+  { id: 7, text: 'Incorporate fibre‑rich foods to prevent constipation and reduce pelvic pressure.', source: 'Academy of Nutrition and Dietetics', icon: Heart },
+  { id: 8, text: 'Sleep on your side with a pillow between knees to align hips and reduce pelvic pain.', source: 'The Chartered Society of Physiotherapy (CSP)', icon: Brain },
+  { id: 9, text: 'Avoid high‑impact exercises immediately after childbirth; start with pelvic floor rehab.', source: 'Royal College of Obstetricians and Gynaecologists (RCOG)', icon: Stethoscope },
+  { id: 10, text: 'Use correct lifting technique: bend your knees, keep back straight, engage core.', source: 'Occupational Safety and Health Administration (OSHA)', icon: Smile },
 ];
 
-// Vibrant pastel palette – each card gets a distinct, soft colour (now 10 entries)
 const cardColors = [
-  '#FFF5F7', // soft pink
-  '#FFF3EB', // peach cream
-  '#F9F1EC', // warm cream
-  '#F0F7FF', // icy blue
-  '#F5FFF5', // mint mist
-  '#FDF6FF', // lavender blush
-  '#FFF8F0', // pale apricot
-  '#F0FFF4', // honeydew
-  '#F3F0FF', // periwinkle
-  '#FFF4F4', // rose white
+  '#FFF5F7', '#FFF8F5', '#FFF9F6', '#FDF5FF', '#FFF6F4',
+  '#FFF7F5', '#FFF8F6', '#FEF5FF', '#FFF7F4', '#FFF6F5',
 ];
 
 const HealthTips = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [swipeDirection, setSwipeDirection] = useState(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 }); // relative to active card
-  const autoSwipeRef = useRef(null);
-  const activeCardRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const sectionRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const totalTips = tips.length;
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const goTo = (index) => {
-    if (index === currentIndex || index < 0 || index >= totalTips) return;
-    setSwipeDirection(index > currentIndex ? 'right' : 'left');
+    if (index === activeIndex || index < 0 || index >= tips.length) return;
+    setIsTransitioning(true);
     setTimeout(() => {
-      setCurrentIndex(index);
-      setSwipeDirection(null);
-    }, 350);
+      setActiveIndex(index);
+      setIsTransitioning(false);
+    }, 300);
   };
 
-  const nextTip = () => {
-    if (currentIndex < totalTips - 1) goTo(currentIndex + 1);
-  };
+  const nextTip = () => goTo((activeIndex + 1) % tips.length);
+  const prevTip = () => goTo((activeIndex - 1 + tips.length) % tips.length);
 
-  const prevTip = () => {
-    if (currentIndex > 0) goTo(currentIndex - 1);
-  };
+  const activeTip = tips[activeIndex];
+  const progressPercent = ((activeIndex + 1) / tips.length) * 100;
 
-  // Auto‑swipe every 3.5 seconds (a bit slower for the 3D feel)
-  useEffect(() => {
-    autoSwipeRef.current = setInterval(nextTip, 3500);
-    return () => clearInterval(autoSwipeRef.current);
-  }, [currentIndex]);
-
-  // Touch support
-  const touchStartX = useRef(0);
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.changedTouches[0].screenX;
-  };
-  const handleTouchEnd = (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const distance = touchStartX.current - touchEndX;
-    if (Math.abs(distance) > 50) {
-      if (distance > 0) nextTip();
-      else prevTip();
-    }
-  };
-
-  // Mouse tracking for the active card (3D tilt)
-  const handleMouseMove = (e) => {
-    if (!activeCardRef.current) return;
-    const rect = activeCardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;  // -0.5 .. 0.5
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setMousePos({ x, y });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePos({ x: 0, y: 0 });
-  };
-
-  // Generate visible cards with 3D transforms
-  const getVisibleCards = () => {
-    const cards = [];
-    for (let i = -2; i <= 2; i++) {
-      const idx = currentIndex + i;
-      if (idx >= 0 && idx < totalTips) {
-        cards.push({ index: idx, offset: i });
-      }
-    }
-    return cards;
-  };
-
-  const visibleCards = getVisibleCards();
+  // First 4 tips shown always; the 5th tip is hidden on tablet (md) but visible on small and large screens
+  const visibleTips = tips.slice(0, 4);
+  const fifthTip = tips[4];
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-white">
-      {/* Subtle texture */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 30% 30%, #FD90A7 1px, transparent 1px), radial-gradient(circle at 70% 70%, #C7365B 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
+    <section
+      ref={sectionRef}
+      className="relative py-24 md:py-32 overflow-hidden"
+      style={{ backgroundColor: '#FEFCFB' }}
+    >
+      {/* Ambient blobs – nearly invisible */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FD90A7]/5 rounded-full blur-[120px] animate-float-slow" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#6020F0]/5 rounded-full blur-[100px] animate-float-delayed" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#FCD172]/5 rounded-full blur-[80px] animate-pulse-slower" />
+      </div>
 
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10 md:mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#F3E4E2] text-sm font-semibold text-[#F08020] mb-5">
-            <Sparkles className="w-4 h-4" />
+      {/* Floating sparkle particles */}
+      <ParticleField isVisible={isVisible} />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div
+          className={`text-center mb-16 md:mb-24 transition-all duration-700 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-white/90 backdrop-blur-md border border-[#FD90A7]/20 rounded-full text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
+            <Lightbulb className="w-4 h-4" />
             Daily Wellness
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-3">Health Tips For You</h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
-          <p className="text-[#A19390] text-sm max-w-md mx-auto">
+          </div>
+          <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
+            Health Tips For You
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#FD90A7] via-[#6020F0] to-[#FCD172] mx-auto mb-4 rounded-full" />
+          <p className="text-gray-500 max-w-md mx-auto text-lg">
             Swipe through 10 powerful pelvic health tips.
           </p>
         </div>
 
-        {/* 3D Card Carousel */}
-        <div className="relative flex items-center justify-center" style={{ perspective: '1200px' }}>
-          {/* Left arrow */}
-          <button
-            onClick={prevTip}
-            disabled={currentIndex === 0}
-            className="absolute left-0 md:-left-12 z-20 p-2 rounded-full bg-white/90 border border-[#F3E4E2] text-[#A19390] hover:text-[#FD90A7] hover:border-[#FD90A7] transition shadow-sm disabled:opacity-30"
-            aria-label="Previous tip"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+        {/* ========== UPPER BANNER WITH POPPING IMAGE ========== */}
+        <div
+          className={`relative bg-gradient-to-r from-[#FD90A7]/8 via-[#6020F0]/5 to-[#FCD172]/8 rounded-[10px] p-6 md:p-10 mb-12 overflow-visible transition-all duration-700 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          } border border-[#FD90A7]/20`}
+          style={{ transitionDelay: '200ms' }}
+        >
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* ---- POPPING IMAGE (bigger, with bounce entrance) ---- */}
+            <div
+              className={`relative lg:absolute lg:-top-16 lg:left-8 w-56 h-64 sm:w-64 sm:h-72 md:w-72 md:h-80 rounded-[10px] overflow-hidden shadow-2xl z-20 flex-shrink-0 ${
+                isVisible ? 'animate-pop-in' : 'opacity-0 scale-75'
+              }`}
+              style={{
+                boxShadow: '0 30px 60px rgba(253,144,167,0.3), 0 12px 24px rgba(96,32,240,0.2)',
+                transitionDelay: '400ms',
+              }}
+            >
+              <img
+                src="/Chijioke.jpg"
+                alt="Chijioke - Her Physio Movement"
+                className="w-full h-full object-cover"
+              />
+              {/* Overlay badge */}
+              <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-[8px] px-3 py-2 shadow-lg border border-white/50">
+                <p className="text-xs font-semibold text-gray-800">Chijioke O.</p>
+                <p className="text-[10px] text-gray-500">Research & Development</p>
+              </div>
+            </div>
 
-          {/* Cards container */}
-          <div
-            className="relative w-full max-w-md mx-auto"
-            style={{ height: '380px' }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            {visibleCards.map(({ index, offset }) => {
-              const isCurrent = offset === 0;
-              const scale = 1 - Math.abs(offset) * 0.12;
-              const translateZ = isCurrent ? 50 : 0;
-              const rotateY = offset * 30; // side cards rotate away
-              const translateX = offset * 25; // shift horizontally
-              const translateY = Math.abs(offset) * 3;
-              const zIndex = 10 - Math.abs(offset);
-              const opacity = 1 - Math.abs(offset) * 0.4;
-              const blur = Math.abs(offset) > 0 ? `blur(${Math.abs(offset) * 1.5}px)` : 'none';
+            {/* ---- Right content ---- */}
+            <div className="flex-1 lg:ml-80 text-center lg:text-left space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-full text-xs font-semibold text-[#6020F0] shadow-sm border border-[#6020F0]/20">
+                <Sparkles className="w-3 h-3" />
+                Featured Tip
+              </div>
+              <p className="text-lg md:text-xl text-gray-800 leading-relaxed font-medium italic">
+                "{activeTip.text}"
+              </p>
+              <p className="text-sm text-gray-400">— {activeTip.source}</p>
 
-              // For the active card, incorporate mouse tilt
-              let extraTilt = {};
-              if (isCurrent) {
-                const tiltX = mousePos.y * 8; // up/down tilt
-                const tiltY = mousePos.x * -8; // left/right tilt
-                extraTilt = {
-                  transform: `translateX(${translateX}%) translateY(${translateY}px) rotateY(${rotateY}deg) scale(${scale}) translateZ(${translateZ}px) rotateX(${tiltX}deg) rotateY(${rotateY + tiltY}deg)`,
-                  boxShadow: `${mousePos.x * 10}px ${mousePos.y * 10}px 20px rgba(0,0,0,0.1), 0 25px 40px -15px rgba(0,0,0,0.15)`,
-                };
-              } else {
-                extraTilt = {
-                  transform: `translateX(${translateX}%) translateY(${translateY}px) rotateY(${rotateY}deg) scale(${scale}) translateZ(${translateZ}px)`,
-                };
-              }
-
-              const tip = tips[index];
-              const bgColor = cardColors[index % cardColors.length];
-
-              return (
-                <div
-                  key={tip.id}
-                  ref={isCurrent ? activeCardRef : null}
-                  className={`absolute inset-0 w-full transition-all duration-[0.4s] ease-out ${
-                    isCurrent ? 'pointer-events-auto' : 'pointer-events-none'
-                  }`}
-                  style={{
-                    zIndex,
-                    opacity,
-                    filter: blur,
-                    ...extraTilt,
-                    transitionProperty: 'transform, opacity, filter, box-shadow',
-                  }}
+              {/* Navigation arrows */}
+              <div className="flex items-center gap-3 justify-center lg:justify-start mt-4">
+                <button
+                  onClick={prevTip}
+                  className="p-2 rounded-full bg-white border border-gray-200 text-gray-400 hover:text-[#FD90A7] hover:border-[#FD90A7] transition shadow-sm"
                 >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <span className="text-sm font-semibold text-gray-500">
+                  {activeIndex + 1} / {tips.length}
+                </span>
+                <button
+                  onClick={nextTip}
+                  className="p-2 rounded-full bg-white border border-gray-200 text-gray-400 hover:text-[#FD90A7] hover:border-[#FD90A7] transition shadow-sm"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ========== MINI TIPS GRID (4 always visible, 5th hidden on tablet) ========== */}
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-10 transition-all duration-700 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+          style={{ transitionDelay: '400ms' }}
+        >
+          {visibleTips.map((tip, idx) => {
+            const IconComponent = tip.icon;
+            const isActive = idx === activeIndex;
+            const isHovered = hoveredCard === idx;
+            return (
+              <div
+                key={tip.id}
+                onClick={() => goTo(idx)}
+                onMouseEnter={() => setHoveredCard(idx)}
+                onMouseLeave={() => setHoveredCard(null)}
+                className={`cursor-pointer rounded-[10px] p-5 shadow-sm transition-all duration-300 transform hover:-translate-y-1 border flex flex-col gap-3 ${
+                  isActive
+                    ? 'ring-2 ring-[#FD90A7] bg-white shadow-lg'
+                    : 'bg-white/80 hover:shadow-md border-gray-100'
+                }`}
+                style={{
+                  backgroundColor: isActive ? '#FFF' : cardColors[idx % cardColors.length],
+                  transform: isHovered ? 'translateY(-4px)' : isActive ? 'translateY(-2px)' : 'none',
+                  transitionDelay: `${idx * 80}ms`,
+                }}
+              >
+                <div className="flex items-center gap-3">
                   <div
-                    className="rounded-2xl shadow-lg p-6 md:p-8 h-full flex flex-col border border-[#F3E4E2]"
-                    style={{ backgroundColor: bgColor }}
+                    className={`w-10 h-10 rounded-[8px] flex items-center justify-center transition-colors duration-300 ${
+                      isActive ? 'bg-[#FD90A7] text-white' : 'bg-[#FD90A7]/10'
+                    }`}
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#FD90A7]/10 flex items-center justify-center">
-                        <span className="text-lg font-bold text-[#FD90A7]">{index + 1}</span>
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-base md:text-lg text-[#1A1A1A] leading-relaxed mb-4">
-                          {tip.text}
-                        </p>
-                        <div className="mt-auto">
-                          <span className="text-xs text-[#A19390] italic">— {tip.source}</span>
-                        </div>
-                      </div>
-                    </div>
+                    <IconComponent className={`w-5 h-5 ${isActive ? 'text-white' : 'text-[#FD90A7]'}`} />
                   </div>
+                  <span className="text-xs font-semibold text-gray-400">Tip {idx + 1}</span>
                 </div>
-              );
-            })}
+                <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">{tip.text}</p>
+                <p className="text-[10px] text-gray-400 italic mt-auto truncate">— {tip.source}</p>
+              </div>
+            );
+          })}
+
+          {/* Fifth tip – hidden on tablet (md), visible on small and large screens */}
+          {(() => {
+            const IconComponent = fifthTip.icon;
+            const isActive = 4 === activeIndex;
+            const isHovered = hoveredCard === 4;
+            return (
+              <div
+                key={fifthTip.id}
+                onClick={() => goTo(4)}
+                onMouseEnter={() => setHoveredCard(4)}
+                onMouseLeave={() => setHoveredCard(null)}
+                className={`cursor-pointer rounded-[10px] p-5 shadow-sm transition-all duration-300 transform hover:-translate-y-1 border flex flex-col gap-3 md:hidden lg:flex ${
+                  isActive
+                    ? 'ring-2 ring-[#FD90A7] bg-white shadow-lg'
+                    : 'bg-white/80 hover:shadow-md border-gray-100'
+                }`}
+                style={{
+                  backgroundColor: isActive ? '#FFF' : cardColors[4 % cardColors.length],
+                  transform: isHovered ? 'translateY(-4px)' : isActive ? 'translateY(-2px)' : 'none',
+                  transitionDelay: '320ms',
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-10 h-10 rounded-[8px] flex items-center justify-center transition-colors duration-300 ${
+                      isActive ? 'bg-[#FD90A7] text-white' : 'bg-[#FD90A7]/10'
+                    }`}
+                  >
+                    <IconComponent className={`w-5 h-5 ${isActive ? 'text-white' : 'text-[#FD90A7]'}`} />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-400">Tip 5</span>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">{fifthTip.text}</p>
+                <p className="text-[10px] text-gray-400 italic mt-auto truncate">— {fifthTip.source}</p>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* ========== SPINNING RING + READ ALL ========== */}
+        <div
+          className={`flex flex-col sm:flex-row items-center justify-center gap-8 transition-all duration-700 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+          style={{ transitionDelay: '600ms' }}
+        >
+          {/* Spinning ring */}
+          <div className="relative w-36 h-36 md:w-40 md:h-40 flex-shrink-0">
+            <svg viewBox="0 0 120 120" className="w-full h-full spinning-ring">
+              <defs>
+                <path id="tipsCircle" d="M 60,60 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
+              </defs>
+              <text fontSize="9.5" fill="#6020F0" fontWeight="bold" letterSpacing="2">
+                <textPath href="#tipsCircle" startOffset="0%">
+                  PELVIC HEALTH • WELLNESS • TIPS • EXPLORE •
+                </textPath>
+              </text>
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#FD90A7] to-[#FCD172] text-white flex items-center justify-center text-xl font-black shadow-lg animate-pulse-glow">
+                {activeIndex + 1}
+              </div>
+            </div>
           </div>
 
-          {/* Right arrow */}
-          <button
-            onClick={nextTip}
-            className="absolute right-0 md:-right-12 z-20 p-2 rounded-full bg-white/90 border border-[#F3E4E2] text-[#A19390] hover:text-[#FD90A7] hover:border-[#FD90A7] transition shadow-sm"
-            aria-label="Next tip"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Dots indicator */}
-        <div className="flex justify-center gap-2 mt-8">
-          {tips.map((_, idx) => (
+          {/* Progress bar */}
+          <div className="flex-1 max-w-xs w-full">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-gray-500">Progress</span>
+              <span className="font-semibold text-[#FD90A7]">{Math.round(progressPercent)}%</span>
+            </div>
+            <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#FD90A7] via-[#6020F0] to-[#FCD172] transition-all duration-500 relative overflow-hidden"
+                style={{ width: `${progressPercent}%` }}
+              >
+                <div className="absolute inset-0 animate-wave" />
+              </div>
+            </div>
             <button
-              key={idx}
-              onClick={() => goTo(idx)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                idx === currentIndex
-                  ? 'w-6 bg-[#FD90A7]'
-                  : 'w-2 bg-[#F3E4E2] hover:bg-[#FD90A7]/50'
-              }`}
-              aria-label={`Go to tip ${idx + 1}`}
-            />
-          ))}
+              onClick={() => setShowModal(true)}
+              className="mt-4 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-[#6020F0] text-[#6020F0] rounded-full font-semibold shadow-sm hover:bg-[#6020F0]/5 transition group"
+            >
+              <BookOpen className="w-4 h-4" />
+              Read all {tips.length} tips
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </button>
+          </div>
         </div>
-
-        <p className="text-center text-xs text-[#A19390] mt-4">
-          Swipe or click arrows to navigate.
-        </p>
       </div>
+
+      {/* ========== MODAL WITH ALL TIPS ========== */}
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-white rounded-[10px] shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 border border-gray-200 animate-modal-pop"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">All 10 Health Tips</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-2 rounded-full hover:bg-gray-100 text-gray-400 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {tips.map((tip) => {
+                const IconComponent = tip.icon;
+                return (
+                  <div
+                    key={tip.id}
+                    className="p-4 rounded-[10px] border border-gray-100 shadow-sm flex items-start gap-3"
+                    style={{ backgroundColor: cardColors[tip.id - 1] }}
+                  >
+                    <div className="w-10 h-10 rounded-[8px] bg-[#FD90A7]/10 flex items-center justify-center flex-shrink-0">
+                      <IconComponent className="w-5 h-5 text-[#FD90A7]" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-bold text-[#FD90A7]">Tip {tip.id}</span>
+                      </div>
+                      <p className="text-sm text-gray-800 leading-relaxed">{tip.text}</p>
+                      <p className="text-xs text-gray-400 mt-1.5 italic">— {tip.source}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        .spinning-ring { animation: permanentRotation 20s linear infinite; }
+        @keyframes permanentRotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .animate-float-slow { animation: float-slow 10s ease-in-out infinite; }
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-25px) scale(1.03); }
+        }
+
+        .animate-float-delayed { animation: float-delayed 12s ease-in-out infinite; }
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(25px) scale(1.03); }
+        }
+
+        .animate-pulse-slower { animation: pulse-slower 7s ease-in-out infinite; }
+        @keyframes pulse-slower {
+          0%, 100% { opacity: 0.25; }
+          50% { opacity: 0.55; }
+        }
+
+        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(253, 144, 167, 0.5); }
+          50% { box-shadow: 0 0 0 14px rgba(253, 144, 167, 0); }
+        }
+
+        .animate-fade-in { animation: fade-in 0.3s ease-out; }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+        .animate-modal-pop { animation: modal-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes modal-pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Pop-in for the Chijioke image */
+        .animate-pop-in {
+          animation: pop-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes pop-in {
+          0% { transform: scale(0.7); opacity: 0; }
+          70% { transform: scale(1.05); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Wave animation for progress bar */
+        .animate-wave {
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+          animation: wave 2s linear infinite;
+        }
+        @keyframes wave {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
     </section>
+  );
+};
+
+const ParticleField = ({ isVisible }) => {
+  const particles = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    size: Math.random() * 5 + 2,
+    delay: `${Math.random() * 6}s`,
+    duration: `${Math.random() * 10 + 5}s`,
+    color: ['#FD90A7', '#6020F0', '#FCD172', '#C7365B'][i % 4],
+  }));
+
+  return (
+    <div className={`absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="absolute rounded-full animate-particle-float"
+          style={{
+            left: p.left,
+            top: p.top,
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            opacity: 0.45,
+            animationDelay: p.delay,
+            animationDuration: p.duration,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes particle-float {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+          20% { transform: translateY(-35px) translateX(12px); opacity: 0.75; }
+          40% { transform: translateY(-15px) translateX(-18px); opacity: 0.4; }
+          60% { transform: translateY(-45px) translateX(8px); opacity: 0.65; }
+          80% { transform: translateY(-5px) translateX(-10px); opacity: 0.35; }
+        }
+        .animate-particle-float { animation: particle-float linear infinite; }
+      `}</style>
+    </div>
   );
 };
 

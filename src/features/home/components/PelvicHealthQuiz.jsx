@@ -1,247 +1,302 @@
-import { useState } from 'react';
-import { Sparkles, ArrowRight, ChevronRight, Heart, Brain, Activity, CheckCircle2, RefreshCw } from 'lucide-react';
+// src/features/home/components/PelvicHealthQuiz.jsx
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight, Sparkles, RefreshCw, Check, Shield, Users } from 'lucide-react';
 
 const questions = [
   {
     id: 1,
     question: 'What stage of life are you currently in?',
     options: [
-      { label: 'Adolescence / Young Adult', value: 'adolescence' },
-      { label: 'Pregnancy / Postpartum', value: 'postpartum' },
-      { label: 'Perimenopause / Menopause', value: 'menopause' },
-      { label: 'General Wellness', value: 'general' },
+      { label: 'Young Adult', value: 'adolescence', chipColor: '#FD90A7' },
+      { label: 'Pregnancy / Postpartum', value: 'postpartum', chipColor: '#C7365B' },
+      { label: 'Perimenopause / Menopause', value: 'menopause', chipColor: '#F08020' },
+      { label: 'General Wellness', value: 'general', chipColor: '#6020F0' },
     ],
-    icon: Heart,
   },
   {
     id: 2,
-    question: 'Are you experiencing any pelvic discomfort or symptoms?',
+    question: 'Are you experiencing any pelvic discomfort?',
     options: [
-      { label: 'Yes, pain or pressure', value: 'pain' },
-      { label: 'Yes, incontinence or leakage', value: 'incontinence' },
-      { label: 'Yes, other concerns', value: 'other' },
-      { label: 'No, I feel fine', value: 'none' },
+      { label: 'Pain or pressure', value: 'pain', chipColor: '#FD90A7' },
+      { label: 'Incontinence / leakage', value: 'incontinence', chipColor: '#C7365B' },
+      { label: 'Other concerns', value: 'other', chipColor: '#F08020' },
+      { label: 'No, I feel fine', value: 'none', chipColor: '#6020F0' },
     ],
-    icon: Brain,
   },
   {
     id: 3,
-    question: 'What are you most interested in learning about?',
+    question: 'What interests you most?',
     options: [
-      { label: 'Pelvic floor exercises', value: 'exercises' },
-      { label: 'Nutrition & lifestyle', value: 'nutrition' },
-      { label: 'Emotional well‑being', value: 'wellbeing' },
-      { label: 'Professional physiotherapy', value: 'physio' },
+      { label: 'Pelvic floor exercises', value: 'exercises', chipColor: '#FD90A7' },
+      { label: 'Nutrition & lifestyle', value: 'nutrition', chipColor: '#C7365B' },
+      { label: 'Emotional well‑being', value: 'wellbeing', chipColor: '#F08020' },
+      { label: 'Professional physiotherapy', value: 'physio', chipColor: '#6020F0' },
     ],
-    icon: Activity,
   },
 ];
 
-// Personalized recommendations based on answers
 const getRecommendations = (answers) => {
   const recs = [];
-
-  // Stage-based recommendations
   if (answers[0] === 'postpartum') {
-    recs.push({
-      title: 'Postpartum Recovery Program',
-      description: 'Our 3‑Month Mentorship Program is perfect for you.',
-      link: '/volunteer-signup',
-      color: '#FD90A7',
-    });
+    recs.push({ title: 'Postpartum Recovery', description: 'Our 3‑Month Mentorship Program is perfect for you.', link: '/volunteer-signup', color: '#FD90A7' });
   } else if (answers[0] === 'menopause') {
-    recs.push({
-      title: 'Menopause & Pelvic Health Webinar',
-      description: 'Watch our free webinar on managing pelvic health during menopause.',
-      link: '/resources#webinars',
-      color: '#C7365B',
-    });
+    recs.push({ title: 'Menopause & Pelvic Health', description: 'Watch our free webinar on managing pelvic health.', link: '/resources#webinars', color: '#C7365B' });
   }
-
-  // Symptom-based recommendations
   if (answers[1] === 'pain' || answers[1] === 'incontinence') {
-    recs.push({
-      title: 'Book a Virtual Consultation',
-      description: 'Speak with a certified women\'s health physiotherapist.',
-      link: '/contact-us',
-      color: '#F08020',
-    });
+    recs.push({ title: 'Virtual Consultation', description: 'Speak with a certified physiotherapist.', link: '/contact-us', color: '#F08020' });
   }
-
-  // Interest-based recommendations
   if (answers[2] === 'exercises') {
-    recs.push({
-      title: 'Pelvic Floor Basics Course',
-      description: 'Learn the anatomy and exercises you need.',
-      link: '/resources#courses',
-      color: '#3070F0',
-    });
+    recs.push({ title: 'Pelvic Floor Basics', description: 'Learn anatomy and exercises you need.', link: '/resources#courses', color: '#3070F0' });
   } else if (answers[2] === 'physio') {
-    recs.push({
-      title: 'Join Our Community',
-      description: 'Connect with professionals and peers who share your journey.',
-      link: '/community',
-      color: '#6020F0',
-    });
+    recs.push({ title: 'Join Our Community', description: 'Connect with professionals and peers.', link: '/community', color: '#6020F0' });
   }
-
-  // Fallback if no specific recommendations
   if (recs.length === 0) {
-    recs.push({
-      title: 'Explore Our Resources',
-      description: 'Browse articles, videos, and guides tailored to your needs.',
-      link: '/resources',
-      color: '#FD90A7',
-    });
+    recs.push({ title: 'Explore Resources', description: 'Browse articles, videos, and guides.', link: '/resources', color: '#FD90A7' });
   }
-
   return recs;
 };
 
 const PelvicHealthQuiz = () => {
-  const [currentStep, setCurrentStep] = useState(0); // 0..questions.length-1
+  const [step, setStep] = useState(0);          // 0..2 questions, 3 = results
   const [answers, setAnswers] = useState([]);
-  const [showResults, setShowResults] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [transitioning, setTransitioning] = useState(false);
+  const centralCardRef = useRef(null);
+  const chipRefs = useRef([]);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleOptionSelect = (value) => {
-    const newAnswers = [...answers];
-    newAnswers[currentStep] = value;
-    setAnswers(newAnswers);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (centralCardRef.current) observer.observe(centralCardRef.current);
+    return () => observer.disconnect();
+  }, []);
 
-    if (currentStep < questions.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      setShowResults(true);
-    }
+  // Parallax tilt on central card
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const card = centralCardRef.current;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Subtle floating for chips
+  useEffect(() => {
+    chipRefs.current.forEach((chip, i) => {
+      if (chip) {
+        chip.style.animation = `floatChip ${3 + i * 0.5}s ease-in-out infinite`;
+        chip.style.animationDelay = `${i * 0.2}s`;
+      }
+    });
+  }, [step]);
+
+  const handleSelect = (value) => {
+    if (transitioning) return;
+    setSelectedOption(value);
+    setTransitioning(true);
+
+    setTimeout(() => {
+      const newAnswers = [...answers];
+      newAnswers[step] = value;
+      setAnswers(newAnswers);
+
+      if (step < questions.length - 1) {
+        setStep(step + 1);
+      } else {
+        setStep(3);
+      }
+      setSelectedOption(null);
+      setTransitioning(false);
+    }, 400);
   };
 
   const resetQuiz = () => {
-    setCurrentStep(0);
+    setStep(0);
     setAnswers([]);
-    setShowResults(false);
+    setSelectedOption(null);
   };
 
-  const recommendations = getRecommendations(answers);
-  const currentQuestion = questions[currentStep];
-  const Icon = currentQuestion?.icon;
+  const recommendations = step === 3 ? getRecommendations(answers) : [];
+  const currentQuestion = step < questions.length ? questions[step] : null;
 
   return (
-    <section className="relative py-20 overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Subtle texture */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 30% 30%, #FD90A7 1px, transparent 1px), radial-gradient(circle at 70% 70%, #C7365B 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
+    <section className="relative py-20 md:py-28 overflow-hidden bg-white">
+      {/* Ambient geometric shapes */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-12 h-12 rounded-full bg-[#FD90A7]/10 blur-xl" />
+        <div className="absolute bottom-32 right-20 w-16 h-16 rounded-full bg-[#6020F0]/10 blur-xl" />
+        <div className="absolute top-1/3 right-1/4 w-10 h-10 rounded-lg bg-[#F08020]/10 blur-xl" />
+        <svg className="absolute bottom-10 left-1/2 text-[#FD90A7]/10 w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L13.5 9H22.5L14.25 14.25L15.75 22.5L12 17.25L8.25 22.5L9.75 14.25L1.5 9H10.5L12 0Z" /></svg>
+      </div>
 
-      <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Header */}
-        <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#F3E4E2] text-sm font-semibold text-[#F08020] mb-5">
+        <div className="mb-12">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#FD90A7]/10 rounded-full text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
             <Sparkles className="w-4 h-4" />
-            Discover Your Path
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-3">
             Pelvic Health Quiz
+          </span>
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+            Discover Your Path to Wellness
           </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
-          <p className="text-[#A19390] text-sm max-w-md mx-auto">
-            Answer a few questions to get personalised recommendations for your pelvic health journey.
+          <p className="text-gray-500 mt-3 max-w-md mx-auto">
+            Answer three simple questions and receive personalised guidance.
           </p>
         </div>
 
-        {/* Quiz card */}
-        <div className="bg-white/70 backdrop-blur-md border border-[#F3E4E2] rounded-2xl shadow-xl p-6 sm:p-8">
-          {!showResults ? (
-            <>
-              {/* Progress bar */}
-              <div className="flex items-center gap-2 mb-8">
-                {questions.map((q, idx) => (
-                  <div
-                    key={q.id}
-                    className="flex-1 h-2 rounded-full transition-all duration-300"
-                    style={{
-                      backgroundColor: idx <= currentStep ? '#FD90A7' : '#F3E4E2',
-                    }}
-                  />
-                ))}
+        {/* Quiz Content */}
+        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
+          {/* LEFT: Central Card (like a phone screen) */}
+          <div className="relative w-full max-w-sm">
+            {/* Background floating chips (decorative) */}
+            {currentQuestion && (
+              <div className="absolute inset-0 pointer-events-none">
+                {currentQuestion.options.map((opt, idx) => {
+                  const angle = (idx / currentQuestion.options.length) * 2 * Math.PI - Math.PI / 2;
+                  const radius = 170;
+                  const x = Math.cos(angle) * radius;
+                  const y = Math.sin(angle) * radius;
+                  return (
+                    <div
+                      key={opt.value}
+                      className="absolute flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg border border-gray-100 text-xs font-medium text-gray-600"
+                      style={{
+                        left: `calc(50% + ${x}px)`,
+                        top: `calc(50% + ${y}px)`,
+                        transform: 'translate(-50%, -50%)',
+                        opacity: 0.8,
+                      }}
+                    >
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: opt.chipColor }} />
+                      {opt.label}
+                    </div>
+                  );
+                })}
               </div>
+            )}
 
-              {/* Question */}
-              <div className="text-center mb-8">
-                {Icon && (
-                  <div className="mx-auto w-14 h-14 rounded-full bg-[#FD90A7]/10 flex items-center justify-center mb-4">
-                    <Icon className="w-7 h-7 text-[#FD90A7]" />
-                  </div>
-                )}
-                <h3 className="text-xl font-bold text-[#1A1A1A]">
-                  {currentQuestion.question}
-                </h3>
+            {/* Central card – question display */}
+            {step < questions.length && currentQuestion && (
+              <div
+                ref={centralCardRef}
+                className="relative bg-white rounded-[32px] shadow-2xl border border-gray-100 p-8 z-10 transition-all duration-300"
+                style={{ transformStyle: 'preserve-3d', transform: 'perspective(800px) rotateY(0deg) rotateX(0deg)' }}
+              >
+                {/* Progress dots */}
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  {questions.map((q, idx) => (
+                    <div
+                      key={q.id}
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        idx < step
+                          ? 'w-8 bg-[#FD90A7]'
+                          : idx === step
+                          ? 'w-8 bg-[#FD90A7]'
+                          : 'w-2 bg-gray-200'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-900 mb-6">{currentQuestion.question}</h3>
+
+                {/* Options */}
+                <div className="space-y-3">
+                  {currentQuestion.options.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => handleSelect(opt.value)}
+                      className={`w-full text-left px-5 py-3.5 rounded-[14px] border transition-all duration-300 ${
+                        selectedOption === opt.value
+                          ? 'bg-[#FD90A7] border-[#FD90A7] text-white'
+                          : 'border-gray-200 text-gray-700 hover:border-[#FD90A7] hover:bg-[#FD90A7]/5'
+                      }`}
+                    >
+                      <span className="text-sm font-medium">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
+            )}
+          </div>
 
-              {/* Options */}
-              <div className="space-y-3">
-                {currentQuestion.options.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => handleOptionSelect(option.value)}
-                    className="w-full text-left px-5 py-4 rounded-xl border border-[#F3E4E2] bg-white hover:bg-[#FD90A7]/5 hover:border-[#FD90A7] transition-all group flex items-center justify-between"
-                  >
-                    <span className="text-sm font-medium text-[#1A1A1A]">
-                      {option.label}
-                    </span>
-                    <ChevronRight className="w-4 h-4 text-[#A19390] group-hover:text-[#FD90A7] transition-colors" />
-                  </button>
-                ))}
+          {/* RIGHT: Additional info / CTA (optional) */}
+          <div className="hidden lg:block w-56">
+            {/* Decorative empty space or a small stat */}
+          </div>
+        </div>
+
+        {/* Results */}
+        {step === 3 && (
+          <div className="mt-10 max-w-3xl mx-auto">
+            <div className="bg-white rounded-[32px] shadow-2xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-[#FD90A7] to-[#C7365B] p-6 text-white text-center">
+                <Sparkles className="w-8 h-8 mx-auto mb-2" />
+                <h3 className="text-2xl font-bold">Your Personalised Plan</h3>
+                <p className="text-white/80 text-sm mt-1">Based on your answers</p>
               </div>
-
-              <p className="text-center text-xs text-[#A19390] mt-6">
-                Question {currentStep + 1} of {questions.length}
-              </p>
-            </>
-          ) : (
-            /* Results */
-            <div className="text-center">
-              <div className="mx-auto w-16 h-16 rounded-full bg-[#FD90A7]/10 flex items-center justify-center mb-4">
-                <CheckCircle2 className="w-8 h-8 text-[#FD90A7]" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#1A1A1A] mb-2">Your Personalised Recommendations</h3>
-              <p className="text-[#A19390] text-sm mb-8">
-                Based on your answers, here are some resources that may help you.
-              </p>
-
-              <div className="space-y-4 text-left">
+              <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {recommendations.map((rec, idx) => (
                   <Link
                     key={idx}
                     to={rec.link}
-                    className="block p-4 rounded-xl border border-[#F3E4E2] hover:shadow-md transition-all"
-                    style={{ backgroundColor: `${rec.color}08` }}
+                    className="p-5 rounded-[14px] border border-gray-200 hover:border-[#FD90A7] hover:bg-[#FD90A7]/5 transition-all group"
                   >
-                    <h4 className="font-semibold text-[#1A1A1A] mb-1">{rec.title}</h4>
-                    <p className="text-sm text-[#A19390]">{rec.description}</p>
-                    <span className="inline-flex items-center gap-1 text-sm font-medium mt-2" style={{ color: rec.color }}>
+                    <h4 className="font-bold text-gray-900 mb-1">{rec.title}</h4>
+                    <p className="text-sm text-gray-500">{rec.description}</p>
+                    <span className="inline-flex items-center gap-1 text-sm font-medium mt-3 text-[#FD90A7] group-hover:gap-2 transition-all">
                       Explore <ArrowRight className="w-3 h-3" />
                     </span>
                   </Link>
                 ))}
               </div>
-
-              <button
-                onClick={resetQuiz}
-                className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 border border-[#F3E4E2] text-[#A19390] rounded-full text-sm font-medium hover:text-[#FD90A7] hover:border-[#FD90A7] transition"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Retake Quiz
-              </button>
+              <div className="px-6 pb-6 flex justify-center">
+                <button
+                  onClick={resetQuiz}
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-[#FD90A7] text-[#FD90A7] rounded-full font-semibold hover:bg-[#FD90A7]/10 transition"
+                >
+                  <RefreshCw className="w-4 h-4" /> Retake Quiz
+                </button>
+              </div>
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Social Proof Row (Finsy inspired) */}
+        <div className="mt-16 flex flex-col items-center gap-4">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-gray-900">100k+</p>
+            <p className="text-sm text-gray-500">Trusted by thousands of women worldwide</p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <Shield className="w-4 h-4" /> Secure & Confidential
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <Users className="w-4 h-4" /> Community Driven
+          </div>
         </div>
       </div>
+
+      {/* Keyframes for floating chips */}
+      <style>{`
+        @keyframes floatChip {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-6px) rotate(2deg); }
+        }
+      `}</style>
     </section>
   );
 };
