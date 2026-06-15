@@ -1,8 +1,30 @@
-import { Clock } from 'lucide-react';
+import { Clock, Eye } from 'lucide-react';
 import ActionButtons from '../../shared/components/ActionButtons';
 import StatusBadge from '../../shared/components/StatusBadge';
 
-const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpdate }) => {
+const getPublishedDate = (item) =>
+  item.published_at ||
+  item.publishedAt ||
+  item.publish_date ||
+  item.published_date ||
+  item.date ||
+  item.created_at ||
+  item.createdAt;
+
+const formatDate = (value) => {
+  if (!value) return '—';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
+const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpdate, onEventRegistrationsClick, eventRegistrationCounts }) => {
   if (!Array.isArray(data) || data.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-12 text-center border border-gray-200">
@@ -14,9 +36,10 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
 
   const renderHeaders = () => {
     switch (activeFilter) {
-      case 'Projects':   return ['Name', 'Status', 'Date', 'Actions'];
-      case 'Articles':   return ['Title', 'Author', 'Date', 'Actions'];
-      case 'Events':     return ['Name', 'Date', 'Location', 'Actions'];
+      case 'Projects':   return ['Name', 'Status', 'Published Date', 'Actions'];
+      case 'Articles':   return ['Title', 'Author', 'Category', 'Actions'];
+      case 'Blogs':      return ['Title', 'Author', 'Status', 'Published Date', 'Actions'];
+      case 'Events':     return ['Name', 'Date', 'Location', 'Registered', 'Actions'];
       case 'Webinar':    return ['Title', 'Host', 'Date', 'Actions'];
       case 'Courses':    return ['Course Title', 'Category', 'Caption', 'Actions'];
       case 'Volunteers': return ['Name', 'Email', 'Phone', 'Status', 'Actions'];
@@ -31,43 +54,73 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
           <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
             <td className="px-4 py-3 text-sm font-medium text-gray-800">{item.name || item.title}</td>
             <td className="px-4 py-3"><StatusBadge status={item.status} size="sm" /></td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.date || item.created_at}</td>
+            <td className="px-4 py-3 text-sm text-gray-500">{formatDate(getPublishedDate(item))}</td>
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));
       case 'Articles':
         return data.map((item) => (
           <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-[200px]">{item.title}</td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.author || 'Her Physio'}</td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Recent'}</td>
+            <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.title}</td>
+            <td className="px-4 py-3 text-sm text-gray-500">{item.author || 'Unknown'}</td>
+            <td className="px-4 py-3 text-sm text-gray-500">{item.category || 'Uncategorized'}</td>
+            <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
+          </tr>
+        ));
+      case 'Blogs':
+        return data.map((item) => (
+          <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.title}</td>
+            <td className="px-4 py-3 text-sm text-gray-500">{item.author || 'Unknown'}</td>
+            <td className="px-4 py-3"><StatusBadge status={item.status} size="sm" /></td>
+            <td className="px-4 py-3 text-sm text-gray-500">{formatDate(getPublishedDate(item))}</td>
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));
       case 'Events':
-        return data.map((item) => (
-          <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td className="px-4 py-3 text-sm font-medium text-gray-800">{item.event_name || item.name}</td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.event_date || item.date}</td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.venue || item.location || 'TBD'}</td>
-            <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
-          </tr>
-        ));
+        return data.map((item) => {
+          const id = item._id || item.id;
+          const registrationCount = eventRegistrationCounts?.[id] ?? '—';
+          return (
+            <tr key={id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <td className="px-4 py-3 text-sm font-medium text-gray-800">{item.event_name || item.name}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">{item.event_date || item.date}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">{item.venue || item.location || 'TBD'}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">
+                {registrationCount}
+              </td>
+              <td className="px-4 py-3 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => onEventRegistrationsClick?.(item)}
+                  aria-label="View registrations"
+                  className="p-1.5 text-gray-400 hover:text-[#FD90A7] hover:bg-[#FD90A7]/10 transition rounded-lg"
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
+                <ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" />
+              </td>
+            </tr>
+          );
+        });
       case 'Webinar':
-        return data.map((item) => (
-          <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-[200px]">{item.title}</td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.host || 'Expert Speaker'}</td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.date}</td>
-            <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
-          </tr>
-        ));
+        return data.map((item) => {
+          const id = item._id || item.id;
+          return (
+            <tr key={id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.webinar_title || item.title}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">{item.webinar_host || item.host || 'Expert Speaker'}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">{item.created_at ? new Date(item.created_at).toLocaleDateString() : (item.date || '—')}</td>
+              <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
+            </tr>
+          );
+        });
       case 'Courses':
         return data.map((item) => (
           <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-[200px]">{item.course_title || item.title}</td>
+            <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.course_title || item.title}</td>
             <td className="px-4 py-3 text-sm text-gray-500">{item.category || '—'}</td>
-            <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-[200px]">{item.caption || '—'}</td>
+            <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.caption || '—'}</td>
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));
@@ -81,12 +134,12 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
               <td className="px-4 py-3 text-sm text-gray-500">{item.p_number}</td>
               <td className="px-4 py-3">
                 <select
-                  value={item.status || 'pending'}
+                  value={(item.status === 'approved' ? 'accepted' : item.status) || 'pending'}
                   onChange={(e) => onVolunteerStatusUpdate(id, e.target.value)}
                   className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white hover:border-[#FD90A7] transition focus:outline-none focus:ring-2 focus:ring-[#FD90A7]/20"
                 >
                   <option value="pending">Pending</option>
-                  <option value="approved">Approved</option>
+                  <option value="accepted">Approved</option>
                   <option value="rejected">Rejected</option>
                 </select>
               </td>
@@ -101,7 +154,7 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
-      <table className="min-w-[640px] w-full">
+      <table className="min-w-160 w-full">
         <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
             {renderHeaders().map((header, idx) => (

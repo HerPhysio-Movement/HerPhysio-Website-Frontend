@@ -40,7 +40,7 @@ export const FormField = ({
       <label
         className={`absolute left-4 transition-all duration-200 font-medium bg-white px-0.5 pointer-events-none z-10 ${
           focused || value
-            ? 'text-xs -top-2 text-blue-600'
+            ? 'text-xs -top-2 text-blue-600 z-20'
             : 'top-4 text-sm text-gray-600 group-focus-within:text-xs group-focus-within:-top-2 group-focus-within:text-blue-600'
         }`}
       >
@@ -52,7 +52,7 @@ export const FormField = ({
       <div className="relative">
         {/* Left Icon */}
         {Icon && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-all duration-300">
+          <div className="absolute transition-all duration-300 transform -translate-y-1/2 left-3 top-1/2">
             <Icon
               className={`w-5 h-5 transition-colors duration-200 ${
                 focused || value
@@ -65,7 +65,7 @@ export const FormField = ({
 
         {/* Success Indicator */}
         {isValid && isTextarea === false && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <div className="absolute transform -translate-y-1/2 right-3 top-1/2">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
           </div>
         )}
@@ -75,7 +75,7 @@ export const FormField = ({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors"
+            className="absolute text-gray-400 transition-colors transform -translate-y-1/2 right-3 top-1/2 hover:text-blue-600"
             tabIndex="-1"
           >
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -134,12 +134,12 @@ export const FormField = ({
 export const ContactInfoCard = ({ icon: Icon, title, value, href, type = 'text' }) => {
   const content = (
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+      <div className="flex items-center justify-center w-10 h-10 transition-colors rounded-lg bg-blue-50 group-hover:bg-blue-100">
         <Icon className="w-5 h-5 text-blue-600" />
       </div>
       <div>
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{title}</p>
-        <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+        <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">{title}</p>
+        <p className="text-sm font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
           {value}
         </p>
       </div>
@@ -152,7 +152,7 @@ export const ContactInfoCard = ({ icon: Icon, title, value, href, type = 'text' 
         href={href}
         target={type === 'social' ? '_blank' : undefined}
         rel={type === 'social' ? 'noopener noreferrer' : undefined}
-        className="group p-4 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-all duration-200 hover:border-blue-300"
+        className="p-4 transition-all duration-200 bg-white border border-gray-200 rounded-lg group hover:bg-gray-50 hover:border-blue-300"
       >
         {content}
       </a>
@@ -160,7 +160,7 @@ export const ContactInfoCard = ({ icon: Icon, title, value, href, type = 'text' 
   }
 
   return (
-    <div className="group p-4 rounded-lg border border-gray-200 bg-white">
+    <div className="p-4 bg-white border border-gray-200 rounded-lg group">
       {content}
     </div>
   );
@@ -178,7 +178,7 @@ export const SocialLinksGrid = ({ links }) => {
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-11 h-11 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-200 transform hover:scale-105 active:scale-95"
+          className="flex items-center justify-center text-gray-600 transition-all duration-200 transform bg-gray-100 border border-gray-200 rounded-lg w-11 h-11 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 active:scale-95"
           aria-label={social.label}
           title={social.label}
         >

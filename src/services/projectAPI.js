@@ -6,6 +6,9 @@ export const projectAPI = {
     formData.append('title', data.title);
     formData.append('description', data.description);
     formData.append('category', data.category);
+    if (data.thumbnail_url) {
+      formData.append('thumbnail_url', data.thumbnail_url);
+    }
     if (data.image && data.image instanceof File) {
       formData.append('image', data.image);
     }
@@ -47,6 +50,9 @@ export const projectAPI = {
     formData.append('title', data.title);
     formData.append('description', data.description);
     formData.append('category', data.category);
+    if (data.thumbnail_url) {
+      formData.append('thumbnail_url', data.thumbnail_url);
+    }
     if (data.image && data.image instanceof File) {
       formData.append('image', data.image);
     }

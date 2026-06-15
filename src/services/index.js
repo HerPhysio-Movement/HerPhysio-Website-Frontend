@@ -3,6 +3,7 @@ export { authAPI } from './authAPI';
 export { eventAPI } from './eventAPI';
 export { projectAPI } from './projectAPI';
 export { blogAPI } from './blogAPI';
+export { articleAPI } from './articleAPI';
 export { volunteerAPI } from './volunteerAPI';
 export { webinarAPI } from './webinarAPI';
 export { contactAPI } from './contactAPI';

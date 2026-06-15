@@ -23,7 +23,7 @@ const StatusBadge = ({
   const getIcon = () => {
     const statusLower = status?.toLowerCase();
     
-    if (statusLower === 'approved' || statusLower === 'published' || statusLower === 'completed' || statusLower === 'active') {
+    if (statusLower === 'approved' || statusLower === 'accepted' || statusLower === 'published' || statusLower === 'completed' || statusLower === 'active') {
       return <CheckCircle className={`w-${size === 'sm' ? '3' : size === 'lg' ? '5' : '4'} h-${size === 'sm' ? '3' : size === 'lg' ? '5' : '4'}`} />;
     }
     

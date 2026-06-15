@@ -1,10 +1,11 @@
-import { projectAPI, eventAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI } from '../services';
+import { projectAPI, eventAPI, articleAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI } from '../services';
 import { extractArrayFromResponse } from './apiHelpers';
 
 export const fetchDashboardData = async () => {
   const results = await Promise.allSettled([
     projectAPI.getProjects(),
     eventAPI.getAllEvents(),
+    articleAPI.getAllArticles(),
     blogAPI.getAllBlogsAdmin(),
     webinarAPI.getAllWebinars(),
     volunteerAPI.getAllVolunteers(),
@@ -14,9 +15,10 @@ export const fetchDashboardData = async () => {
   return {
     projects:   extractArrayFromResponse(results[0].value, ['projects', 'data']),
     events:     extractArrayFromResponse(results[1].value, ['events', 'data']),
-    articles:   extractArrayFromResponse(results[2].value, ['blogs', 'data']),
-    webinars:   extractArrayFromResponse(results[3].value, ['webinars', 'data']),
-    volunteers: extractArrayFromResponse(results[4].value, ['volunteers', 'data']),
-    courses:    extractArrayFromResponse(results[5].value, ['courses', 'data']),
+    articles:   extractArrayFromResponse(results[2].value, ['articles', 'data']),
+    blogs:      extractArrayFromResponse(results[3].value, ['blogs', 'data']),
+    webinars:   extractArrayFromResponse(results[4].value, ['webinars', 'data']),
+    volunteers: extractArrayFromResponse(results[5].value, ['volunteers', 'data']),
+    courses:    extractArrayFromResponse(results[6].value, ['courses', 'data']),
   };
 };

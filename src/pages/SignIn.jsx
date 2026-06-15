@@ -43,34 +43,34 @@ const SignIn = () => {
   };
 
   return (
-    <main className="bg-white min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl w-full mx-auto">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+    <main className="flex items-center justify-center min-h-screen px-4 py-20 bg-white sm:px-6 lg:px-8">
+      <div className="w-full max-w-6xl mx-auto">
+        <div className="flex flex-col items-center gap-12 lg:flex-row lg:gap-16">
           {/* Left side – form */}
           <div className="w-full max-w-md mx-auto lg:mx-0">
             {/* Removed the decorative dash line */}
-            <div className="text-center mb-8">
+            <div className="mb-8 text-center">
               <h1 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-2">
                 Welcome back
               </h1>
               <p className="text-[#525560]">Sign in to your account</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 sm:p-8">
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-md sm:p-8">
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Email field */}
                 <div className="relative">
                   <label
-                    className={`absolute left-3 transition-all duration-200 font-poppins ${
+                    className={`absolute left-10 transition-all duration-200 font-poppins pointer-events-none ${
                       focused.email || formData.email
-                        ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7]'
-                        : 'top-3 text-gray-400'
+                        ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7] z-20'
+                        : 'top-[.8rem] text-gray-400'
                     }`}
                   >
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Mail className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
                     <input
                       type="email"
                       name="email"
@@ -88,16 +88,16 @@ const SignIn = () => {
                 {/* Password field */}
                 <div className="relative">
                   <label
-                    className={`absolute left-3 transition-all duration-200 font-poppins ${
+                    className={`absolute left-10 transition-all duration-200 font-poppins pointer-events-none ${
                       focused.password || formData.password
-                        ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7]'
-                        : 'top-3 text-gray-400'
+                        ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7] z-20'
+                        : 'top-[.8rem] text-gray-400'
                     }`}
                   >
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Lock className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
                     <input
                       type="password"
                       name="password"
@@ -137,7 +137,7 @@ const SignIn = () => {
                 </button>
               </form>
 
-              <p className="text-center text-sm text-gray-600 mt-6">
+              <p className="mt-6 text-sm text-center text-gray-600">
                 Don't have an account?{' '}
                 <Link
                   to="/volunteer-signup"
@@ -162,7 +162,7 @@ const SignIn = () => {
                 <p className="text-[#525560] text-sm leading-relaxed">
                   Access exclusive resources, register for events, and connect with a community dedicated to women's health.
                 </p>
-                <div className="mt-6 pt-6 border-t border-gray-200 w-full">
+                <div className="w-full pt-6 mt-6 border-t border-gray-200">
                   <div className="flex justify-center gap-4 text-xs text-gray-400">
                     <span>✓ Free membership</span>
                     <span>✓ Expert content</span>

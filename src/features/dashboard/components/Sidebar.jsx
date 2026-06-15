@@ -13,11 +13,13 @@ import {
   PlusCircle,
 } from 'lucide-react';
 import { useUser } from '../../../context/UserContext';
+import { getResourceLabel } from '../utils/resourceLabels';
 
 const menuItems = [
   { name: 'Dashboard', icon: LayoutDashboard, filter: 'Dashboard' },
   { name: 'Projects', icon: FileText, filter: 'Projects' },
   { name: 'Articles', icon: FileText, filter: 'Articles' },
+  { name: 'Blogs', icon: FileText, filter: 'Blogs' },
   { name: 'Events', icon: Calendar, filter: 'Events' },
   { name: 'Webinars', icon: Video, filter: 'Webinar' },
   { name: 'Courses', icon: BookOpen, filter: 'Courses' },
@@ -112,7 +114,7 @@ const Sidebar = ({
             className="w-full flex items-center gap-2 px-4 py-2 bg-[#FD90A7] text-white rounded-lg hover:bg-[#f77997] transition"
           >
             <PlusCircle className="w-5 h-5" />
-            New {activeFilter === 'Dashboard' ? 'Item' : activeFilter.slice(0, -1)}
+            New {activeFilter === 'Dashboard' ? 'Item' : getResourceLabel(activeFilter)}
           </button>
         </div>
       )}

@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { volunteerAPI } from '../../../services/volunteerAPI';
 import FormField from '../../shared/FormField';
+import { validateForm } from '../../../utils/validateForm';
 
 const VolunteerForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    f_name: '', l_name: '', email: '', p_number: '', motivation_note: '', interest: '', password: ''
+    f_name: '', l_name: '', email: '', p_number: '', motivation_note: '', interest: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,16 +22,9 @@ const VolunteerForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Basic validation
-    const newErrors = {};
-    if (!formData.f_name.trim()) newErrors.f_name = 'First name is required';
-    if (!formData.l_name.trim()) newErrors.l_name = 'Last name is required';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Valid email is required';
-    if (!formData.p_number.trim()) newErrors.p_number = 'Phone number is required';
-    if (!formData.motivation_note.trim()) newErrors.motivation_note = 'Please share your motivation';
-    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    const { isValid, errors: validationErrors } = validateForm('Volunteers', formData);
+    setErrors(validationErrors);
+    if (!isValid) return;
 
     setIsSubmitting(true);
     try {
@@ -58,7 +52,6 @@ const VolunteerForm = () => {
           <FormField label="Phone Number" name="p_number" type="tel" value={formData.p_number} onChange={handleChange} error={errors.p_number} required />
           <FormField label="Why do you want to volunteer?" name="motivation_note" type="textarea" rows={3} value={formData.motivation_note} onChange={handleChange} error={errors.motivation_note} required />
           <FormField label="Areas of Interest" name="interest" value={formData.interest} onChange={handleChange} />
-          <FormField label="Password" name="password" type="password" value={formData.password} onChange={handleChange} error={errors.password} required />
           <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-[#FD90A7] text-white rounded-lg font-semibold hover:bg-[#f77997] flex items-center justify-center gap-2">
             {isSubmitting ? 'Submitting...' : <><Send className="w-5 h-5"/> Submit Application</>}
           </button>

@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Play, BookOpen } from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles } from './SectionComponents';
+import {
+  getWebinarHost,
+  getWebinarId,
+  getWebinarTitle,
+  getWebinarVideoUrl,
+  getYouTubeEmbedUrl,
+} from '../../../utils/videoHelpers';
 
 /**
  * Section: Webinar Recordings (fetches from API)
@@ -14,6 +21,9 @@ export const WebinarsSection = ({ webinars = [] }) => {
 
   const rotations = ['-rotate-3', 'rotate-0', 'rotate-2'];
   const zIndices = ['z-10', 'z-20', 'z-15'];
+  const previewWebinars = webinars.slice(0, 3);
+  const selectedWebinarVideoUrl = getWebinarVideoUrl(selectedWebinar);
+  const selectedWebinarEmbedUrl = getYouTubeEmbedUrl(selectedWebinarVideoUrl);
 
   return (
     <section id="webinars" className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
@@ -26,11 +36,11 @@ export const WebinarsSection = ({ webinars = [] }) => {
               Webinar Recordings
             </h2>
             <p className="text-[#525560] text-lg max-w-2xl">
-              Missed a live session? Explore our library – expert talks on demand.
+              Missed a live session? Explore our library with expert talks on demand.
             </p>
           </div>
-          <Link 
-            to="/webinars" 
+          <Link
+            to="/webinars"
             className="text-sm text-[#FD90A7] hover:underline flex items-center gap-1"
           >
             View all <ArrowRight className="w-4 h-4" />
@@ -38,62 +48,78 @@ export const WebinarsSection = ({ webinars = [] }) => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {webinars.slice(0, 3).map((webinar, idx) => (
-            <FloatingCard
-              key={webinar.id}
-              item={webinar}
-              isSelected={selectedWebinar?.id === webinar.id}
-              onSelect={() => setSelectedWebinar(webinar)}
-              rotation={rotations[idx]}
-              zIndex={zIndices[idx]}
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-[#FD90A7]/10 flex items-center justify-center flex-shrink-0">
-                  <Play className="w-6 h-6 text-[#FD90A7]" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg text-[#1D2130] mb-1 line-clamp-1">
-                    {webinar.title}
-                  </h3>
-                  <p className="text-xs text-[#FD90A7] font-medium mb-2">
-                    {webinar.host || 'Expert Speaker'}
-                  </p>
-                  <p className="text-gray-500 text-sm line-clamp-2">
-                    {webinar.description}
-                  </p>
-                  <div className="mt-3 text-xs text-[#FD90A7] opacity-0 group-hover:opacity-100 transition">
-                    Click to watch →
+          {previewWebinars.map((webinar, idx) => {
+            const webinarId = getWebinarId(webinar) || idx;
+            const title = getWebinarTitle(webinar);
+            const host = getWebinarHost(webinar);
+
+            return (
+              <FloatingCard
+                key={webinarId}
+                item={webinar}
+                isSelected={getWebinarId(selectedWebinar) === getWebinarId(webinar)}
+                onSelect={() => setSelectedWebinar(webinar)}
+                rotation={rotations[idx]}
+                zIndex={zIndices[idx]}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[#FD90A7]/10 flex items-center justify-center flex-shrink-0">
+                    <Play className="w-6 h-6 text-[#FD90A7]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-[#1D2130] mb-1 line-clamp-1">
+                      {title}
+                    </h3>
+                    <p className="text-xs text-[#FD90A7] font-medium mb-2">
+                      {host}
+                    </p>
+                    <p className="text-gray-500 text-sm line-clamp-2">
+                      {webinar.description || webinar.caption}
+                    </p>
+                    <div className="mt-3 text-xs text-[#FD90A7] opacity-0 group-hover:opacity-100 transition">
+                      Click to watch
+                    </div>
                   </div>
                 </div>
-              </div>
-            </FloatingCard>
-          ))}
+              </FloatingCard>
+            );
+          })}
         </div>
       </div>
 
-      {/* Webinar Modal */}
       <ResourceModal
         item={selectedWebinar}
         isOpen={!!selectedWebinar}
         onClose={() => setSelectedWebinar(null)}
-        maxWidth="max-w-2xl"
-        hasImage={true}
+        maxWidth="max-w-3xl"
+        hasImage={!selectedWebinarEmbedUrl}
         imageUrl={selectedWebinar?.image_url}
       >
         {selectedWebinar && (
           <>
+            {selectedWebinarEmbedUrl && (
+              <div className="aspect-video rounded-lg overflow-hidden mb-5 bg-gray-900">
+                <iframe
+                  src={selectedWebinarEmbedUrl}
+                  title={getWebinarTitle(selectedWebinar)}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+            )}
             <h3 className="text-2xl font-bold text-[#1D2130] mb-2">
-              {selectedWebinar.title}
+              {getWebinarTitle(selectedWebinar)}
             </h3>
             <p className="text-sm text-[#FD90A7] font-medium mb-3">
-              Presented by {selectedWebinar.host || 'Expert Speaker'}
+              Presented by {getWebinarHost(selectedWebinar)}
             </p>
             <p className="text-gray-600 leading-relaxed mb-6">
-              {selectedWebinar.description}
+              {selectedWebinar.description || selectedWebinar.caption}
             </p>
-            {selectedWebinar.link && (
+            {selectedWebinarVideoUrl && (
               <a
-                href={selectedWebinar.link}
+                href={selectedWebinarVideoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-[#FD90A7] text-white rounded-full hover:bg-[#f77997] transition"
@@ -176,7 +202,6 @@ export const ArticlesSection = ({ articles = [] }) => {
         </div>
       </div>
 
-      {/* Article Modal */}
       <ResourceModal
         item={selectedArticle}
         isOpen={!!selectedArticle}
@@ -192,7 +217,7 @@ export const ArticlesSection = ({ articles = [] }) => {
             </h3>
             <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
               <span>By {selectedArticle.author || 'Her Physio'}</span>
-              <span>•</span>
+              <span>-</span>
               <span>
                 {selectedArticle.created_at
                   ? new Date(selectedArticle.created_at).toLocaleDateString()

@@ -10,6 +10,8 @@ import Events from './pages/Events';
 import Projects from './pages/Projects';
 import Community from './pages/Community';
 import Resources from './pages/Resources';
+import Webinars from './pages/Webinars';
+import Courses from './pages/Courses';
 import Contact from './pages/Contact';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
@@ -37,6 +39,8 @@ const App = () => (
       <Route path="/projects" element={<Projects />} />
       <Route path="/community" element={<Community />} />
       <Route path="/resources" element={<Resources />} />
+      <Route path="/webinars" element={<Webinars />} />
+      <Route path="/courses" element={<Courses />} />
       <Route path="/contact-us" element={<Contact />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signin" element={<SignIn />} />

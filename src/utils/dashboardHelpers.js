@@ -6,7 +6,7 @@
 import { extractArrayFromResponse, formatErrorMessage, validateRequired } from './apiHelpers';
 import { VALIDATION_RULES, TOAST_MESSAGES } from './constants';
 import {
-  projectAPI, eventAPI, blogAPI, webinarAPI, volunteerAPI
+  projectAPI, eventAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI
 } from '../services';
 
 /**
@@ -46,15 +46,57 @@ export const fetchDashboardData = async (currentUser) => {
  * @param {Object} currentUser - Current user
  * @returns {Object} - Prepared payload
  */
+const normalizeEventTime = (time) => {
+  if (!time || typeof time !== 'string') return time;
+
+  // Normalize ISO-style or timestamp values to HH:mm:ss
+  const timePart = time.includes('T') ? time.split('T').pop() : time;
+  const cleaned = timePart.replace(/Z$/, '').split('.')[0];
+  const hhmmssMatch = cleaned.match(/^([0-1]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?/);
+  if (hhmmssMatch) {
+    return `${hhmmssMatch[1]}:${hhmmssMatch[2]}:${hhmmssMatch[3] || '00'}`;
+  }
+
+  if (/^((?:[01]\d|2[0-3]):[0-5]\d)$/.test(time)) {
+    return `${time}:00`;
+  }
+
+  return time;
+};
+
+const normalizeEventDate = (dateValue) => {
+  if (!dateValue) return dateValue;
+  if (typeof dateValue !== 'string') {
+    const date = new Date(dateValue);
+    return Number.isNaN(date.getTime()) ? dateValue : date.toISOString().slice(0, 10);
+  }
+
+  if (dateValue.includes('T')) {
+    const date = new Date(dateValue);
+    return Number.isNaN(date.getTime()) ? dateValue : date.toISOString().slice(0, 10);
+  }
+
+  if (dateValue.includes('-')) {
+    const parts = dateValue.split('-');
+    if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return dateValue;
+  }
+
+  return dateValue;
+};
+
 export const prepareItemPayload = (item, filterType, currentUser) => {
   let payload = { ...item };
 
   if (filterType === 'Events') {
     // Normalize event time format
-    if (payload.event_time && payload.event_time.length === 5) {
-      payload.event_time = `${payload.event_time}:00`;
-    }
-    
+    payload.event_time = normalizeEventTime(payload.event_time);
+
+    // Normalize date format to YYYY-MM-DD
+    payload.event_date = normalizeEventDate(payload.event_date);
+
     // Handle capacity as number
     if (payload.capacity === '' || payload.capacity === undefined) {
       delete payload.capacity;
@@ -106,7 +148,9 @@ export const validateItemData = (item, filterType) => {
     Projects: ['title', 'description', 'category'],
     Events: ['event_name', 'event_host', 'caption', 'description', 'event_date', 'event_time', 'venue'],
     Articles: ['author', 'email', 'title', 'content'],
-    Webinar: ['title', 'host'],
+    Blogs: ['author', 'email', 'title', 'content'],
+    Webinar: ['webinar_title', 'webinar_host', 'description'],
+    Courses: ['course_title', 'caption', 'description', 'category'],
     Volunteers: ['f_name', 'l_name', 'email', 'p_number', 'motivation_note']
   };
 
@@ -146,8 +190,12 @@ export const createItem = async (item, filterType, currentUser) => {
       return await eventAPI.createEvent(payload);
     case 'Articles':
       return await blogAPI.createBlog(payload);
+    case 'Blogs':
+      return await blogAPI.createBlog(payload);
     case 'Webinar':
       return await webinarAPI.createWebinar(payload);
+    case 'Courses':
+      return await courseAPI.createCourse(payload);
     case 'Volunteers':
       return await volunteerAPI.signup({ ...payload, role: 'volunteer' });
     default:
@@ -179,8 +227,12 @@ export const updateItem = async (id, item, filterType, currentUser) => {
       return await eventAPI.updateEvent(id, payload);
     case 'Articles':
       return await blogAPI.updateBlog(id, payload);
+    case 'Blogs':
+      return await blogAPI.updateBlog(id, payload);
     case 'Webinar':
       return await webinarAPI.updateWebinar(id, payload);
+    case 'Courses':
+      return await courseAPI.updateCourse(id, payload);
     default:
       throw new Error(`Unknown item type: ${filterType}`);
   }
@@ -200,8 +252,12 @@ export const deleteItem = async (id, filterType) => {
       return await eventAPI.deleteEvent(id);
     case 'Articles':
       return await blogAPI.deleteBlog(id);
+    case 'Blogs':
+      return await blogAPI.deleteBlog(id);
     case 'Webinar':
       return await webinarAPI.deleteWebinar(id);
+    case 'Courses':
+      return await courseAPI.deleteCourse(id);
     default:
       throw new Error(`Unknown item type: ${filterType}`);
   }
@@ -226,10 +282,14 @@ export const filterData = (data, query, filterType) => {
         return item.name?.toLowerCase().includes(q) || item.title?.toLowerCase().includes(q);
       case 'Articles':
         return item.title?.toLowerCase().includes(q) || item.author?.toLowerCase().includes(q);
+      case 'Blogs':
+        return item.title?.toLowerCase().includes(q) || item.author?.toLowerCase().includes(q);
       case 'Events':
         return item.event_name?.toLowerCase().includes(q) || item.name?.toLowerCase().includes(q);
       case 'Webinar':
-        return item.title?.toLowerCase().includes(q) || item.host?.toLowerCase().includes(q);
+        return item.webinar_title?.toLowerCase().includes(q) || item.title?.toLowerCase().includes(q) || item.webinar_host?.toLowerCase().includes(q);
+      case 'Courses':
+        return item.course_title?.toLowerCase().includes(q) || item.category?.toLowerCase().includes(q);
       case 'Volunteers':
         return `${item.f_name} ${item.l_name}`.toLowerCase().includes(q) || item.email?.toLowerCase().includes(q);
       default:
@@ -248,6 +308,8 @@ export const getDashboardStats = (data) => {
     eventsCount: Array.isArray(data.events) ? data.events.length : 0,
     projectsCount: Array.isArray(data.projects) ? data.projects.length : 0,
     articlesCount: Array.isArray(data.articles) ? data.articles.length : 0,
+    blogsCount: Array.isArray(data.blogs) ? data.blogs.length : 0,
+    coursesCount: Array.isArray(data.courses) ? data.courses.length : 0,
     webinarsCount: Array.isArray(data.webinars) ? data.webinars.length : 0,
     volunteersCount: Array.isArray(data.volunteers) ? data.volunteers.length : 0,
   };

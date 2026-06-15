@@ -27,6 +27,9 @@ const rules = {
     description: [validators.required, validators.minLength(10)],
     event_date: [validators.required],
     event_time: [validators.required],
+    venue: [validators.required],
+    caption: [validators.required],
+    link: [validators.required, validators.url],
   },
   Articles: {
     title: [validators.required],
@@ -34,9 +37,17 @@ const rules = {
     author: [validators.required],
     email: [validators.required, validators.email],
   },
-  Webinar: {
+  Blogs: {
     title: [validators.required],
-    host: [validators.required],
+    content: [validators.required, validators.minLength(10)],
+    author: [validators.required],
+    email: [validators.required, validators.email],
+  },
+  Webinar: {
+    webinar_title: [validators.required],
+    webinar_host: [validators.required],
+    description: [validators.required, validators.minLength(10)],
+    youtube_url: [validators.url],
   },
   Courses: {
     course_title: [validators.required],

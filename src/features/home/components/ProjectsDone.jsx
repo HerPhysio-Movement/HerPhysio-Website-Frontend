@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Sparkles, Calendar, MapPin } from 'lucide-react';
+import { ExternalLink, Sparkles, Calendar, MapPin, FolderOpen } from 'lucide-react';
 import { projectAPI } from '../../../services/projectAPI';
 
 const ProjectsDone = () => {
@@ -67,11 +67,22 @@ const ProjectsDone = () => {
               className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
             >
               <div className="relative h-56 overflow-hidden">
-                <img
-                  src={project.image_url || '/placeholder-project.jpg'}
+                <div className="relative aspect-video bg-linear-to-br from-[#FD90A7]/15 to-[#6020F0]/10 flex items-center justify-center overflow-hidden">
+                {project.thumbnail_url ? (
+                  <img
+                    src={project.thumbnail_url}
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FolderOpen className="w-12 h-12 text-[#FD90A7]" />
+                )}
+                </div>
+                {/* <img
+                  src={project.thumbnail_url || 'https://placehold.net/building.svg'}
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                /> */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {project.category && (
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-medium text-[#1D2130]">
@@ -117,14 +128,25 @@ const ProjectsDone = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative h-64 overflow-hidden rounded-t-2xl">
-              <img
-                src={selectedProject.image_url || '/placeholder-project.jpg'}
+              <div className="relative aspect-video bg-linear-to-br from-[#FD90A7]/15 to-[#6020F0]/10 flex items-center justify-center overflow-hidden">
+                {selectedProject.thumbnail_url ? (
+                  <img
+                    src={selectedProject.thumbnail_url}
+                    alt={selectedProject.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FolderOpen className="w-12 h-12 text-[#FD90A7] -translate-y-12" />
+                )}
+              </div>
+              {/* <img
+                src={selectedProject.thumbnail_url || 'https://placehold.net/building.svg'}
                 alt={selectedProject.title}
                 className="w-full h-full object-cover"
-              />
+              /> */}
               <button
                 onClick={closeModal}
-                className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
+                className="absolute top-4 right-4 bg-black/50 text-white h-8 w-8 rounded-full hover:bg-black/70 transition"
               >
                 ✕
               </button>

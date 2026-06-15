@@ -112,10 +112,10 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const adminSignup = async (email, password) => {
+  const adminSignup = async (payload) => {
     try {
-      const response = await authAPI.adminSignup({ email, password, role: 'admin' });
-      addActivityLog('Admin account created', email);
+      const response = await authAPI.adminSignup(payload);
+      addActivityLog('Admin account created', payload.email);
       return response;
     } catch (error) {
       console.error('Admin signup failed:', error);

@@ -2,22 +2,31 @@
 import { useState, useEffect } from 'react';
 import { X, Plus, Save, Trash2 } from 'lucide-react';
 import { validateForm } from '../../../utils/validateForm';
+import { getResourceLabel } from '../utils/resourceLabels';
 
 const modalFields = {
   Projects: [
     { name: 'title', label: 'Title', type: 'text', required: true },
     { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 4 },
     { name: 'category', label: 'Category', type: 'text', required: true },
-    { name: 'status', label: 'Status', type: 'select', options: ['draft', 'published'] },
+    { name: 'thumbnail_url', label: 'Thumbnail URL', type: 'url' },
+    { name: 'status', label: 'Status', type: 'select', options: ['published', 'archived'] },
   ],
   Articles: [
     { name: 'title', label: 'Title', type: 'text', required: true },
-    { name: 'content', label: 'Content', type: 'textarea', required: true, rows: 5 },
-    { name: 'excerpt', label: 'Excerpt', type: 'textarea', rows: 2 },
+    { name: 'author', label: 'Author', type: 'text', required: true },
+    { name: 'category', label: 'Category', type: 'text', required: true },
+    { name: 'bio', label: 'Bio', type: 'textarea', required: true, rows: 4 },
+    { name: 'link', label: 'Link', type: 'url', required: true },
+    { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
+  ],
+  Blogs: [
     { name: 'author', label: 'Author', type: 'text', required: true },
     { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'image_url', label: 'Image URL', type: 'url' },
-    { name: 'status', label: 'Status', type: 'select', options: ['draft', 'published'] },
+    { name: 'title', label: 'Title', type: 'text', required: true },
+    { name: 'content', label: 'Content', type: 'textarea', required: true, rows: 6 },
+    { name: 'excerpt', label: 'Excerpt', type: 'textarea', rows: 2 },
+    { name: 'status', label: 'Status', type: 'select', options: ['published', 'archived'] },
   ],
   Events: [
     { name: 'event_name', label: 'Event Name', type: 'text', required: true },
@@ -25,17 +34,17 @@ const modalFields = {
     { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 3 },
     { name: 'event_date', label: 'Date', type: 'date', required: true },
     { name: 'event_time', label: 'Time', type: 'time', required: true },
-    { name: 'venue', label: 'Venue', type: 'text' },
-    { name: 'caption', label: 'Caption', type: 'text' },
-    { name: 'link', label: 'Link', type: 'url' },
+    { name: 'venue', label: 'Venue', type: 'text', required: true },
+    { name: 'caption', label: 'Caption', type: 'text', required: true },
+    { name: 'link', label: 'Link', type: 'url', required: true },
   ],
   Webinar: [
-    { name: 'title', label: 'Title', type: 'text', required: true },
-    { name: 'host', label: 'Host', type: 'text', required: true },
+    { name: 'webinar_title', label: 'Title', type: 'text', required: true },
+    { name: 'webinar_host', label: 'Host', type: 'text', required: true },
+    { name: 'caption', label: 'Caption', type: 'text' },
     { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
-    { name: 'date', label: 'Date', type: 'date' },
-    { name: 'time', label: 'Time', type: 'time' },
-    { name: 'link', label: 'Link', type: 'url' },
+    { name: 'youtube_url', label: 'YouTube URL', type: 'url' },
+    { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
   ],
   Courses: [
     { name: 'course_title', label: 'Course Title', type: 'text', required: true },
@@ -74,6 +83,12 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
       if (activeFilter === 'Courses' && Array.isArray(data.tags)) {
         data.tags = data.tags.join(', ');
       }
+      if (activeFilter === 'Projects' && data.status) {
+        data.status = String(data.status).toLowerCase();
+      }
+      if (activeFilter === 'Blogs' && data.status) {
+        data.status = String(data.status).toLowerCase();
+      }
       setFormData(data);
     } else {
       const defaults = {};
@@ -99,9 +114,15 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Build payload – convert tags string to array for Courses
+    // Build payload – convert tags string to array for Courses and Webinar
     const payload = { ...formData };
     if (activeFilter === 'Courses' && typeof payload.tags === 'string') {
+      payload.tags = payload.tags
+        .split(',')
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
+    }
+    if (activeFilter === 'Webinar' && typeof payload.tags === 'string') {
       payload.tags = payload.tags
         .split(',')
         .map((t) => t.trim())
@@ -190,7 +211,8 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
   };
 
   const fields = modalFields[activeFilter] || [];
-  const title = mode === 'add' ? `New ${activeFilter.slice(0, -1)}` : `Edit ${activeFilter.slice(0, -1)}`;
+  const resourceLabel = getResourceLabel(activeFilter);
+  const title = mode === 'add' ? `New ${resourceLabel}` : `Edit ${resourceLabel}`;
 
   return (
     <div
@@ -208,7 +230,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
         <div className="sticky top-0 z-10 flex justify-between items-center px-6 py-4 border-b border-gray-200/60 bg-white/80 backdrop-blur-md rounded-t-2xl">
           <div>
             <h2 className="text-xl font-bold text-gray-800">{title}</h2>
-            <div className="w-12 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mt-1 rounded-full" />
+            <div className="w-12 h-1 bg-linear-to-r from-[#FD90A7] to-[#C7365B] mt-1 rounded-full" />
           </div>
           <button onClick={handleClose} className="p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-gray-600">
             <X className="w-5 h-5" />
@@ -234,7 +256,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-[#FD90A7] to-[#C7365B] text-white font-semibold shadow-md hover:shadow-lg transition transform hover:scale-[1.02] active:scale-95 flex items-center gap-2 disabled:opacity-60"
+              className="px-6 py-2.5 rounded-lg bg-linear-to-r from-[#FD90A7] to-[#C7365B] text-white font-semibold shadow-md hover:shadow-lg transition transform hover:scale-[1.02] active:scale-95 flex items-center gap-2 disabled:opacity-60"
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">

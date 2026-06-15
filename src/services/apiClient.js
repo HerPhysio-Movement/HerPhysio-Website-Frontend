@@ -1,5 +1,31 @@
 const API_BASE_URL = 'https://herphysio-website.onrender.com';
 
+const normalizeErrorMessage = (value, fallback) => {
+  if (!value) return fallback;
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) {
+    const messages = value
+      .map((item) => normalizeErrorMessage(item, ''))
+      .filter(Boolean);
+    return messages.length ? messages.join(', ') : fallback;
+  }
+  if (typeof value === 'object') {
+    const directMessages = [
+      typeof value.message === 'string' ? value.message : '',
+      typeof value.msg === 'string' ? value.msg : '',
+      typeof value.detail === 'string' ? value.detail : '',
+    ].filter(Boolean);
+
+    const messages = Object.entries(value)
+      .map(([key, item]) => `${key}: ${normalizeErrorMessage(item, '')}`.trim())
+      .filter((message) => message && !message.endsWith(':'));
+
+    const combinedMessages = [...directMessages, ...messages.filter((message) => !directMessages.includes(message))];
+    return combinedMessages.length ? combinedMessages.join(', ') : fallback;
+  }
+  return fallback;
+};
+
 class ApiClient {
   constructor() {
     this.baseURL = API_BASE_URL;
@@ -43,7 +69,7 @@ class ApiClient {
         try {
           const errorData = await response.json();
           errorDetail = errorData.detail || errorData.message || errorMessage;
-          errorMessage = errorDetail;
+          errorMessage = normalizeErrorMessage(errorDetail, errorMessage);
         } catch (e) {
           errorMessage = response.statusText || errorMessage;
         }
@@ -54,7 +80,15 @@ class ApiClient {
       if (response.status === 204) return null;
       return await response.json();
     } catch (error) {
+      // Improve messaging for network-level failures (CORS, DNS, offline)
       console.error(`API Error [${endpoint}]:`, error);
+      if (typeof window !== 'undefined' && error instanceof TypeError) {
+        const improved = new Error(
+          'Network error: Failed to fetch. Check backend URL, server status, and CORS configuration.'
+        );
+        improved.cause = error;
+        throw improved;
+      }
       throw error;
     }
   }

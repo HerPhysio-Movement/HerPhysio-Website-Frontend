@@ -367,7 +367,7 @@ const CommunityComponent = () => {
                   className="group bg-white rounded-xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-[#FD90A7]/10 flex items-center justify-center group-hover:bg-[#FD90A7]/20 transition-colors">
+                    <div className="w-12 h-12 rounded-full bg-[#FD90A7]/10 flex items-center justify-center group-hover:bg-[#FD90A7]/20 transition-colors shrink-0">
                       <Icon className="w-6 h-6 text-[#FD90A7] group-hover:scale-110 transition-transform" />
                     </div>
                     <h3 className="font-bold text-xl text-[#1D2130] group-hover:text-[#FD90A7] transition-colors">{group.title}</h3>

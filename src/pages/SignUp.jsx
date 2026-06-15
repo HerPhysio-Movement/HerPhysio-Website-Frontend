@@ -48,11 +48,11 @@ const SignUp = () => {
   return (
     <main className="min-h-screen flex bg-[#FFFAF9]">
       {/* ---------- LEFT PANEL – Form ---------- */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-8 lg:px-12 py-12">
+      <div className="flex items-center justify-center w-full px-4 py-12 lg:w-1/2 sm:px-8 lg:px-12">
         <div className="w-full max-w-md">
           {/* Logo / Brand Mark */}
           <Link to="/" className="inline-block mb-10">
-            <img src="/NavLogo.png" alt="Her Physio Movement" className="h-8 w-auto" />
+            <img src="/NavLogo.png" alt="Her Physio Movement" className="w-auto h-8" />
           </Link>
 
           <div className="mb-8">
@@ -65,7 +65,7 @@ const SignUp = () => {
           </div>
 
           {/* Glass card form */}
-          <div className="bg-white/70 backdrop-blur-xl border border-white/50 rounded-2xl shadow-xl p-6 sm:p-8">
+          <div className="p-6 border shadow-xl bg-white/70 backdrop-blur-xl border-white/50 rounded-2xl sm:p-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* First Name */}
               <div>
@@ -161,7 +161,7 @@ const SignUp = () => {
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
@@ -170,7 +170,7 @@ const SignUp = () => {
                 ) : (
                   <>
                     Sign Up
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                   </>
                 )}
               </button>
@@ -196,7 +196,7 @@ const SignUp = () => {
         </div>
 
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-12 text-center">
-          <div className="w-24 h-24 rounded-2xl bg-white/70 backdrop-blur-xl shadow-xl flex items-center justify-center mb-8 border border-white/50">
+          <div className="flex items-center justify-center w-24 h-24 mb-8 border shadow-xl rounded-2xl bg-white/70 backdrop-blur-xl border-white/50">
             <UserPlus className="w-12 h-12 text-[#FD90A7]" />
           </div>
           <h2 className="text-2xl font-bold text-[#1A1A1A] mb-3">

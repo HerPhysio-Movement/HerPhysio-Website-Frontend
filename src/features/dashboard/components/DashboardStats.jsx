@@ -1,13 +1,19 @@
 import { Calendar, FileText, Heart, BookOpen, TrendingUp, ArrowUpRight } from 'lucide-react';
 
-const DashboardStats = ({ eventsCount, projectsCount, volunteersCount, articlesCount, coursesCount = 0, onStatClick }) => {
+const DashboardStats = ({ eventsCount, projectsCount, volunteersCount, volunteers, articlesCount, blogsCount = 0, coursesCount = 0, onStatClick }) => {
   const stats = [
     { label: 'Events', value: eventsCount, icon: Calendar, color: 'bg-pink-100 text-pink-600', bgGradient: 'from-pink-50 to-pink-100/30', filter: 'Events', trend: '+12%' },
     { label: 'Projects', value: projectsCount, icon: FileText, color: 'bg-blue-100 text-blue-600', bgGradient: 'from-blue-50 to-blue-100/30', filter: 'Projects', trend: '+8%' },
-    { label: 'Volunteers', value: volunteersCount, icon: Heart, color: 'bg-green-100 text-green-600', bgGradient: 'from-green-50 to-green-100/30', filter: 'Volunteers', trend: '+24%' },
+    { label: 'Blogs', value: blogsCount, icon: FileText, color: 'bg-indigo-100 text-indigo-600', bgGradient: 'from-indigo-50 to-indigo-100/30', filter: 'Blogs', trend: '+6%' },
     { label: 'Articles', value: articlesCount, icon: BookOpen, color: 'bg-purple-100 text-purple-600', bgGradient: 'from-purple-50 to-purple-100/30', filter: 'Articles', trend: '+5%' },
     { label: 'Courses', value: coursesCount, icon: BookOpen, color: 'bg-amber-100 text-amber-600', bgGradient: 'from-amber-50 to-amber-100/30', filter: 'Courses', trend: '+3%' },
+    { label: 'Volunteers', value: volunteersCount, icon: Heart, color: 'bg-green-100 text-green-600', bgGradient: 'from-green-50 to-green-100/30', filter: 'Volunteers', trend: '+24%' },
   ];
+
+  // determine accepted volunteers count
+  const acceptedVolunteersCount = Array.isArray(volunteers)
+    ? volunteers.filter(v => (v.status || '').toLowerCase() === 'accepted').length
+    : (volunteersCount || 0);
 
   return (
     <div className="space-y-6">
@@ -29,7 +35,7 @@ const DashboardStats = ({ eventsCount, projectsCount, volunteersCount, articlesC
             <div
               key={stat.label}
               onClick={() => onStatClick(stat.filter)}
-              className={`bg-gradient-to-br ${stat.bgGradient} rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer hover:shadow-lg hover:border-[#FD90A7]/20 transition-all duration-300 transform hover:-translate-y-1`}
+              className={`bg-linear-to-br ${stat.bgGradient} rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer hover:shadow-lg hover:border-[#FD90A7]/20 transition-all duration-300 transform hover:-translate-y-1`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center`}>
@@ -47,18 +53,18 @@ const DashboardStats = ({ eventsCount, projectsCount, volunteersCount, articlesC
         })}
       </div>
 
-      <div className="bg-gradient-to-r from-[#FD90A7]/5 to-transparent rounded-xl border border-[#FD90A7]/20 p-4">
+      <div className="bg-linear-to-r from-[#FD90A7]/5 to-transparent rounded-xl border border-[#FD90A7]/20 p-4">
         <div className="flex flex-wrap gap-6">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-[#FD90A7]" />
             <span className="text-sm text-gray-600">
-              <span className="font-semibold text-[#1D2130]">{eventsCount + projectsCount + articlesCount + volunteersCount + coursesCount}</span> total resources
+              <span className="font-semibold text-[#1D2130]">{eventsCount + projectsCount + articlesCount + blogsCount + volunteersCount + coursesCount}</span> total resources
             </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-[#FD90A7]" />
             <span className="text-sm text-gray-600">
-              <span className="font-semibold text-[#1D2130]">{volunteersCount}</span> active volunteers
+              <span className="font-semibold text-[#1D2130]">{acceptedVolunteersCount}</span> active volunteers
             </span>
           </div>
           <div className="flex items-center gap-2">

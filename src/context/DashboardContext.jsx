@@ -10,6 +10,7 @@ export const DashboardProvider = ({ children }) => {
     projects: [],
     events: [],
     articles: [],
+    blogs: [],
     webinars: [],
     volunteers: [],
     courses: [],

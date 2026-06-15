@@ -45,7 +45,7 @@ export const notesData = [
     description: 'One-on-one virtual consultations and personalized care plans for pelvic health, prenatal, and postpartum needs.',
     fullDescription: 'Book a confidential virtual session with a certified women\'s health physiotherapist. Receive a tailored plan that addresses your unique concerns - from pelvic pain to postnatal recovery.',
     cta: 'Book a session',
-    ctaLink: '/contact',
+    ctaLink: '/contact-us',
     rotation: 'rotate-2',
     zIndex: 'z-15',
   },

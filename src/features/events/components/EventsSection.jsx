@@ -69,13 +69,15 @@ const CountdownTimer = ({ targetDate }) => {
 /* ---------- Registration Modal ---------- */
 const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) => {
   const [email, setEmail] = useState(currentUser?.email || '');
-  const [name, setName] = useState(currentUser?.f_name || '');
+  const [fName, setFName] = useState(currentUser?.f_name || '');
+  const [lName, setLName] = useState(currentUser?.l_name || '');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
       setEmail(currentUser.email || '');
-      setName(currentUser.f_name || '');
+      setFName(currentUser.f_name || '');
+      setLName(currentUser.l_name || '');
     }
   }, [currentUser]);
 
@@ -85,7 +87,16 @@ const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) 
     e.preventDefault();
     setSubmitting(true);
     try {
-      await onRegister(event.id, { email, name });
+      const eventId = event.id || event._id || event.event_id;
+      if (!eventId) {
+        alert('Unable to register: invalid event ID.');
+        return;
+      }
+      await onRegister(eventId, {
+        email,
+        f_name: fName,
+        l_name: lName,
+      });
     } finally {
       setSubmitting(false);
     }
@@ -98,23 +109,21 @@ const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) 
           <h2 className="text-xl font-bold text-gray-900">Register for Event</h2>
           <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-100 text-gray-400"><X className="w-5 h-5" /></button>
         </div>
-        {!currentUser ? (
-          <div className="text-center space-y-4">
-            <p className="text-gray-600 text-sm">Please sign in to register.</p>
-            <Link to="/signin" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FD90A7] text-white rounded-full font-semibold hover:bg-[#F77997] transition" onClick={onClose}>
-              Sign In <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="bg-[#FD90A7]/5 rounded-2xl p-4 mb-4">
               <p className="text-sm font-semibold text-gray-900">{event.event_name}</p>
               <p className="text-xs text-gray-500 mt-1">{event.event_date} • {event.event_time}</p>
               <p className="text-xs text-gray-400 mt-1">{event.venue || 'Online'}</p>
             </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Your Name</label>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">First Name</label>
+                <input type="text" value={fName} onChange={(e) => setFName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Last Name</label>
+                <input type="text" value={lName} onChange={(e) => setLName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
+              </div>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
@@ -124,7 +133,6 @@ const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) 
               {submitting ? 'Registering...' : 'Confirm Registration'} <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-        )}
       </div>
     </div>
   );
@@ -192,14 +200,19 @@ const EventsSection = ({ showHeading = true }) => {
     }
   };
 
-  const handleRegisterClick = (event) => { setSelectedEvent(event); setShowRegModal(true); };
+  const handleRegisterClick = (event) => {
+    const isPast = new Date(event.event_date) < new Date();
+    if (isPast) return;
+    setSelectedEvent(event);
+    setShowRegModal(true);
+  };
 
-  const handleRegistration = async (eventId, { email, name }) => {
+  const handleRegistration = async (eventId, { email, f_name, l_name }) => {
     try {
       await eventAPI.registerForEvent({
-        f_name: name || currentUser?.f_name,
-        l_name: currentUser?.l_name || '',
-        email: email || currentUser?.email,
+        f_name: f_name || currentUser?.f_name || '',
+        l_name: l_name || currentUser?.l_name || '',
+        email: email || currentUser?.email || '',
         event_id: eventId,
       });
       setShowRegModal(false);
@@ -211,8 +224,9 @@ const EventsSection = ({ showHeading = true }) => {
 
   const totalEvents = events.length;
   const upcomingEvents = events.filter((e) => new Date(e.event_date) >= new Date()).length;
+  const upcomingEventsList = events.filter((e) => new Date(e.event_date) >= new Date());
   const totalRegistrations = events.reduce((sum, e) => sum + (e.registrations || 0), 0);
-  const nextUpcomingEvent = events.find((e) => new Date(e.event_date) >= new Date());
+  const nextUpcomingEvent = upcomingEventsList[0];
   const currentEvent = events[activeEventIndex];
 
   if (loading) {
@@ -279,30 +293,39 @@ const EventsSection = ({ showHeading = true }) => {
               </div>
             </div>
 
-            {events.length > 1 && (
+            {events.length > 0 && (
               <div className="bg-[#0B0F12] text-white rounded-[32px] p-6 max-w-sm mx-auto lg:mx-0">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">Upcoming Events</h3>
                 <div className="space-y-3">
-                  {events.filter(e => new Date(e.event_date) >= new Date()).slice(0, 3).map((ev, idx) => (
-                    <div
-                      key={ev.id}
-                      onClick={() => goTo(events.indexOf(ev))}
-                      className={`ledger-row-item flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300 ${
-                        events.indexOf(ev) === activeEventIndex ? 'bg-[#FD90A7] text-white' : 'hover:bg-white/5'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#FD90A7]/20 flex items-center justify-center text-xs font-bold">
-                          {events.indexOf(ev) + 1}
+                  {upcomingEventsList.length > 0 ? (
+                    upcomingEventsList.slice(0, 3).map((ev) => {
+                      const index = events.indexOf(ev);
+                      return (
+                        <div
+                          key={ev.id || ev._id || index}
+                          onClick={() => goTo(index)}
+                          className={`ledger-row-item flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                            index === activeEventIndex ? 'bg-[#FD90A7] text-white' : 'hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-[#FD90A7]/20 flex items-center justify-center text-xs font-bold">
+                              {index + 1}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium line-clamp-1">{ev.event_name}</p>
+                              <p className="text-xs text-gray-400">{ev.event_date} • {ev.event_time}</p>
+                            </div>
+                          </div>
+                          <ArrowRight className="w-4 h-4 opacity-50" />
                         </div>
-                        <div>
-                          <p className="text-sm font-medium line-clamp-1">{ev.event_name}</p>
-                          <p className="text-xs text-gray-400">{ev.event_date} • {ev.event_time}</p>
-                        </div>
-                      </div>
-                      <ArrowRight className="w-4 h-4 opacity-50" />
+                      );
+                    })
+                  ) : (
+                    <div className="rounded-2xl border border-white/20 p-5 text-center text-sm text-gray-200">
+                      No upcoming event yet.
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             )}
@@ -387,12 +410,18 @@ const EventsSection = ({ showHeading = true }) => {
                             {ev.description && <p className="text-xs text-gray-400 mt-2 line-clamp-2">{ev.description}</p>}
                           </div>
                           <div className="mt-4 flex items-center gap-3">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); handleRegisterClick(ev); }}
-                              className="flex-1 py-2.5 bg-[#FD90A7] text-white rounded-full font-semibold text-sm hover:bg-[#F77997] transition flex items-center justify-center gap-2 animate-pulse-glow"
-                            >
-                              Register <ArrowRight className="w-4 h-4" />
-                            </button>
+                            {new Date(ev.event_date) >= new Date() ? (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleRegisterClick(ev); }}
+                                className="flex-1 py-2.5 bg-[#FD90A7] text-white rounded-full font-semibold text-sm hover:bg-[#F77997] transition flex items-center justify-center gap-2 animate-pulse-glow"
+                              >
+                                Register <ArrowRight className="w-4 h-4" />
+                              </button>
+                            ) : (
+                              <span className="flex-1 inline-flex py-2.5 justify-center rounded-full bg-gray-200 text-gray-500 font-semibold text-sm">
+                                Event Closed
+                              </span>
+                            )}
                           </div>
                           <p className="text-center text-[10px] text-gray-400 mt-1.5">← Swipe to explore →</p>
                         </div>

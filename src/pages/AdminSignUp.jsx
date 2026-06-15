@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { UserPlus, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useUser } from '../context/UserContext';
 
 const AdminSignUp = () => {
-  const navigate = useNavigate();
   const { adminSignup } = useUser();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    role: 'superadmin',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [focused, setFocused] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,196 +20,164 @@ const AdminSignUp = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFocus = (field) => setFocused({ ...focused, [field]: true });
-  const handleBlur = (field) => setFocused({ ...focused, [field]: false });
+  const handleFocus = (e) => setFocused({ ...focused, [e.target.name]: true });
+  const handleBlur = (e) => setFocused({ ...focused, [e.target.name]: false });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      toast.error('Email and password are required');
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-    if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
+      if (!formData.email.trim() || !formData.password) {
+        toast.error('Email and password are required.');
+        return;
+      }
+
+      if (!/[A-Z]/.test(formData.password)) {
+        toast.error('Password must contain at least one uppercase letter.');
+        return;
+      }
 
     setIsSubmitting(true);
+
     try {
-      await adminSignup(formData.email, formData.password);
-      toast.success('Admin account created! Redirecting to sign in...');
-      setTimeout(() => navigate('/admin/signin'), 1500);
+      await adminSignup({
+        email: formData.email.trim(),
+        password: formData.password,
+        role: formData.role,
+      });
+      toast.success('Admin account created successfully!');
+      navigate('/admin/signin');
     } catch (error) {
-      console.error('Admin signup error:', error);
-      const errorMsg = error.message || 'Failed to create Admin account';
-      if (errorMsg.includes('already exists')) {
-        toast.error('Admin account already exists. Redirecting to sign in...');
-        setTimeout(() => navigate('/admin/signin'), 2000);
-      } else {
-        toast.error(errorMsg);
-      }
+      console.error(error);
+      toast.error(error.message || 'Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <main className="bg-white min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md mx-auto">
-        {/* Removed decorative dash */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-2">Create Admin Account</h1>
-          <p className="text-[#525560]">Set up the first administrator for the platform</p>
-        </div>
+    <main className="min-h-screen flex bg-[#FFFAF9]">
+      <div className="flex items-center justify-center w-full px-4 py-12 lg:w-1/2 sm:px-8 lg:px-12">
+        <div className="w-full max-w-md">
+          <Link to="/" className="inline-block mb-10">
+            <img src="/NavLogo.png" alt="Her Physio Movement" className="w-auto h-8" />
+          </Link>
 
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 sm:p-8">
-          <div className="bg-[#FFF5F7] rounded-lg p-3 mb-6 text-center">
-            <p className="text-xs text-[#525560]">
-              ⚠️ <span className="font-medium">Only one admin account can be created.</span> After this, use the regular sign‑in.
+          <div className="mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-2">
+              Sign Up
+            </h1>
+            <p className="text-[#A19390]">
+              Create an admin account for the platform.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Full Name */}
-            <div className="relative">
-              <label
-                className={`absolute left-3 transition-all duration-200 font-poppins ${
-                  focused.name || formData.name
-                    ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7]'
-                    : 'top-3 text-gray-400'
-                }`}
-              >
-                Full Name
-              </label>
-              <div className="relative">
-                <UserPlus className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  onFocus={() => handleFocus('name')}
-                  onBlur={() => handleBlur('name')}
-                  className="w-full pl-9 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins"
-                  required
-                />
+          <div className="p-6 border shadow-xl bg-white/70 backdrop-blur-xl border-white/50 rounded-2xl sm:p-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
+                  Email Address
+                </label>
+                <div className="relative group">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#A19390] group-focus-within:text-[#FD90A7] transition-colors" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    placeholder="you@example.com"
+                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-[#F3E4E2] bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent transition text-[#1A1A1A] placeholder-[#A19390]"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Email */}
-            <div className="relative">
-              <label
-                className={`absolute left-3 transition-all duration-200 font-poppins ${
-                  focused.email || formData.email
-                    ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7]'
-                    : 'top-3 text-gray-400'
-                }`}
-              >
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  onFocus={() => handleFocus('email')}
-                  onBlur={() => handleBlur('email')}
-                  className="w-full pl-9 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins"
-                  required
-                />
+              <div>
+                <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
+                  Password
+                </label>
+                <div className="relative group">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#A19390] group-focus-within:text-[#FD90A7] transition-colors" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    placeholder="Min. 6 characters"
+                    className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-[#F3E4E2] bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent transition text-[#1A1A1A] placeholder-[#A19390]"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-[#A19390] hover:text-[#FD90A7] transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Password with eye toggle */}
-            <div className="relative">
-              <label
-                className={`absolute left-3 transition-all duration-200 font-poppins ${
-                  focused.password || formData.password
-                    ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7]'
-                    : 'top-3 text-gray-400'
-                }`}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  onFocus={() => handleFocus('password')}
-                  onBlur={() => handleBlur('password')}
-                  className="w-full pl-9 pr-10 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#FD90A7] transition"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Creating account...
+                  </span>
+                ) : (
+                  <>
+                    Sign Up
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
+              </button>
+            </form>
 
-            {/* Confirm Password with eye toggle */}
-            <div className="relative">
-              <label
-                className={`absolute left-3 transition-all duration-200 font-poppins ${
-                  focused.confirmPassword || formData.confirmPassword
-                    ? 'text-xs -top-2 bg-white px-1 text-[#FD90A7]'
-                    : 'top-3 text-gray-400'
-                }`}
-              >
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  onFocus={() => handleFocus('confirmPassword')}
-                  onBlur={() => handleBlur('confirmPassword')}
-                  className="w-full pl-9 pr-10 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] focus:border-transparent transition font-poppins"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#FD90A7] transition"
-                >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 bg-[#FD90A7] text-white rounded-lg font-semibold hover:bg-[#f77997] transition shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {isSubmitting ? 'Creating...' : 'Sign Up'}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Already have an admin account?{' '}
+            <p className="text-center text-sm text-[#A19390] mt-6">
+              Already have an account?{' '}
               <Link to="/admin/signin" className="text-[#FD90A7] hover:underline font-medium">
-                Sign in here
+                Sign in
               </Link>
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-[#FD90A7]/10 via-[#FFF3EB] to-[#FFEFE7]">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-[#FD90A7]/10 blur-3xl" />
+          <div className="absolute bottom-1/4 -right-20 w-80 h-80 rounded-full bg-[#C7365B]/5 blur-3xl" />
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center justify-center w-full px-12 text-center">
+          <div className="flex items-center justify-center w-24 h-24 mb-8 border shadow-xl rounded-2xl bg-white/70 backdrop-blur-xl border-white/50">
+            <UserPlus className="w-12 h-12 text-[#FD90A7]" />
+          </div>
+          <h2 className="text-2xl font-bold text-[#1A1A1A] mb-3">
+            Join Our Community
+          </h2>
+          <p className="text-[#A19390] max-w-sm leading-relaxed">
+            Get access to resources, events, and a network of women supporting women. Your journey to better pelvic health starts here.
+          </p>
+        </div>
+
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(#F3E4E2 1px, transparent 1px), linear-gradient(90deg, #F3E4E2 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
+        />
       </div>
     </main>
   );
