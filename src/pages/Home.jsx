@@ -17,7 +17,7 @@ const Home = () => {
     <main id="main-content">
       <HomeHero />   
       <PelvicHealthQuiz />   
-      <SymptomFinder />          
+      {/* <SymptomFinder /> */}
       <KnowAboutUs />
       <Partners />
       <WhatWeDo />

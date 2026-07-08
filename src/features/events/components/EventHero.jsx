@@ -1,18 +1,69 @@
 // src/features/events/components/EventHero.jsx
 import { MapPin, Calendar, Heart, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
-const EventHero = () => {
+const EventHero = ({ event, loading, onReserveSpot }) => {
+  const eventTitle = event?.event_name || 'A Day with Our Wonderful Women';
+  const eventHost = event?.event_host;
+  const eventSubtitle = event?.description || 'Wellness & Community Connection';
+  const eventLocation = event?.venue || event?.location || 'HerPhysio Outreach, Lagos, Nigeria';
+  const eventDate = event?.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Coming soon';
+  const eventTime = event?.event_time || 'Time TBD';
+
+  // Split the event name into two parts
+  const splitTitle = (title) => {
+    const words = title.split(' ');
+    const midPoint = Math.ceil(words.length / 2);
+    
+    // Handle case where there's only one word
+    if (words.length === 1) {
+      return { firstHalf: title, secondHalf: '' };
+    }
+    
+    return {
+      firstHalf: words.slice(0, midPoint).join(' '),
+      secondHalf: words.slice(midPoint).join(' ')
+    };
+  };
+  
+  const { firstHalf, secondHalf } = splitTitle(eventTitle);
+  
+  // Safe time formatter
+  const formatTime = (time) => {
+    if (!time || time === 'Time TBD') return 'Time TBD';
+  
+    // Create a date object with today's date and the provided time
+    const [hours, minutes] = time.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours, 10));
+    date.setMinutes(parseInt(minutes, 10));
+    
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   return (
-    <section className="relative bg-gradient-to-br from-white via-[#FFF5F7] to-[#FFD8E1] overflow-hidden pt-20 pb-16 md:pt-28 md:pb-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-white via-[#FFF5F7] to-[#FFD8E1] pt-20 pb-16 md:pt-28 md:pb-24">
+      <video
+        className="absolute inset-0 object-cover w-full h-full opacity-40"
+        src="/IMG_1164.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/85 via-[#FFF5F7]/75 to-[#FFD8E1]/80" />
+
       {/* Decorative circles */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-[#FD90A7]/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#FD90A7]/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
       <div className="absolute top-1/3 right-10 w-40 h-40 bg-[#C7365B]/5 rounded-full blur-3xl" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Top badge */}
-        <div className="text-center mb-6">
+        <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-[#FD90A7] border border-white/30 shadow-sm">
             <Heart className="w-4 h-4" />
             <span>Upcoming Event</span>
@@ -21,37 +72,38 @@ const EventHero = () => {
 
         {/* Main heading */}
         <h1 className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1D2130] leading-tight mb-6">
-          A Day with Our{' '}
+          {firstHalf}{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FD90A7] to-[#C7365B]">
-            Wonderful Women
+            {secondHalf}
           </span>
           <br />
-          <span className="text-2xl sm:text-3xl md:text-4xl block mt-2 text-[#525560]">
-            Wellness & Community Connection
+          <span className="text-xl sm:text-2xl md:text-3xl block mt-2 text-[#525560]">
+            Host: {eventHost}
           </span>
         </h1>
 
         {/* Event details with icons */}
         <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-[#525560] text-base sm:text-lg mb-8">
-          <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
+          <div className="flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm bg-white/60 backdrop-blur-sm border-white/50">
             <MapPin className="w-5 h-5 text-[#FD90A7]" />
-            <span>HerPhysio Outreach, Lagos, Nigeria</span>
+            <span>{eventLocation}</span>
           </div>
-          <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
+          <div className="flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm bg-white/60 backdrop-blur-sm border-white/50">
             <Calendar className="w-5 h-5 text-[#FD90A7]" />
-            <span>September 23, 2025 | 10:30 AM</span>
+            <span>{eventDate} • {formatTime(eventTime)}</span>
           </div>
         </div>
 
         {/* CTA button */}
         <div className="text-center">
-          <Link
-            to="/signup"
+          <button
+            type="button"
+            onClick={onReserveSpot}
             className="inline-flex items-center gap-2 px-8 py-4 bg-[#FD90A7] text-white rounded-full font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-[#f77997] transition-all duration-300 group"
           >
             Reserve Your Spot
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-          </Link>
+          </button>
         </div>
 
         {/* Decorative wave at bottom */}

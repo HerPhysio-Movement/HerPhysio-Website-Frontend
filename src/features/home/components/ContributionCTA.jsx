@@ -35,16 +35,16 @@ const ContributionCTA = () => {
   }, []);
 
   return (
-    <section className="relative py-20 md:py-28 bg-white overflow-hidden">
+    <section className="relative py-20 overflow-hidden bg-white md:py-28">
       {/* Subtle cream gradient */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#FEFCFB] to-white" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* ========== LEFT COLUMN – 3D Volumetric Canvas with dominant image (span 5) ========== */}
           <div
             ref={canvasRef}
-            className="lg:col-span-5 relative flex items-center justify-center order-2 lg:order-1"
+            className="relative flex items-center justify-center order-2 lg:col-span-5 lg:order-1"
             style={{ perspective: '1200px' }}
           >
             <div className="relative w-full max-w-sm mx-auto h-[500px] preserve-3d">
@@ -52,11 +52,11 @@ const ContributionCTA = () => {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-[#FD90A7]/10 rounded-full blur-3xl -z-10" />
 
               {/* ---------- DOMINANT BRAND IMAGE ---------- */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 md:w-72 rounded-2xl shadow-xl z-10 translate-z-10 overflow-hidden">
+              <div className="absolute z-10 w-64 overflow-hidden -translate-x-1/2 -translate-y-1/2 shadow-xl top-1/2 left-1/2 md:w-72 rounded-2xl translate-z-10">
                 <img
-                  src="/smile.jpg"
+                  src="/event-4.jpeg"
                   alt="Her Physio Movement"
-                  className="w-full h-auto object-cover"
+                  className="object-cover w-full h-auto"
                   style={{ filter: 'none' }}
                 />
               </div>
@@ -80,7 +80,7 @@ const ContributionCTA = () => {
               </div>
 
               {/* ---------- LEFT CAPSULE TAGS ---------- */}
-              <div className="absolute left-0 top-10 -translate-x-8 z-30 bg-white rounded-2xl shadow-lg border border-gray-100 px-4 py-3 flex items-center gap-3">
+              <div className="absolute left-0 z-30 flex items-center gap-3 px-4 py-3 -translate-x-8 bg-white border border-gray-100 shadow-lg top-10 rounded-2xl">
                 <div className="w-8 h-8 rounded-full bg-[#FCD172] flex items-center justify-center">
                   <Heart className="w-4 h-4 text-white" />
                 </div>
@@ -96,19 +96,19 @@ const ContributionCTA = () => {
           </div>
 
           {/* ========== RIGHT COLUMN – Conversion Copy (span 7) ========== */}
-          <div className="lg:col-span-7 text-center lg:text-left order-1 lg:order-2 md:max-w-2xl md:mx-auto">
+          <div className="order-1 text-center lg:col-span-7 lg:text-left lg:order-2 md:max-w-2xl md:mx-auto">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-medium text-gray-900 tracking-tighter leading-[1.08] mb-6 max-w-xl">
               Become The {' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FD90A7] to-[#C7365B]">
                Change
               </span> You Wish To See
             </h2>
-            <p className="text-base lg:text-lg text-gray-500 max-w-md leading-relaxed mb-10">
+            <p className="max-w-md mb-10 text-base leading-relaxed text-gray-500 lg:text-lg">
               From easy money management, to financial goals and investments. Open your account in a flash.
             </p>
 
             {/* CTA buttons – visible on desktop only */}
-            <div className="hidden lg:flex flex-row gap-4 justify-center lg:justify-start">
+            <div className="flex-row justify-center hidden gap-4 lg:flex lg:justify-start">
               <Link
                 to="/donate"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-[#FCD172] text-gray-900 rounded-full font-semibold shadow-sm hover:bg-[#f5c542] transition"
@@ -117,7 +117,7 @@ const ContributionCTA = () => {
               </Link>
               <Link
                 to="/volunteer-signup"
-                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-gray-300 text-gray-900 rounded-full font-semibold hover:border-gray-900 transition"
+                className="inline-flex items-center gap-2 px-8 py-4 font-semibold text-gray-900 transition border-2 border-gray-300 rounded-full hover:border-gray-900"
               >
                 Volunteer <ArrowRight className="w-5 h-5" />
               </Link>
@@ -125,7 +125,7 @@ const ContributionCTA = () => {
           </div>
 
           {/* CTA buttons – visible on mobile only, placed after the image, side by side */}
-          <div className="flex lg:hidden flex-row justify-center gap-4 order-3">
+          <div className="flex flex-row justify-center order-3 gap-4 lg:hidden">
             <Link
               to="/donate"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#FCD172] text-gray-900 rounded-full font-semibold shadow-sm hover:bg-[#f5c542] transition text-sm"
@@ -134,7 +134,7 @@ const ContributionCTA = () => {
             </Link>
             <Link
               to="/volunteer-signup"
-              className="inline-flex items-center gap-2 px-6 py-3 border-2 border-gray-300 text-gray-900 rounded-full font-semibold hover:border-gray-900 transition text-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-gray-900 transition border-2 border-gray-300 rounded-full hover:border-gray-900"
             >
               Volunteer <ArrowRight className="w-4 h-4" />
             </Link>

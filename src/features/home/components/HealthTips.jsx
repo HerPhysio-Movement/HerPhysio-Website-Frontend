@@ -76,7 +76,7 @@ const HealthTips = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative py-24 md:py-32 overflow-hidden"
+      className="relative py-24 overflow-hidden md:py-32"
       style={{ backgroundColor: '#FEFCFB' }}
     >
       {/* Ambient blobs – nearly invisible */}
@@ -89,7 +89,7 @@ const HealthTips = () => {
       {/* Floating sparkle particles */}
       <ParticleField isVisible={isVisible} />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
         {/* Header */}
         <div
           className={`text-center mb-16 md:mb-24 transition-all duration-700 ${
@@ -100,12 +100,12 @@ const HealthTips = () => {
             <Lightbulb className="w-4 h-4" />
             Daily Wellness
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
+          <h2 className="mb-4 text-4xl font-black tracking-tight text-gray-900 md:text-6xl">
             Health Tips For You
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#FD90A7] via-[#6020F0] to-[#FCD172] mx-auto mb-4 rounded-full" />
-          <p className="text-gray-500 max-w-md mx-auto text-lg">
-            Swipe through 10 powerful pelvic health tips.
+          <p className="max-w-md mx-auto text-lg text-gray-500">
+            Swipe through 5 powerful tips to keep you in good shape.
           </p>
         </div>
 
@@ -116,7 +116,7 @@ const HealthTips = () => {
           } border border-[#FD90A7]/20`}
           style={{ transitionDelay: '200ms' }}
         >
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
             {/* ---- POPPING IMAGE (bigger, with bounce entrance) ---- */}
             <div
               className={`relative lg:absolute lg:-top-16 lg:left-8 w-56 h-64 sm:w-64 sm:h-72 md:w-72 md:h-80 rounded-[10px] overflow-hidden shadow-2xl z-20 flex-shrink-0 ${
@@ -128,9 +128,10 @@ const HealthTips = () => {
               }}
             >
               <img
-                src="/Chijioke.jpg"
+                // src="/Chijioke.jpg"
+                src="/newSeedFoundationImg.jpeg"
                 alt="Chijioke - Her Physio Movement"
-                className="w-full h-full object-cover"
+                className="object-cover w-full h-full"
               />
               {/* Overlay badge */}
               <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-[8px] px-3 py-2 shadow-lg border border-white/50">
@@ -140,18 +141,18 @@ const HealthTips = () => {
             </div>
 
             {/* ---- Right content ---- */}
-            <div className="flex-1 lg:ml-80 text-center lg:text-left space-y-4">
+            <div className="flex-1 space-y-4 text-center lg:ml-80 lg:text-left">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-full text-xs font-semibold text-[#6020F0] shadow-sm border border-[#6020F0]/20">
                 <Sparkles className="w-3 h-3" />
                 Featured Tip
               </div>
-              <p className="text-lg md:text-xl text-gray-800 leading-relaxed font-medium italic">
+              <p className="text-lg italic font-medium leading-relaxed text-gray-800 md:text-xl">
                 "{activeTip.text}"
               </p>
-              <p className="text-sm text-gray-400">— {activeTip.source}</p>
+              {/* <p className="text-sm text-gray-400">— {activeTip.source}</p> */}
 
               {/* Navigation arrows */}
-              <div className="flex items-center gap-3 justify-center lg:justify-start mt-4">
+              <div className="flex items-center justify-center gap-3 mt-4 lg:justify-start">
                 <button
                   onClick={prevTip}
                   className="p-2 rounded-full bg-white border border-gray-200 text-gray-400 hover:text-[#FD90A7] hover:border-[#FD90A7] transition shadow-sm"
@@ -210,7 +211,7 @@ const HealthTips = () => {
                   </div>
                   <span className="text-xs font-semibold text-gray-400">Tip {idx + 1}</span>
                 </div>
-                <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">{tip.text}</p>
+                <p className="text-sm leading-relaxed text-gray-700 line-clamp-3">{tip.text}</p>
                 <p className="text-[10px] text-gray-400 italic mt-auto truncate">— {tip.source}</p>
               </div>
             );
@@ -248,7 +249,7 @@ const HealthTips = () => {
                   </div>
                   <span className="text-xs font-semibold text-gray-400">Tip 5</span>
                 </div>
-                <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">{fifthTip.text}</p>
+                <p className="text-sm leading-relaxed text-gray-700 line-clamp-3">{fifthTip.text}</p>
                 <p className="text-[10px] text-gray-400 italic mt-auto truncate">— {fifthTip.source}</p>
               </div>
             );
@@ -263,12 +264,12 @@ const HealthTips = () => {
           style={{ transitionDelay: '600ms' }}
         >
           {/* Spinning ring */}
-          <div className="relative w-36 h-36 md:w-40 md:h-40 flex-shrink-0">
+          <div className="relative flex-shrink-0 w-36 h-36 md:w-40 md:h-40">
             <svg viewBox="0 0 120 120" className="w-full h-full spinning-ring">
               <defs>
                 <path id="tipsCircle" d="M 60,60 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
               </defs>
-              <text fontSize="9.5" fill="#6020F0" fontWeight="bold" letterSpacing="2">
+              <text fontSize="7.7" fill="#6020F0" fontWeight="bold" letterSpacing="1.5">
                 <textPath href="#tipsCircle" startOffset="0%">
                   PELVIC HEALTH • WELLNESS • TIPS • EXPLORE •
                 </textPath>
@@ -282,8 +283,8 @@ const HealthTips = () => {
           </div>
 
           {/* Progress bar */}
-          <div className="flex-1 max-w-xs w-full">
-            <div className="flex justify-between text-sm mb-2">
+          <div className="flex-1 w-full max-w-xs">
+            <div className="flex justify-between mb-2 text-sm">
               <span className="text-gray-500">Progress</span>
               <span className="font-semibold text-[#FD90A7]">{Math.round(progressPercent)}%</span>
             </div>
@@ -301,7 +302,7 @@ const HealthTips = () => {
             >
               <BookOpen className="w-4 h-4" />
               Read all {tips.length} tips
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <span className="transition-transform group-hover:translate-x-1">→</span>
             </button>
           </div>
         </div>
@@ -317,16 +318,16 @@ const HealthTips = () => {
             className="bg-white rounded-[10px] shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 border border-gray-200 animate-modal-pop"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-900">All 10 Health Tips</h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 rounded-full hover:bg-gray-100 text-gray-400 transition"
+                className="p-2 text-gray-400 transition rounded-full hover:bg-gray-100"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {tips.map((tip) => {
                 const IconComponent = tip.icon;
                 return (
@@ -342,7 +343,7 @@ const HealthTips = () => {
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-xs font-bold text-[#FD90A7]">Tip {tip.id}</span>
                       </div>
-                      <p className="text-sm text-gray-800 leading-relaxed">{tip.text}</p>
+                      <p className="text-sm leading-relaxed text-gray-800">{tip.text}</p>
                       <p className="text-xs text-gray-400 mt-1.5 italic">— {tip.source}</p>
                     </div>
                   </div>

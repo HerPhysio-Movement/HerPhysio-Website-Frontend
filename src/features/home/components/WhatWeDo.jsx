@@ -1,7 +1,7 @@
 // src/features/home/components/WhatWeDo.jsx
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MonitorPlay, Users, Wrench, GraduationCap, Sparkles } from 'lucide-react';
+import { ArrowRight, MonitorPlay, Users, Wrench, GraduationCap, Sparkles, Maximize2, X } from 'lucide-react';
 
 const services = [
   {
@@ -48,7 +48,11 @@ const services = [
 
 const WhatWeDo = () => {
   const [animated, setAnimated] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
   const sectionRef = useRef(null);
+
+  const openImageModal = (service) => setSelectedService(service);
+  const closeImageModal = () => setSelectedService(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -76,24 +80,24 @@ const WhatWeDo = () => {
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[#C7365B]/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="mb-16 text-center">
           <div className="inline-flex items-center gap-2 px-5 py-2 bg-white/80 backdrop-blur-md border border-white/30 rounded-full text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
             <Sparkles className="w-4 h-4" />
             Our Initiatives
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight">
+          <h2 className="mb-4 text-4xl font-black tracking-tight text-gray-900 md:text-6xl">
             What We Do
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
-          <p className="text-gray-500 max-w-xl mx-auto text-lg">
+          <p className="max-w-xl mx-auto text-lg text-gray-500">
             Whether you are a woman wanting to understand your body better, or a professional ready to serve women, there is a place for you.
           </p>
         </div>
 
         {/* Bento Grid – responsive, no overlapping, 10px border radius */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           {/* Card 1 – spans 5 columns, tall image */}
           <div
             className={`lg:col-span-5 bg-white rounded-[10px] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col ${
@@ -101,19 +105,27 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '0ms' }}
           >
-            <div className="relative h-56 sm:h-64 lg:h-72 overflow-hidden">
+            <div className="relative h-56 overflow-hidden sm:h-64 lg:h-72">
               <img
                 src={services[0].image}
                 alt={services[0].title}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
               />
-              <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 shadow-sm border border-white/40">
+              <button
+                type="button"
+                onClick={() => openImageModal(services[0])}
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                aria-label={`View full image for ${services[0].title}`}
+              >
+                <Maximize2 className="w-5 h-5" />
+              </button>
+              <div className="absolute flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm top-4 left-4 bg-white/80 backdrop-blur-sm border-white/40">
                 <MonitorPlay className="w-4 h-4 text-[#FD90A7]" />
                 <span className="text-sm font-semibold text-gray-800">{services[0].title}</span>
               </div>
             </div>
-            <div className="p-5 flex-1 flex flex-col">
-              <p className="text-gray-600 text-sm leading-relaxed flex-1">{services[0].description}</p>
+            <div className="flex flex-col flex-1 p-5">
+              <p className="flex-1 text-sm leading-relaxed text-gray-600">{services[0].description}</p>
               <Link
                 to={services[0].link}
                 className="inline-flex items-center gap-1 text-sm font-semibold mt-4 text-[#FD90A7] hover:underline"
@@ -130,19 +142,27 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '100ms' }}
           >
-            <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
+            <div className="relative h-48 overflow-hidden sm:h-56 lg:h-64">
               <img
                 src={services[1].image}
                 alt={services[1].title}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
               />
-              <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 shadow-sm border border-white/40">
+              <button
+                type="button"
+                onClick={() => openImageModal(services[1])}
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                aria-label={`View full image for ${services[1].title}`}
+              >
+                <Maximize2 className="w-5 h-5" />
+              </button>
+              <div className="absolute flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm top-4 left-4 bg-white/80 backdrop-blur-sm border-white/40">
                 <Users className="w-4 h-4 text-[#C7365B]" />
                 <span className="text-sm font-semibold text-gray-800">{services[1].title}</span>
               </div>
             </div>
-            <div className="p-5 flex-1 flex flex-col">
-              <p className="text-gray-600 text-sm leading-relaxed flex-1">{services[1].description}</p>
+            <div className="flex flex-col flex-1 p-5">
+              <p className="flex-1 text-sm leading-relaxed text-gray-600">{services[1].description}</p>
               <Link
                 to={services[1].link}
                 className="inline-flex items-center gap-1 text-sm font-semibold mt-4 text-[#C7365B] hover:underline"
@@ -159,19 +179,27 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '200ms' }}
           >
-            <div className="relative h-48 sm:h-56 overflow-hidden">
+            <div className="relative h-48 overflow-hidden sm:h-56">
               <img
                 src={services[2].image}
                 alt={services[2].title}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
               />
-              <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 shadow-sm border border-white/40">
+              <button
+                type="button"
+                onClick={() => openImageModal(services[2])}
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                aria-label={`View full image for ${services[2].title}`}
+              >
+                <Maximize2 className="w-5 h-5" />
+              </button>
+              <div className="absolute flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm top-4 left-4 bg-white/80 backdrop-blur-sm border-white/40">
                 <Wrench className="w-4 h-4 text-[#F08020]" />
                 <span className="text-sm font-semibold text-gray-800">{services[2].title}</span>
               </div>
             </div>
-            <div className="p-5 flex-1 flex flex-col">
-              <p className="text-gray-600 text-sm leading-relaxed flex-1">{services[2].description}</p>
+            <div className="flex flex-col flex-1 p-5">
+              <p className="flex-1 text-sm leading-relaxed text-gray-600">{services[2].description}</p>
               <Link
                 to={services[2].link}
                 className="inline-flex items-center gap-1 text-sm font-semibold mt-4 text-[#F08020] hover:underline"
@@ -188,19 +216,27 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '300ms' }}
           >
-            <div className="relative h-56 sm:h-64 overflow-hidden">
+            <div className="relative h-56 overflow-hidden sm:h-64">
               <img
                 src={services[3].image}
                 alt={services[3].title}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
               />
-              <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 shadow-sm border border-white/40">
+              <button
+                type="button"
+                onClick={() => openImageModal(services[3])}
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                aria-label={`View full image for ${services[3].title}`}
+              >
+                <Maximize2 className="w-5 h-5" />
+              </button>
+              <div className="absolute flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm top-4 left-4 bg-white/80 backdrop-blur-sm border-white/40">
                 <GraduationCap className="w-4 h-4 text-[#6020F0]" />
                 <span className="text-sm font-semibold text-gray-800">{services[3].title}</span>
               </div>
             </div>
-            <div className="p-5 flex-1 flex flex-col">
-              <p className="text-gray-600 text-sm leading-relaxed flex-1">{services[3].description}</p>
+            <div className="flex flex-col flex-1 p-5">
+              <p className="flex-1 text-sm leading-relaxed text-gray-600">{services[3].description}</p>
               <Link
                 to={services[3].link}
                 className="inline-flex items-center gap-1 text-sm font-semibold mt-4 text-[#6020F0] hover:underline"
@@ -211,8 +247,38 @@ const WhatWeDo = () => {
           </div>
         </div>
 
+        {selectedService && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 bg-black/70 backdrop-blur-md"
+            onClick={closeImageModal}
+          >
+            <button
+              type="button"
+              onClick={closeImageModal}
+              className="absolute z-10 p-2 text-white transition rounded-full top-4 right-4 bg-white/20 backdrop-blur-sm hover:bg-white/40"
+              aria-label="Close image preview"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div
+              className="relative max-w-5xl max-h-[90vh] overflow-hidden rounded-[10px]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={selectedService.image}
+                alt={selectedService.title}
+                className="object-contain max-w-full max-h-[85vh]"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-gradient-to-t from-black/80 to-transparent">
+                <p className="text-lg font-semibold">{selectedService.title}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* CTA */}
-        <div className="text-center mt-12">
+        <div className="mt-12 text-center">
           <Link
             to="/volunteer-signup"
             className="inline-flex items-center gap-2 px-8 py-4 bg-[#FD90A7] text-white rounded-full font-semibold hover:bg-[#F77997] transition shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-98"

@@ -12,13 +12,13 @@ export const NotesSection = () => {
   const [selectedNote, setSelectedNote] = useState(null);
 
   return (
-    <section className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+    <section className="relative px-4 py-16 overflow-hidden md:py-24 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50">
       <BackgroundParticles variant="default" />
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative mx-auto max-w-7xl">
         <SectionHeader title="Care That Moves With You" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {notesData.map((note) => {
             const Icon = note.icon;
             return (
@@ -42,7 +42,7 @@ export const NotesSection = () => {
           })}
         </div>
 
-        <div className="text-center text-xs text-gray-400 mt-8 md:mt-10">
+        <div className="mt-8 text-xs text-center text-gray-400 md:mt-10">
           Click any card to learn more
         </div>
       </div>
@@ -58,7 +58,7 @@ export const NotesSection = () => {
           <>
             <div className="flex items-center gap-3 mb-4">
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center"
+                className="flex items-center justify-center w-12 h-12 rounded-full"
                 style={{ backgroundColor: `${selectedNote.iconBg}20` }}
               >
                 <selectedNote.icon
@@ -68,7 +68,7 @@ export const NotesSection = () => {
               </div>
               <h3 className="text-xl font-bold text-[#1D2130]">{selectedNote.title}</h3>
             </div>
-            <p className="text-gray-600 leading-relaxed mb-6">
+            <p className="mb-6 leading-relaxed text-gray-600">
               {selectedNote.fullDescription}
             </p>
             <Link
@@ -92,13 +92,13 @@ export const CoursesSection = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   return (
-    <section id="courses" className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+    <section id="courses" className="relative px-4 py-16 overflow-hidden md:py-24 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50">
       <BackgroundParticles variant="courses" />
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative mx-auto max-w-7xl">
         <SectionHeader title="Online Courses" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {coursesData.map((course) => (
             <FloatingCard
               key={course.id}
@@ -142,10 +142,10 @@ export const CoursesSection = () => {
               </div>
               <h3 className="text-xl font-bold text-[#1D2130]">{selectedCourse.title}</h3>
             </div>
-            <p className="text-gray-600 leading-relaxed mb-4">
+            <p className="mb-4 leading-relaxed text-gray-600">
               {selectedCourse.fullDescription}
             </p>
-            <div className="flex items-center gap-3 text-sm text-gray-500 mb-6">
+            <div className="flex items-center gap-3 mb-6 text-sm text-gray-500">
               <span>⏱ {selectedCourse.duration}</span>
               <span>📚 {selectedCourse.level}</span>
             </div>
@@ -168,13 +168,13 @@ export const CoursesSection = () => {
  */
 export const SocialSection = () => {
   return (
-    <section className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+    <section className="relative px-4 py-16 overflow-hidden md:py-24 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50">
       <BackgroundParticles variant="social" />
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative mx-auto max-w-7xl">
         <DividerWithText text="Connect with us" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {socialLinksData.map((link) => {
             const Icon = link.icon;
             return (

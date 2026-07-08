@@ -57,28 +57,28 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative bg-black text-white overflow-hidden">
+    <footer className="relative overflow-hidden text-white bg-black">
       {/* Subtle grain texture */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, #FD90A7 1px, transparent 1px), radial-gradient(circle at 75% 75%, #C7365B 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
+      <div className="absolute inset-0 pointer-events-none opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, #FD90A7 1px, transparent 1px), radial-gradient(circle at 75% 75%, #C7365B 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="relative px-4 py-16 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-24">
         {/* Top section – asymmetric bento grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
           {/* LEFT COLUMN – Brand + Description + Social (span 5) */}
-          <div className="lg:col-span-5 space-y-8">
+          <div className="space-y-8 lg:col-span-5">
             {/* Logo & brand lockup */}
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-[20px] bg-gradient-to-br from-[#FD90A7] to-[#C7365B] flex items-center justify-center shadow-lg shadow-[#FD90A7]/20">
-                <img src="/NavLogo.png" alt="Her Physio Movement" className="w-8 h-8 object-contain brightness-0 invert" />
+                <img src="/NavLogo.png" alt="Her Physio Movement" className="object-contain w-8 h-8 brightness-0 invert" />
               </div>
               <div>
                 <h2 className="text-2xl font-black tracking-tight text-white">HerPhysio</h2>
-                <p className="text-xs text-gray-400 uppercase tracking-wider">Movement</p>
+                <p className="text-xs tracking-wider text-gray-400 uppercase">Movement</p>
               </div>
             </div>
 
             {/* Description */}
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+            <p className="max-w-sm text-sm leading-relaxed text-gray-400">
               Building a new generation of women's health physiotherapists and changemakers, shifting the narrative on the health of women across Africa.
             </p>
 
@@ -98,20 +98,20 @@ const Footer = () => {
                   className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#FD90A7] hover:text-white hover:border-[#FD90A7] transition-all duration-300 group"
                   aria-label={social.label}
                 >
-                  <social.icon className="text-lg group-hover:scale-110 transition-transform" />
+                  <social.icon className="text-lg transition-transform group-hover:scale-110" />
                 </a>
               ))}
             </div>
 
             {/* Spinning "Explore" rotary badge (like Hex) */}
-            <div className="relative w-28 h-28 md:w-32 md:h-32 flex-shrink-0">
+            <div className="relative flex-shrink-0 w-28 h-28 md:w-32 md:h-32">
               <svg viewBox="0 0 120 120" className="w-full h-full rotary-badge-text-track">
                 <defs>
                   <path id="footerCircle" d="M 60,60 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
                 </defs>
-                <text fontSize="9.5" fill="#FD90A7" fontWeight="bold" letterSpacing="2">
+                <text fontSize="8" fill="#FD90A7" fontWeight="bold" letterSpacing="1.5" wordSpacing="0">
                   <textPath href="#footerCircle" startOffset="0%">
-                    EXPLORE • JOIN US • VOLUNTEER • DONATE •
+                    PARTNER • JOIN US • VOLUNTEER • DONATE •
                   </textPath>
                 </text>
               </svg>
@@ -124,11 +124,11 @@ const Footer = () => {
           </div>
 
           {/* RIGHT COLUMN – Navigation capsules + Newsletter (span 7) */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:col-span-7 sm:grid-cols-3">
             {/* Navigation columns – each as a glass card */}
             {footerLinks.map((section) => (
               <div key={section.title} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-[32px] p-5">
-                <h4 className="font-bold text-white text-sm uppercase tracking-wider mb-4">
+                <h4 className="mb-4 text-sm font-bold tracking-wider text-white uppercase">
                   {section.title}
                 </h4>
                 <ul className="space-y-2">
@@ -153,10 +153,10 @@ const Footer = () => {
                 <Mail className="w-5 h-5 text-[#FD90A7]" />
                 <h4 className="font-bold text-white">Stay Updated</h4>
               </div>
-              <p className="text-gray-400 text-sm mb-4">
+              <p className="mb-4 text-sm text-gray-400">
                 Get the latest news, events, and resources delivered to your inbox.
               </p>
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
                 <input
                   type="email"
                   placeholder="Your email address"
@@ -179,7 +179,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar – copyright & legal */}
-        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center text-gray-500 text-xs">
+        <div className="flex flex-col items-center justify-between pt-6 mt-12 text-xs text-gray-500 border-t border-white/10 sm:flex-row">
           <p>&copy; {new Date().getFullYear()} Her Physio Movement. All rights reserved.</p>
           <div className="flex gap-5 mt-3 sm:mt-0">
             <Link to="/privacy" className="hover:text-[#FD90A7] transition-colors">

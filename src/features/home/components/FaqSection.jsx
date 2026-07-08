@@ -7,23 +7,23 @@ const allFaqs = [
     id: 1,
     question: 'What is Her Physio Movement?',
     answer:
-      'Her Physio Movement is a non‑governmental organization dedicated to transforming women\'s health physiotherapy in Nigeria and across Africa. We build a new generation of women\'s health physiotherapists and changemakers while improving physical health outcomes for women through education, advocacy, and community outreach.',
+      'Her Physio Movement is a community dedicated to transforming women\'s health physiotherapy in Nigeria and across Africa. By building a new generation of women\'s health physiotherapists and changemakers while improving physical health outcomes for women through education, advocacy, and community outreach.',
     accent: '#FD90A7',
     bgTray: '#FEF3D6',
   },
   {
     id: 2,
-    question: 'Who can benefit from your services?',
+    question: 'Who can join Her Physio Movement?',
     answer:
-      'Any woman seeking better understanding of her body, pelvic health, prenatal/postnatal care, or chronic pain management can benefit. We also serve physiotherapy students and professionals who want to specialise in women\'s health.',
+      'Anyone who believes in our vision of changing the narrative of women\'s health in Africa through health advocacy and community outreaches, and is ready to work with us on this journey.',
     accent: '#C7365B',
     bgTray: '#FCDAD7',
   },
   {
     id: 3,
-    question: 'How can I become a volunteer?',
+    question: 'How can I become a Volunteer?',
     answer:
-      'Simply fill out the volunteer sign‑up form on our website. We’ll review your application and get back to you within a few days. Volunteers can help with outreach events, social media, administration, or clinical support.',
+      'Simply fill out the volunteer sign‑up form, at the top right corner of our website. We will review your application and get back to you within a few days. In the meantime, you can stay connected with us via our newsletter and social media pages (Instagram, Facebook, X, and Linkedin).',
     accent: '#F08020',
     bgTray: '#E2E0FB',
   },
@@ -31,7 +31,7 @@ const allFaqs = [
     id: 4,
     question: 'Are your events free to attend?',
     answer:
-      'Most of our webinars, panel sessions, and community outreaches are free. Some specialised training programs may have a nominal fee to cover materials, but we offer scholarships for those in need.',
+      'Our webinars, panel sessions, and community outreaches are free. However, some specialised training programs for healthcare providers may have a registration fee to cover virtual or physical logistics.',
     accent: '#6020F0',
     bgTray: '#FEF3D6',
   },
@@ -39,7 +39,7 @@ const allFaqs = [
     id: 5,
     question: 'How can I donate to support your work?',
     answer:
-      'You can donate directly through our website (donate button) or contact us for bank transfer details. Every contribution helps us reach more women and train more physiotherapists.',
+      'You can contact us for the bank details. Every contribution helps us reach more women through community outreaches.',
     accent: '#FD90A7',
     bgTray: '#FCDAD7',
   },
@@ -47,20 +47,38 @@ const allFaqs = [
     id: 6,
     question: 'Do you partner with other organisations?',
     answer:
-      'Yes! We collaborate with NGOs, hospitals, universities, and corporate bodies that share our mission. Visit the Partner page to express interest in partnering with us.',
+      'Yes! We collaborate with NGOs, hospitals, and corporate bodies that believe in our vision of changing the narrative of women’s health in Africa through health advocacy and community outreaches, and are ready to work with us on this journey.',
     accent: '#C7365B',
     bgTray: '#E2E0FB',
+  },
+  {
+    id: 7,
+    question: 'Can I join the mentorship program?',
+    answer:
+      'Absolutely! Our 3‑month mentorship program is open to students, graduates, and working professionals in the physiotherapy field who want to deepen their skills in women\'s health. Applications open once a year, so you can stay tuned to our socials for the next opening later this 2026.',
+    accent: '#F08020',
+    bgTray: '#FCDAD7',
+  },
+  {
+    id: 8,
+    question: 'What is the Workshop2Outreach Program?',
+    answer:
+      'The Workshop 2 Outreach (W2O) Program is an initiative designed to bridge the gap between passion & practical impact in women’s health physiotherapy, through community outreaches. Both licensed and student physiotherapists are eligible for this program.',
+    accent: '#6020F0',
+    bgTray: '#FEF3D6',
   },
 ];
 
 // Scatter positions for desktop/tablet
 const cardStyles = [
-  { rotation: '-10deg', top: '8%', left: '5%', z: 10 },
-  { rotation: '-6deg', top: '5%', left: '35%', z: 30 },
-  { rotation: '10deg', top: '12%', left: '65%', z: 0 },
-  { rotation: '-4deg', top: '45%', left: '10%', z: 40 },
-  { rotation: '8deg', top: '50%', left: '55%', z: 20 },
-  { rotation: '-8deg', top: '75%', left: '30%', z: 10 },
+  { rotation: '-10deg', top: '1%', left: '5%', z: 10 },
+  { rotation: '-6deg', top: '1%', left: '35%', z: 20 },
+  { rotation: '10deg', top: '10%', left: '65%', z: 30 },
+  { rotation: '-4deg', top: '28%', left: '5%', z: 0 },
+  { rotation: '8deg', top: '32%', left: '65%', z: 20 },
+  { rotation: '-15deg', top: '35%', left: '30%', z: 10 },
+  { rotation: '10deg', top: '59%', left: '10%', z: 0 },
+  { rotation: '-4deg', top: '60%', left: '53%', z: 30 },
 ];
 
 const FaqSection = () => {
@@ -122,7 +140,7 @@ const FaqSection = () => {
           {/* RIGHT COLUMN – Scatter Card Deck (span 8) */}
           <div className="lg:col-span-8 relative">
             {/* Obvious call‑to‑action pill */}
-            <div className="flex justify-center lg:justify-end mb-6 lg:mb-0 lg:absolute lg:top-0 lg:right-0 z-50">
+            <div className="flex justify-center lg:justify-end mb-6 lg:mb-0 lg:absolute lg:top-0 lg:right-0 z-40">
               <div className="bg-[#FD90A7] text-white px-5 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-bounce-slow">
                 <span className="text-sm font-semibold">Click any card to read FAQ</span>
                 <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">

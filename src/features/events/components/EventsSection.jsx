@@ -263,7 +263,7 @@ const EventsSection = ({ showHeading = true }) => {
             <Sparkles className="w-4 h-4" /> Our Events
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-4 tracking-tight max-w-4xl mx-auto">
-            Come learn something new, connect with experts, and be part of the movement.
+             Come learn something new{/*, connect with experts, and be part of the movement */}.
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#FD90A7] via-[#6020F0] to-[#FCD172] mx-auto mb-4 rounded-full" />
           <p className="text-gray-500 max-w-xl mx-auto text-lg">Explore our upcoming events and secure your spot today.</p>

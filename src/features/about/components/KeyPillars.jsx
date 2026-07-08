@@ -26,10 +26,10 @@ const pillars = [
 
 const KeyPillars = () => {
   return (
-    <section className="bg-white px-4 sm:px-8 md:px-16 py-20">
-      <div className="max-w-7xl mx-auto">
+    <section className="px-4 py-20 bg-white sm:px-8 md:px-16">
+      <div className="mx-auto max-w-7xl">
         {/* Section header – consistent with other sections */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="max-w-3xl mx-auto mb-16 text-center">
           <div className="inline-flex items-center gap-2 bg-[#FD90A7]/10 px-4 py-2 rounded-full text-sm font-medium text-[#FD90A7] mb-4">
             <GraduationCap className="w-4 h-4" />
             <span>Our Foundation</span>
@@ -37,12 +37,12 @@ const KeyPillars = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-3">Our Key Pillars</h2>
           <div className="w-16 h-0.5 bg-[#FD90A7] mx-auto mb-4" />
           <p className="text-[#525560] max-w-2xl mx-auto">
-            Everything we do is rooted in four pillars that hold our work together and guide every decision.
+            Everything we do is rooted in four pillars that hold our work together and guide every decision we make in Her Physio Movement for women across Africa.
           </p>
         </div>
 
         {/* Minimal, no‑card pillar grid – clean and modern */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           {pillars.map((pillar, idx) => {
             const Icon = pillar.icon;
             // Add staggered top margin on desktop for visual interest
@@ -63,7 +63,7 @@ const KeyPillars = () => {
                 <h3 className="text-xl font-bold text-[#1D2130] mb-2 group-hover:text-[#FD90A7] transition-colors">
                   {pillar.title}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">
+                <p className="max-w-xs mx-auto text-sm leading-relaxed text-gray-500">
                   {pillar.description}
                 </p>
               </div>

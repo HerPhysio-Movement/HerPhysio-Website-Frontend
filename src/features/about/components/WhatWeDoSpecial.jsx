@@ -6,26 +6,26 @@ import { Sparkles, ArrowRight, Heart, Activity, BookOpen, Shield } from 'lucide-
 const services = [
   {
     id: 1,
-    title: 'Family Support',
-    description: 'A safe space for families to connect, share experiences, and access resources that strengthen the care journey.',
+    title: 'Her Physio Webinar',
+    description: 'Monthly conversations with healthcare specialists on women\'s health topics.',
     icon: Heart,
   },
   {
     id: 2,
-    title: 'Health Benefits',
-    description: 'Evidence‑based physiotherapy that improves mobility, reduces pain, and enhances overall quality of life.',
+    title: 'The 360 Panel Session',
+    description: 'Quarterly discussions that bring a diverse group of voices together around women\'s health.',
     icon: Activity,
   },
   {
     id: 3,
-    title: 'Scholarships',
-    description: 'Empowering the next generation of physiotherapists through education and mentorship opportunities.',
+    title: 'The Workshop2Outreach (W20)',
+    description: 'Community mini-projects are implemented, to address the health needs of women in the community.',
     icon: BookOpen,
   },
   {
     id: 4,
-    title: 'Therapy',
-    description: 'Specialised, one‑on‑one care for pelvic health, prenatal, postpartum, and chronic pain conditions.',
+    title: 'The 3-months Mentorship Program',
+    description: 'A cohort-based program that equips physiotherapists in the women\'s health field for 3 months which is completed with a capstone project.',
     icon: Shield,
   },
 ];
@@ -44,7 +44,7 @@ const WhatWeDoSpecial = () => {
         setCurrentIndex((prev) => (prev + 1) % services.length);
         setIsVisible(true);
       }, 200);
-    }, 2000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -80,7 +80,7 @@ const WhatWeDoSpecial = () => {
 
       <div className="relative max-w-6xl mx-auto">
         {/* Section header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="max-w-3xl mx-auto mb-16 text-center">
           <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-[#FD90A7] mb-4 border border-white/30 shadow-sm">
             <Sparkles className="w-4 h-4" />
             <span>Our Programs</span>
@@ -90,7 +90,7 @@ const WhatWeDoSpecial = () => {
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
           <p className="text-[#525560] text-lg max-w-2xl mx-auto">
-            Every woman deserves compassionate, expert care. Here's how we support you.
+            4 ways we are changing the narratives around women's health in Africa.
           </p>
         </div>
 
@@ -110,7 +110,7 @@ const WhatWeDoSpecial = () => {
               transition: 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease',
             }}
           >
-            <div className="relative bg-white/90 backdrop-blur-md rounded-2xl border border-white/30 shadow-2xl overflow-hidden">
+            <div className="relative overflow-hidden border shadow-2xl bg-white/90 backdrop-blur-md rounded-2xl border-white/30">
               {/* Glowing border gradient on hover */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#FD90A7] via-[#C7365B] to-[#FD90A7] opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
               
@@ -127,7 +127,7 @@ const WhatWeDoSpecial = () => {
                   </div>
                   <div className="relative">
                     <div className="absolute inset-0 bg-[#FD90A7]/30 rounded-full blur-md" />
-                    <div className="relative bg-white rounded-full p-3 shadow-lg border border-gray-100">
+                    <div className="relative p-3 bg-white border border-gray-100 rounded-full shadow-lg">
                       <Icon className="w-6 h-6 text-[#FD90A7]" />
                     </div>
                   </div>
@@ -172,12 +172,12 @@ const WhatWeDoSpecial = () => {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="mt-12 text-center">
           <Link
             to="/contact"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#FD90A7] text-[#FD90A7] rounded-full font-semibold hover:bg-[#FD90A7] hover:text-white transition-all duration-300 shadow-md group"
           >
-            Contact our team <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            Contact our team to learn more <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
       </div>

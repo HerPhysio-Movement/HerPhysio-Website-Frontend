@@ -4,6 +4,7 @@ import { webinarAPI } from '../../../services/webinarAPI';
 import { blogAPI } from '../../../services/blogAPI';
 import ContributionCTA from '../../home/components/ContributionCTA';
 import EventsSection from '../../events/components/EventsSection';
+import ResourcesIntro from './ResourcesIntro';
 import { NewsSection } from './NewsSection';
 import { NotesSection, CoursesSection, SocialSection } from './ResourceSections';
 import { WebinarsSection, ArticlesSection } from './ContentSections';
@@ -55,15 +56,17 @@ const ResourcesComponent = () => {
   }
 
   return (
-    <main className="bg-white">
+    <main id="resources-content" className="bg-white">
+      <ResourcesIntro />
+
       {/* Top News */}
-      <NewsSection />
+      {/* <NewsSection /> */}
 
       {/* Care That Moves With You */}
       <NotesSection />
 
       {/* Online Courses */}
-      <CoursesSection />
+      {/* <CoursesSection /> */}
 
       {/* Webinar Recordings */}
       <WebinarsSection webinars={webinars} />
