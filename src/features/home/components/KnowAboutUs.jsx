@@ -4,39 +4,48 @@ import { useState, useEffect, useRef } from 'react';
 const statsData = [
   {
     id: 1,
-    label: 'Lives Impacted',
-    value: 10000,
-    suffix: '+',
+    label: 'Community Members',
+    value: 660,
+    suffix: '',
     target: 15000,
     color: '#FD90A7',
     delay: 0,
   },
   {
     id: 2,
-    label: 'Professionals Trained',
-    value: 400,
-    suffix: '+',
-    target: 600,
+    label: 'Webinar Attendees',
+    value: 931,
+    suffix: '',
+    target: 5000,
     color: '#C7365B',
     delay: 200,
   },
   {
     id: 3,
-    label: 'Communities Reached',
-    value: 20,
-    suffix: '+',
-    target: 30,
+    label: 'Women Impacted',
+    value: 250,
+    suffix: '',
+    target: 10000,
     color: '#F08020',
     delay: 400,
   },
   {
     id: 4,
-    label: 'Global Awards',
-    value: 4,
+    label: 'Webinars Hosted',
+    value: 21,
     suffix: '',
-    target: 10,
+    target: 200,
     color: '#3070F0',
     delay: 600,
+  },
+  {
+    id: 5,
+    label: 'Collaborative Projects',
+    value: 3,
+    suffix: '',
+    target: 20,
+    color: '#307050',
+    delay: 800,
   },
 ];
 
@@ -120,7 +129,7 @@ const AnimatedRing = ({ stat, isVisible, delay }) => {
             {count.toLocaleString()}
             {stat.suffix}
           </span>
-          <span className="text-xs text-slate-400 mt-1">{stat.label}</span>
+          <span className="mt-1 text-xs text-slate-400">{stat.label}</span>
         </div>
       </div>
     </div>
@@ -162,25 +171,25 @@ const KnowAboutUs = () => {
         />
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative max-w-6xl px-4 mx-auto text-center sm:px-6 lg:px-8">
         <div className="mb-16">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
             <span className="w-2 h-2 bg-[#FD90A7] rounded-full" />
             Our Impact in Numbers
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4">
-            Measurable Change,{' '}
+            Our{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FD90A7] to-[#C7365B]">
-              Real Lives
+              Impact
             </span>
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-5 rounded-full" />
-          <p className="text-slate-500 max-w-xl mx-auto text-lg">
+          {/* <p className="max-w-xl mx-auto text-lg text-slate-500">
             Every number represents a life touched, a community strengthened, a future transformed.
-          </p>
+          </p> */}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 justify-center items-center">
+        <div className="grid items-center justify-center grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           {statsData.map((stat) => (
             <AnimatedRing
               key={stat.id}
@@ -191,8 +200,8 @@ const KnowAboutUs = () => {
           ))}
         </div>
 
-        <p className="text-center text-xs text-slate-400 mt-12">
-          Impact measured from 2020 to present. Goals set for 2026.
+        <p className="mt-12 text-xs text-center text-slate-400">
+          Impact measured from 2024 to present. Goals set for 2026.
         </p>
       </div>
     </section>

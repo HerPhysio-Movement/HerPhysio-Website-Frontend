@@ -104,8 +104,8 @@ const HealthTips = () => {
             Health Tips For You
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#FD90A7] via-[#6020F0] to-[#FCD172] mx-auto mb-4 rounded-full" />
-          <p className="max-w-md mx-auto text-lg text-gray-500">
-            Swipe through 5 powerful tips to keep you in good shape.
+          <p className="max-w-lg mx-auto text-lg text-gray-500">
+            Swipe through 10 powerful tips to keep you in good shape.
           </p>
         </div>
 
@@ -129,15 +129,15 @@ const HealthTips = () => {
             >
               <img
                 // src="/Chijioke.jpg"
-                src="/newSeedFoundationImg.jpeg"
-                alt="Chijioke - Her Physio Movement"
+                src="/event-5.jpeg"
+                alt="Her Physio Movement - outreach picture"
                 className="object-cover w-full h-full"
               />
               {/* Overlay badge */}
-              <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-[8px] px-3 py-2 shadow-lg border border-white/50">
+              {/* <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-[8px] px-3 py-2 shadow-lg border border-white/50">
                 <p className="text-xs font-semibold text-gray-800">Chijioke O.</p>
                 <p className="text-[10px] text-gray-500">Research & Development</p>
-              </div>
+              </div> */}
             </div>
 
             {/* ---- Right content ---- */}

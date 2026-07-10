@@ -1,5 +1,5 @@
 // src/features/events/components/EventHero.jsx
-import { MapPin, Calendar, Heart, ArrowRight } from 'lucide-react';
+import { MapPin, Calendar, Heart, ArrowRight, ExternalLink } from 'lucide-react';
 
 const EventHero = ({ event, loading, onReserveSpot }) => {
   const eventTitle = event?.event_name || 'A Day with Our Wonderful Women';
@@ -8,6 +8,8 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
   const eventLocation = event?.venue || event?.location || 'HerPhysio Outreach, Lagos, Nigeria';
   const eventDate = event?.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Coming soon';
   const eventTime = event?.event_time || 'Time TBD';
+  const eventLink = event?.link || event?.event_link || null;
+  const isPastEvent = event?.event_date ? new Date(event.event_date) < new Date(new Date().setHours(0, 0, 0, 0)) : false;
 
   // Split the event name into two parts
   const splitTitle = (title) => {
@@ -66,7 +68,7 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
         <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-[#FD90A7] border border-white/30 shadow-sm">
             <Heart className="w-4 h-4" />
-            <span>Upcoming Event</span>
+            <span>{isPastEvent ? 'Past Event' : 'Upcoming Event'}</span>
           </div>
         </div>
 
@@ -95,15 +97,26 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
         </div>
 
         {/* CTA button */}
-        <div className="text-center">
+        <div className="flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
           <button
             type="button"
             onClick={onReserveSpot}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#FD90A7] text-white rounded-full font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-[#f77997] transition-all duration-300 group"
+            disabled={isPastEvent}
+            className={`inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition-all duration-300 group ${isPastEvent ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-[#FD90A7] text-white hover:shadow-xl hover:bg-[#f77997]'}`}
           >
-            Reserve Your Spot
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            {isPastEvent ? 'Registration Closed' : 'Reserve Your Spot'}
+            {!isPastEvent && <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />}
           </button>
+          {eventLink && !isPastEvent && (
+            <a
+              href={eventLink}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 border border-[#FD90A7]/30 rounded-full font-semibold text-lg text-[#FD90A7] bg-white/70 backdrop-blur-sm hover:bg-[#FD90A7]/10 transition-all duration-300"
+            >
+              Event Link <ExternalLink className="w-5 h-5" />
+            </a>
+          )}
         </div>
 
         {/* Decorative wave at bottom */}

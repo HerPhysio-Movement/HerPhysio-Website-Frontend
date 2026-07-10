@@ -21,8 +21,11 @@ const Supporters = () => {
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-3">Our Partners</h2>
           <div className="w-12 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mt-3 rounded-full" />
+          <p className="text-[#525560] max-w-2xl mx-auto mt-3 text-2xl font-semibold">
+            We don't do this alone
+          </p>
           <p className="text-[#525560] max-w-2xl mx-auto mt-3">
-            <strong>We don't do this alone</strong> - We are proud of our partner organizations, who share our mission of getting health education to women in low-income communities, one outreach at a time.
+            We are proud of our partner organizations, who share our mission of getting health education to women in low-income communities, one outreach at a time.
           </p>
         </div>
 
@@ -41,7 +44,7 @@ const Supporters = () => {
                 />
               </div>
               <h3 className="font-semibold text-[#1D2130] text-lg">{supporter.name}</h3>
-              <p className="text-sm text-gray-500">{supporter.description}</p>
+              {/* <p className="text-sm text-gray-500">{supporter.description}</p> */}
             </div>
           ))}
         </div>

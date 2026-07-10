@@ -36,9 +36,9 @@ const KeyPillars = () => {
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-3">Our Key Pillars</h2>
           <div className="w-16 h-0.5 bg-[#FD90A7] mx-auto mb-4" />
-          <p className="text-[#525560] max-w-2xl mx-auto">
+          {/* <p className="text-[#525560] max-w-2xl mx-auto">
             Everything we do is rooted in four pillars that hold our work together and guide every decision we make in Her Physio Movement for women across Africa.
-          </p>
+          </p> */}
         </div>
 
         {/* Minimal, no‑card pillar grid – clean and modern */}

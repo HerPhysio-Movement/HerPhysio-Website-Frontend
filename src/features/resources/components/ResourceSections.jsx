@@ -16,7 +16,7 @@ export const NotesSection = () => {
       <BackgroundParticles variant="default" />
 
       <div className="relative mx-auto max-w-7xl">
-        <SectionHeader title="Care That Moves With You" />
+        <SectionHeader title="Why Our Resources?" />
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {notesData.map((note) => {
@@ -174,7 +174,7 @@ export const SocialSection = () => {
       <div className="relative mx-auto max-w-7xl">
         <DividerWithText text="Connect with us" />
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {socialLinksData.map((link) => {
             const Icon = link.icon;
             return (
@@ -188,7 +188,7 @@ export const SocialSection = () => {
                 <CardContent
                   icon={Icon}
                   title={link.title}
-                  description={link.description}
+                  // description={link.description}
                   bgColor={link.bgColor}
                   color={link.color}
                   showHoverText={true}

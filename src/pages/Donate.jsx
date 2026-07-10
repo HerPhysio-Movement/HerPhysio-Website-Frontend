@@ -11,12 +11,6 @@ const donationOptions = [
     description: 'I want to donate money to support your programs.',
   },
   {
-    id: 'supplies',
-    label: 'Supplies / Equipment',
-    icon: Package,
-    description: 'I have physiotherapy or medical supplies to donate.',
-  },
-  {
     id: 'time',
     label: 'Volunteer My Time',
     icon: Clock,
@@ -55,7 +49,7 @@ const Donate = () => {
 
   return (
     <main className="min-h-screen bg-[#FFFAF9] pt-20 pb-16">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="max-w-2xl px-4 mx-auto text-center sm:px-6 lg:px-8">
         <div className="bg-white/80 backdrop-blur-md border border-[#F3E4E2] rounded-2xl shadow-xl p-8 md:p-12">
           {/* Icon */}
           <div className="mx-auto w-20 h-20 rounded-full bg-[#FD90A7]/10 flex items-center justify-center mb-6">
@@ -63,14 +57,14 @@ const Donate = () => {
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-4">
-            Support Our Mission
+            Support Our Vision
           </h1>
           <p className="text-[#A19390] max-w-md mx-auto mb-8">
-            Choose how you’d like to contribute – we will follow up with you personally.
+            Choose how you’d like to contribute. We will follow up with you personally.
           </p>
 
           {/* Donation options */}
-          <div className="space-y-3 mb-8 text-left">
+          <div className="mb-8 space-y-3 text-left">
             {donationOptions.map((option) => {
               const isSelected = selectedOptions.includes(option.id);
               const Icon = option.icon;

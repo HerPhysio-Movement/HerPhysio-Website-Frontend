@@ -51,7 +51,7 @@ const ContactForm = () => {
   };
 
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden">
+    <section className="relative px-4 py-20 overflow-hidden bg-white sm:px-6 lg:px-8">
       {/* Ultra‑subtle brand background orbs */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Very faint pink orbs */}
@@ -62,7 +62,7 @@ const ContactForm = () => {
 
       <div className="relative max-w-6xl mx-auto">
         {/* Clean, on‑brand header */}
-        <div className="text-center mb-14 max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto text-center mb-14">
           <span className="inline-flex items-center gap-2 bg-[#FD90A7]/10 text-[#FD90A7] px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
             <Sparkles className="w-4 h-4" />
             Get in Touch
@@ -73,19 +73,19 @@ const ContactForm = () => {
               hear from you
             </span>
           </h1>
-          <p className="text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+          <p className="max-w-xl mx-auto text-base leading-relaxed text-gray-600">
             Have a question, want to collaborate, or just say hello? We're here to help and respond within 24 hours.
           </p>
         </div>
 
         {/* Content grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12">
           {/* Left – Form */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-7 sm:p-9">
+            <div className="bg-white border border-gray-100 shadow-lg rounded-xl p-7 sm:p-9">
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Name fields row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <FormField
                     name="f_name"
                     label="First Name"
@@ -157,7 +157,7 @@ const ContactForm = () => {
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white rounded-full border-t-transparent animate-spin" />
                       Sending...
                     </>
                   ) : (
@@ -168,7 +168,7 @@ const ContactForm = () => {
                   )}
                 </button>
 
-                <p className="text-xs text-gray-500 text-center mt-2">
+                <p className="mt-2 text-xs text-center text-gray-500">
                   We’ll get back to you as soon as possible – usually within 24 hours.
                 </p>
               </form>
@@ -176,7 +176,7 @@ const ContactForm = () => {
           </div>
 
           {/* Right – Contact Info */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6 lg:col-span-2">
             <div>
               <div className="flex items-center gap-2 mb-5">
                 {/* Brand accent bar */}
@@ -197,7 +197,7 @@ const ContactForm = () => {
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-5">
+            <div className="pt-5 border-t border-gray-200">
               <h3 className="text-lg font-bold text-[#1D2130] mb-3">Connect With Us</h3>
               <SocialLinksGrid links={socialMediaLinks} />
             </div>

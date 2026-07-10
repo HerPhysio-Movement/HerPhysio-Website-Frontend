@@ -37,6 +37,8 @@ const modalFields = {
     { name: 'venue', label: 'Venue', type: 'text', required: true },
     { name: 'caption', label: 'Caption', type: 'text', required: true },
     { name: 'link', label: 'Link', type: 'url', required: true },
+    { name: 'thumbnail_url', label: 'Thumbnail URL', type: 'url' },
+    { name: 'thumbnail_file', label: 'Thumbnail File', type: 'file', accept: 'image/*' },
   ],
   Webinar: [
     { name: 'webinar_title', label: 'Title', type: 'text', required: true },
@@ -101,8 +103,14 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
   }, [mode, currentItem, activeFilter]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, files } = e.target;
+
+    if (files && files.length > 0) {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
@@ -145,7 +153,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
   };
 
   const renderField = (field) => {
-    const value = formData[field.name] || '';
+    const value = field.type === 'file' ? '' : formData[field.name] || '';
     const error = errors[field.name];
     const baseClass =
       'w-full px-4 py-2.5 rounded-lg border bg-white/90 focus:outline-none focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent transition-all duration-200';
@@ -187,6 +195,25 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
               <option key={opt} value={opt}>{opt}</option>
             ))}
           </select>
+          {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+        </div>
+      );
+    }
+
+    if (field.type === 'file') {
+      return (
+        <div key={field.name} className="mb-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            {field.label}
+          </label>
+          <input
+            type="file"
+            name={field.name}
+            accept={field.accept || 'image/*'}
+            onChange={handleChange}
+            className={`${baseClass} ${errorClass} file:mr-3 file:rounded-full file:border-0 file:bg-[#FD90A7]/10 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[#FD90A7] hover:file:bg-[#FD90A7]/20`}
+          />
+          <p className="mt-1 text-xs text-gray-500">Optional. Upload an image file to use as the event thumbnail.</p>
           {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
         </div>
       );

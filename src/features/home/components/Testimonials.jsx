@@ -30,6 +30,14 @@ const impactMiniStats = [
   { value: '3', label: 'Collaborative Projects', icon: BriefcaseBusiness, color: '#C7365B' },
   // { value: '50+', label: 'Workshops Held', icon: Activity, color: '#F08020' },
 ];
+const communityImages = [
+  '/community-1.jpeg',
+  '/community-2.jpg',
+  '/community-3.jpg',
+  '/community-4.jpeg',
+  '/community-5.jpeg',
+  '/community-6.jpeg',
+];
 
 /* ===== Pulse Testimonial Card ===== */
 const PulseCard = ({ quote, source, onClick }) => (
@@ -87,9 +95,9 @@ const Testimonials = () => {
               Voices from <br />the Community
             </h2>
 
-            <p className="max-w-md mb-8 text-sm font-medium leading-relaxed text-gray-500">
+            {/* <p className="max-w-md mb-8 text-sm font-medium leading-relaxed text-gray-500">
               Honest, sincere and direct. A community that women can trust. Trust is built through stories that reflect unquestionable integrity and real transformation.
-            </p>
+            </p> */}
 
             <button
               onClick={() => setShowAll(true)}
@@ -111,14 +119,10 @@ const Testimonials = () => {
             </div>
 
             {/* Desktop-only static impact mini cards */}
-            <div className="hidden grid-cols-3 gap-4 mt-6 lg:grid">
-              {impactMiniStats.map((stat, idx) => (
-                <div key={idx} className="bg-gray-50 border border-gray-100 rounded-[12px] p-4 text-center shadow-sm">
-                  <div className="flex items-center justify-center w-8 h-8 mx-auto mb-2 rounded-full" style={{ backgroundColor: `${stat.color}20` }}>
-                    <stat.icon className="w-4 h-4" style={{ color: stat.color }} />
-                  </div>
-                  <p className="text-xl font-bold text-gray-800">{stat.value}</p>
-                  <p className="text-xs text-gray-500">{stat.label}</p>
+            <div className="grid grid-cols-2 gap-4 mt-6 md:grid-cols-3">
+              {communityImages.map((image, index) => (
+                <div key={index} className="h-40 overflow-hidden text-center border border-gray-100 shadow-sm sm:h-56 lg:h-36 bg-gray-50 rounded-xl">
+                  <img src={image} alt={`Community ${index + 1}`} className="object-cover w-full h-full mb-2" />
                 </div>
               ))}
             </div>
@@ -148,7 +152,7 @@ const Testimonials = () => {
               {/* Featured testimonial – large quote */}
               <div className="relative z-10 flex flex-col justify-center flex-1">
                 <Quote className="w-10 h-10 text-[#FD90A7] mb-4 animate-pulse" />
-                <p className="mb-4 text-xl italic font-light leading-relaxed text-white md:text-xl lg:text-2xl">
+                <p className="mb-4 text-xl italic font-light leading-relaxed text-white md:text-xl">
                   "{featured.quote}"
                 </p>
                 <p className="text-sm text-white/60">— {featured.source}</p>

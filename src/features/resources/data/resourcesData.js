@@ -1,6 +1,6 @@
 import { 
   GraduationCap, Users, Stethoscope, BookOpen, 
-  Youtube, Heart, Instagram 
+  Youtube, Heart, Instagram, Twitter, Linkedin, Mail  
 } from 'lucide-react';
 
 /**
@@ -107,25 +107,25 @@ export const coursesData = [
 export const socialLinksData = [
   {
     id: 1,
-    title: 'YouTube',
+    title: 'Twitter(X)',
     description: 'Watch, learn, and subscribe.',
-    icon: Youtube,
-    url: 'https://www.youtube.com/@HerPhysioMovement',
-    color: '#FD90A7',
+    icon: Twitter,
+    url: 'https://www.x.com/her_physio',
+    color: '#1DA1F2',
     bgColor: '#FD90A7/10',
     rotation: '-rotate-2',
     zIndex: 'z-10',
   },
   {
     id: 2,
-    title: "Women's Health Portal",
-    description: 'Curated resources and articles.',
-    icon: Heart,
-    url: 'https://www.womenshealth.com/',
-    color: '#C7365B',
-    bgColor: '#C7365B/10',
-    rotation: 'rotate-1',
-    zIndex: 'z-20',
+    title: 'LinkedIn',
+    description: 'Watch, learn, and subscribe.',
+    icon: Linkedin,
+    url: 'https://www.linkedin.com/company/her-physio',
+    color: '#4A90E2',
+    bgColor: '#4A90E2/10',
+    rotation: '-rotate-1',
+    zIndex: 'z-10',
   },
   {
     id: 3,
@@ -133,10 +133,21 @@ export const socialLinksData = [
     description: 'Daily tips and community stories.',
     icon: Instagram,
     url: 'https://www.instagram.com/herphysio_movement',
-    color: '#4A90E2',
+    color: '#DD00DD',
     bgColor: '#4A90E2/10',
-    rotation: 'rotate-2',
+    rotation: 'rotate-1',
     zIndex: 'z-15',
+  },
+  {
+    id: 4,
+    title: "Email",
+    description: 'Curated resources and articles.',
+    icon: Mail,
+    url: 'mailto:herphysiomovement@gmail.com',
+    color: 'red',
+    bgColor: '#C7365B/10',
+    rotation: 'rotate-2',
+    zIndex: 'z-20',
   },
 ];
 

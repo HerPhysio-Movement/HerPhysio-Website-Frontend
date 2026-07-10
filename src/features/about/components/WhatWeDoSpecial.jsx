@@ -24,7 +24,7 @@ const services = [
   },
   {
     id: 4,
-    title: 'The 3-months Mentorship Program',
+    title: 'The 3-month Mentorship Program',
     description: 'A cohort-based program that equips physiotherapists in the women\'s health field for 3 months which is completed with a capstone project.',
     icon: Shield,
   },
@@ -86,12 +86,12 @@ const WhatWeDoSpecial = () => {
             <span>Our Programs</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-4">
-            What we do for women with special needs
+            4 ways we are changing the narratives around women's health in Africa.
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
-          <p className="text-[#525560] text-lg max-w-2xl mx-auto">
+          {/* <p className="text-[#525560] text-lg max-w-2xl mx-auto">
             4 ways we are changing the narratives around women's health in Africa.
-          </p>
+          </p> */}
         </div>
 
         {/* Cinematic 3D card carousel */}
@@ -174,7 +174,7 @@ const WhatWeDoSpecial = () => {
 
         <div className="mt-12 text-center">
           <Link
-            to="/contact"
+            to="/contact-us"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-[#FD90A7] text-[#FD90A7] rounded-full font-semibold hover:bg-[#FD90A7] hover:text-white transition-all duration-300 shadow-md group"
           >
             Contact our team to learn more <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

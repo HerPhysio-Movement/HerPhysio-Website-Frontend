@@ -10,6 +10,7 @@ const services = [
     description:
       'Monthly live sessions with women’s health specialists. Interactive Q&A, expert insights, and practical guidance.',
     image: '/webinar.jpg',
+    thumbnail: '/HerPhysio Webinar.svg',
     link: '/resources#webinars',
     icon: MonitorPlay,
     accent: '#FD90A7',
@@ -20,6 +21,7 @@ const services = [
     description:
       'Quarterly multi‑voice discussions bringing together experts, advocates, and community members for impactful dialogue.',
     image: '/degreeWomen.jpg',
+    thumbnail: '/360 Panel.svg',
     link: '/events',
     icon: Users,
     accent: '#C7365B',
@@ -30,6 +32,7 @@ const services = [
     description:
       'Hands‑on mini‑projects that turn learning into action, directly impacting women in your local community.',
     image: '/Outreachh.jpg',
+    thumbnail: '/W2O.svg',
     link: '/gallery',
     icon: Wrench,
     accent: '#F08020',
@@ -40,6 +43,7 @@ const services = [
     description:
       'Cohort‑based advanced training for physiotherapists, combining leadership skills with clinical expertise.',
     image: '/hpmMentorss.jpg',
+    thumbnail: '/HPM Mentorship.svg',
     link: '/volunteer-signup',
     icon: GraduationCap,
     accent: '#6020F0',
@@ -105,16 +109,16 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '0ms' }}
           >
-            <div className="relative h-56 overflow-hidden sm:h-64 lg:h-72">
+            <div className="relative h-56 px-6 overflow-hidden sm:h-64 lg:h-72">
               <img
-                src={services[0].image}
+                src={services[0].thumbnail}
                 alt={services[0].title}
-                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
+                className="object-contain w-full h-full transition-transform duration-500 hover:scale-105"
               />
               <button
                 type="button"
                 onClick={() => openImageModal(services[0])}
-                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 hover:cursor-pointer"
                 aria-label={`View full image for ${services[0].title}`}
               >
                 <Maximize2 className="w-5 h-5" />
@@ -142,16 +146,16 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '100ms' }}
           >
-            <div className="relative h-48 overflow-hidden sm:h-56 lg:h-64">
+            <div className="relative h-48 px-6 overflow-hidden sm:h-56 lg:h-64">
               <img
-                src={services[1].image}
+                src={services[1].thumbnail}
                 alt={services[1].title}
-                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
+                className="object-contain w-full h-full transition-transform duration-500 hover:scale-105"
               />
               <button
                 type="button"
                 onClick={() => openImageModal(services[1])}
-                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 hover:cursor-pointer"
                 aria-label={`View full image for ${services[1].title}`}
               >
                 <Maximize2 className="w-5 h-5" />
@@ -179,16 +183,16 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '200ms' }}
           >
-            <div className="relative h-48 overflow-hidden sm:h-56">
+            <div className="relative h-48 px-6 overflow-hidden sm:h-56">
               <img
-                src={services[2].image}
+                src={services[2].thumbnail}
                 alt={services[2].title}
-                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
+                className="object-contain w-full h-full transition-transform duration-500 hover:scale-105"
               />
               <button
                 type="button"
                 onClick={() => openImageModal(services[2])}
-                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 hover:cursor-pointer"
                 aria-label={`View full image for ${services[2].title}`}
               >
                 <Maximize2 className="w-5 h-5" />
@@ -216,16 +220,16 @@ const WhatWeDo = () => {
             }`}
             style={{ transitionDelay: '300ms' }}
           >
-            <div className="relative h-56 overflow-hidden sm:h-64">
+            <div className="relative h-56 px-6 overflow-hidden sm:h-64">
               <img
-                src={services[3].image}
+                src={services[3].thumbnail}
                 alt={services[3].title}
-                className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
+                className="object-contain w-full h-full transition-transform duration-500 hover:scale-105"
               />
               <button
                 type="button"
                 onClick={() => openImageModal(services[3])}
-                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white"
+                className="absolute flex items-center justify-center w-10 h-10 text-gray-800 transition rounded-full shadow-sm bottom-4 right-4 bg-white/85 backdrop-blur-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 hover:cursor-pointer"
                 aria-label={`View full image for ${services[3].title}`}
               >
                 <Maximize2 className="w-5 h-5" />

@@ -11,7 +11,7 @@ export const teamMembers = [
   },
   {
     name: "Antonia Abraham",
-    role: "Programs Manager",
+    role: "Physiotherapist (AI Ethics & Digital Health Expert)",
     image: "/Antonia.jpg",
     linkedin: "https://www.linkedin.com/in/anthonia-abraham/",
     objectPosition: "center",
@@ -29,7 +29,7 @@ export const teamMembers = [
   },
   {
     name: "Chijioke Otikpa",
-    role: "Research & Development",
+    role: "Women's Health Physiotherapist",
     image: "/Chijioke.jpg",
     linkedin: "https://www.linkedin.com/in/chijiokeotikpa/",
     objectPosition: "center 40%",
@@ -38,7 +38,7 @@ export const teamMembers = [
   },
   {
     name: "Joseph Adunola",
-    role: "Mentorship Coordinator",
+    role: "Physiotherapist & Public Health Advocate (MPH)",
     image: "/Joseph.jpg",
     linkedin: "https://www.linkedin.com/in/joseph-adunola-9a8bab19b/",
     objectPosition: "center 35%",

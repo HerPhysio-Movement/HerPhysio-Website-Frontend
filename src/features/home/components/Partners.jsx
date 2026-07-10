@@ -28,6 +28,14 @@ const partners = [
     author: 'Martha W.',
     role: 'Program Lead, New Seed Foundation',
   },
+  {
+    name: 'Four Women One Truth',
+    logo: '/fourWomenOneTruth.jpeg',
+    testimonial:
+      'Together we’ve built sustainable health infrastructure. Her Physio Movement’s community model is truly transformative.',
+    author: 'Martha W.',
+    role: 'Program Lead, New Seed Foundation',
+  },
 ];
 
 const Partners = () => {
@@ -44,38 +52,38 @@ const Partners = () => {
   const current = partners[activePartner];
 
   return (
-    <section className="relative py-24 md:py-32 bg-white overflow-hidden">
+    <section className="relative py-24 overflow-hidden bg-white md:py-32">
       {/* ========== UPPER BANNER ========== */}
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
         <div className="relative bg-gradient-to-r from-[#FD90A7] to-[#C7365B] rounded-[22px] p-8 lg:p-12 min-h-[320px] flex flex-col lg:flex-row items-center justify-between gap-8 overflow-visible">
           {/* ---- PHONE MOCKUP (pops out) ---- */}
-          <div className="relative lg:absolute lg:-top-12 lg:left-12 w-56 sm:w-64 lg:w-72 filter drop-shadow-2xl transition-transform duration-500 hover:scale-105 z-20">
+          <div className="relative z-20 w-56 transition-transform duration-500 lg:absolute lg:-top-12 lg:left-12 sm:w-64 lg:w-72 filter drop-shadow-2xl hover:scale-105">
             {/* Phone frame */}
             <div className="relative mx-auto bg-black rounded-[2.5rem] p-3 shadow-xl">
               {/* Notch */}
-              <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-20 h-6 bg-black rounded-b-xl z-10" />
+              <div className="absolute z-10 w-20 h-6 transform -translate-x-1/2 bg-black top-3 left-1/2 rounded-b-xl" />
               {/* Screen */}
               <div className="bg-white rounded-[2rem] overflow-hidden aspect-[9/16] flex items-center justify-center">
                 <img
                   src={current.logo}
                   alt={current.name}
-                  className="w-4/5 h-auto object-contain transition-all duration-500"
+                  className="object-contain w-4/5 h-auto transition-all duration-500"
                 />
               </div>
               {/* Home indicator */}
-              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gray-300 rounded-full" />
+              <div className="absolute w-24 h-1 transform -translate-x-1/2 bg-gray-300 rounded-full bottom-2 left-1/2" />
             </div>
           </div>
 
           {/* ---- Right text block ---- */}
-          <div className="flex-1 lg:max-w-xl text-white space-y-6 lg:ml-auto text-center lg:text-left">
-            <span className="inline-block px-4 py-1 bg-white/20 backdrop-blur-md rounded-2xl text-sm font-semibold tracking-wide">
+          <div className="flex-1 space-y-6 text-center text-white lg:max-w-xl lg:ml-auto lg:text-left">
+            <span className="inline-block px-4 py-1 text-sm font-semibold tracking-wide bg-white/20 backdrop-blur-md rounded-2xl">
               Trusted by Partners
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+            <h2 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
               We Don’t Do It Alone
             </h2>
-            <p className="text-white/80 text-sm sm:text-base">
+            <p className="text-sm text-white/80 sm:text-base">
               Proud to collaborate with organisations that share our mission of
               health equity. Together we deliver real impact.
             </p>
@@ -90,24 +98,24 @@ const Partners = () => {
       </div>
 
       {/* ========== LOWER TESTIMONIAL BLOCK ========== */}
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-16 text-center transition-all duration-500">
+      {/* <div className="relative max-w-4xl px-4 mx-auto mt-12 text-center transition-all duration-500 sm:px-6 lg:px-8 md:mt-16"> */}
         {/* Quotation mark */}
-        <span className="text-6xl text-[#EC4899] font-serif opacity-90 block leading-none mb-4">
+        {/* <span className="text-6xl text-[#EC4899] font-serif opacity-90 block leading-none mb-4">
           “
-        </span>
-        <blockquote className="text-lg sm:text-xl md:text-2xl font-medium tracking-wide text-gray-800 italic leading-relaxed max-w-2xl mx-auto">
+        </span> */}
+        {/* <blockquote className="max-w-2xl mx-auto text-lg italic font-medium leading-relaxed tracking-wide text-gray-800 sm:text-xl md:text-2xl">
           {current.testimonial}
-        </blockquote>
-        <div className="mt-6">
+        </blockquote> */}
+        {/* <div className="mt-6">
           <p className="font-bold text-[#1A1A1A] text-lg">{current.author}</p>
           <p className="text-sm text-slate-500">{current.role}</p>
-        </div>
+        </div> */}
         {/* Trusted Partner star */}
-        <div className="flex items-center justify-center gap-2 mt-4 text-sm text-slate-500">
-          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+        {/* <div className="flex items-center justify-center gap-2 mt-4 text-sm text-slate-500">
+          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
           <span>Trusted Partner</span>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </section>
   );
 };

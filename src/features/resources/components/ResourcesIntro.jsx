@@ -31,7 +31,7 @@ const ResourcesIntro = () => {
             </div>
 
             <h1 className="mt-6 text-4xl font-bold tracking-tight text-[#1D2130] sm:text-5xl lg:text-6xl">
-              Build knowledge that moves women’s health forward.
+              Grow your knowledge to move women’s health forward.
             </h1>
             <div className="mt-4 h-1 w-24 rounded-full bg-gradient-to-r from-[#FD90A7] to-[#C7365B]" />
 

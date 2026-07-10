@@ -82,7 +82,7 @@ const TeamGrid = () => {
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-3">Meet Our Co-founders</h2>
           <div className="w-16 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4" />
-          <p className="text-[#525560]">Leaders in health, education, and community impact.</p>
+          {/* <p className="text-[#525560]">Leaders in health, education, and community impact.</p> */}
         </div>
 
         {/* Horizontal scroll, no visible scrollbar, drag to scroll */}

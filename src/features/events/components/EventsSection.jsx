@@ -22,9 +22,9 @@ const CalendarDate = ({ dateString }) => {
   const day = date.getDate();
   const month = date.toLocaleString('default', { month: 'short' });
   return (
-    <div className="flex flex-col items-center bg-white rounded-xl shadow-md overflow-hidden w-14 h-16">
+    <div className="flex flex-col items-center h-16 overflow-hidden bg-white shadow-md rounded-xl w-14">
       <div className="bg-[#FD90A7] text-white w-full text-center text-xs font-semibold py-0.5">{month}</div>
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex items-center justify-center flex-1">
         <span className="text-xl font-black text-gray-800">{day}</span>
       </div>
     </div>
@@ -105,28 +105,28 @@ const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={onClose}>
       <div className="bg-white rounded-[20px] shadow-2xl max-w-md w-full p-6 md:p-8 border border-gray-100 animate-modal-pop" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-gray-900">Register for Event</h2>
-          <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-100 text-gray-400"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} className="p-1 text-gray-400 rounded-full hover:bg-gray-100"><X className="w-5 h-5" /></button>
         </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="bg-[#FD90A7]/5 rounded-2xl p-4 mb-4">
               <p className="text-sm font-semibold text-gray-900">{event.event_name}</p>
-              <p className="text-xs text-gray-500 mt-1">{event.event_date} • {event.event_time}</p>
-              <p className="text-xs text-gray-400 mt-1">{event.venue || 'Online'}</p>
+              <p className="mt-1 text-xs text-gray-500">{event.event_date} • {event.event_time}</p>
+              <p className="mt-1 text-xs text-gray-400">{event.venue || 'Online'}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">First Name</label>
+                <label className="block mb-1 text-xs font-medium text-gray-700">First Name</label>
                 <input type="text" value={fName} onChange={(e) => setFName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Last Name</label>
+                <label className="block mb-1 text-xs font-medium text-gray-700">Last Name</label>
                 <input type="text" value={lName} onChange={(e) => setLName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
+              <label className="block mb-1 text-xs font-medium text-gray-700">Email Address</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-[#FD90A7]/50 focus:border-transparent text-sm" required />
             </div>
             <button type="submit" disabled={submitting} className="w-full py-2.5 bg-[#FD90A7] text-white rounded-full font-semibold hover:bg-[#F77997] transition flex items-center justify-center gap-2 disabled:opacity-60">
@@ -232,7 +232,7 @@ const EventsSection = ({ showHeading = true }) => {
   if (loading) {
     return (
       <section className="py-20 px-4 bg-[#F4F6F8]" ref={sectionRef}>
-        <div className="max-w-7xl mx-auto text-center"><div className="animate-pulse text-[#FD90A7]">Loading events...</div></div>
+        <div className="mx-auto text-center max-w-7xl"><div className="animate-pulse text-[#FD90A7]">Loading events...</div></div>
       </section>
     );
   }
@@ -240,7 +240,7 @@ const EventsSection = ({ showHeading = true }) => {
   if (error) {
     return (
       <section className="py-20 px-4 bg-[#F4F6F8]" ref={sectionRef}>
-        <div className="max-w-7xl mx-auto text-center text-red-500">Error loading events: {error}</div>
+        <div className="mx-auto text-center text-red-500 max-w-7xl">Error loading events: {error}</div>
       </section>
     );
   }
@@ -256,27 +256,27 @@ const EventsSection = ({ showHeading = true }) => {
         <div className="absolute top-2/3 right-1/3 w-2 h-2 bg-[#FD90A7] rounded-full opacity-40 animate-float-slow-delayed" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Header */}
         <div className={`text-center mb-12 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md border border-white/30 rounded-full text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
             <Sparkles className="w-4 h-4" /> Our Events
           </span>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-4 tracking-tight max-w-4xl mx-auto">
-             Come learn something new{/*, connect with experts, and be part of the movement */}.
+          <h2 className="max-w-4xl mx-auto mb-4 text-4xl font-black tracking-tight text-gray-900 md:text-6xl lg:text-7xl">
+             Learn something new.
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#FD90A7] via-[#6020F0] to-[#FCD172] mx-auto mb-4 rounded-full" />
-          <p className="text-gray-500 max-w-xl mx-auto text-lg">Explore our upcoming events and secure your spot today.</p>
+          <p className="max-w-xl mx-auto text-lg text-gray-500">Explore our upcoming events and secure your spot today.</p>
           {nextUpcomingEvent && (
             <div className="mt-4">
               <CountdownTimer targetDate={nextUpcomingEvent.event_date} />
-              <p className="text-xs text-gray-400 mt-1">until next event</p>
+              <p className="mt-1 text-xs text-gray-400">until next event</p>
             </div>
           )}
         </div>
 
         {/* Asymmetric Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid items-start grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Left Column – Stats & Upcoming Ledger (span 5) */}
           <div className={`lg:col-span-5 space-y-6 order-2 lg:order-1 transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
             <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 max-w-sm mx-auto lg:mx-0 relative">
@@ -285,7 +285,7 @@ const EventsSection = ({ showHeading = true }) => {
                   Next: {nextUpcomingEvent.event_name.substring(0, 20)}...
                 </div>
               )}
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 mt-2"><Users className="w-5 h-5 text-[#FD90A7]" /> Event Stats</h3>
+              <h3 className="flex items-center gap-2 mt-2 mb-4 text-lg font-bold text-gray-900"><Users className="w-5 h-5 text-[#FD90A7]" /> Event Stats</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#FD90A7]/5 rounded-2xl p-4"><p className="text-3xl font-black text-[#FD90A7]">{totalEvents}</p><p className="text-xs text-gray-500">Total Events</p></div>
                 <div className="bg-[#6020F0]/5 rounded-2xl p-4"><p className="text-3xl font-black text-[#6020F0]">{upcomingEvents}</p><p className="text-xs text-gray-500">Upcoming</p></div>
@@ -295,7 +295,7 @@ const EventsSection = ({ showHeading = true }) => {
 
             {events.length > 0 && (
               <div className="bg-[#0B0F12] text-white rounded-[32px] p-6 max-w-sm mx-auto lg:mx-0">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">Upcoming Events</h3>
+                <h3 className="mb-4 text-sm font-bold tracking-wider text-gray-400 uppercase">Upcoming Events</h3>
                 <div className="space-y-3">
                   {upcomingEventsList.length > 0 ? (
                     upcomingEventsList.slice(0, 3).map((ev) => {
@@ -322,7 +322,7 @@ const EventsSection = ({ showHeading = true }) => {
                       );
                     })
                   ) : (
-                    <div className="rounded-2xl border border-white/20 p-5 text-center text-sm text-gray-200">
+                    <div className="p-5 text-sm text-center text-gray-200 border rounded-2xl border-white/20">
                       No upcoming event yet.
                     </div>
                   )}
@@ -370,10 +370,13 @@ const EventsSection = ({ showHeading = true }) => {
                   const opacity = 1 - absOffset * 0.35;
                   const blur = absOffset > 0 ? `blur(${absOffset * 2}px)` : 'none';
 
+                  const eventId = ev.id || ev._id || ev.event_id || ev.eventId || '';
+                  const eventImage = ev.thumbnail_url || ev.thumbnail_file || ev.image_url || ev.image || null;
+
                   return (
                     <div
-                      key={ev.id}
-                      className="absolute w-72 sm:w-80 cursor-pointer transition-all duration-500 ease-out"
+                      key={eventId || idx}
+                      className="absolute transition-all duration-500 ease-out cursor-pointer w-72 sm:w-80"
                       style={{
                         transform: `translateX(${translateX}%) scale(${scale}) perspective(1000px) rotateY(${rotateY}deg)`,
                         zIndex,
@@ -385,9 +388,9 @@ const EventsSection = ({ showHeading = true }) => {
                     >
                       <div className="bg-white rounded-[24px] shadow-xl overflow-hidden border border-gray-100 group">
                         {/* Image */}
-                        <div className="relative h-44 overflow-hidden">
-                          {ev.image_url ? (
-                            <img src={ev.image_url} alt={ev.event_name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <div className="relative overflow-hidden h-44">
+                          {eventImage ? (
+                            <img src={eventImage} alt={ev.event_name} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-[#FD90A7]/20 to-[#6020F0]/20 flex items-center justify-center">
                               <Sparkles className="w-8 h-8 text-[#FD90A7]/50" />
@@ -403,13 +406,13 @@ const EventsSection = ({ showHeading = true }) => {
                         </div>
                         {/* Card body */}
                         <div className="p-5">
-                          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">{ev.event_name}</h3>
+                          <h3 className="mb-2 text-lg font-bold text-gray-900 line-clamp-2">{ev.event_name}</h3>
                           <div className="space-y-1.5 text-sm text-gray-500">
                             <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#6020F0]" />{ev.event_time || 'TBA'}</div>
                             <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#FCD172]" />{ev.venue || 'Online'}</div>
-                            {ev.description && <p className="text-xs text-gray-400 mt-2 line-clamp-2">{ev.description}</p>}
+                            {ev.description && <p className="mt-2 text-xs text-gray-400 line-clamp-2">{ev.description}</p>}
                           </div>
-                          <div className="mt-4 flex items-center gap-3">
+                          <div className="flex flex-col gap-2 mt-4 sm:flex-row">
                             {new Date(ev.event_date) >= new Date() ? (
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleRegisterClick(ev); }}
@@ -422,6 +425,13 @@ const EventsSection = ({ showHeading = true }) => {
                                 Event Closed
                               </span>
                             )}
+                            <Link
+                              to={eventId ? `/events/${eventId}` : '/events'}
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 border border-[#FD90A7]/30 text-[#FD90A7] rounded-full font-semibold text-sm hover:bg-[#FD90A7]/10 transition"
+                            >
+                              Event Details <ArrowRight className="w-4 h-4" />
+                            </Link>
                           </div>
                           <p className="text-center text-[10px] text-gray-400 mt-1.5">← Swipe to explore →</p>
                         </div>

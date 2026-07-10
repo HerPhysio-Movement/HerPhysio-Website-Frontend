@@ -32,7 +32,7 @@ const WhatWeDoCountry = () => {
           <div className="md:w-1/2">
             <div className="relative overflow-hidden rounded-lg shadow-lg group">
               <img
-                src="/ladylooking.jpg"
+                src="/what-we-do.jpg"
                 alt="Woman looking into the distance – representing hope and impact"
                 className="object-cover w-full transition-transform duration-500 h-80 group-hover:scale-105"
               />

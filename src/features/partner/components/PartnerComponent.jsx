@@ -42,29 +42,29 @@ const PartnerComponent = () => {
   ];
 
   return (
-    <main className="bg-white relative overflow-hidden pt-20 pb-16">
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
+    <main className="relative pt-20 pb-16 overflow-hidden bg-white">
+      <div className="absolute inset-0 pointer-events-none opacity-5">
         <svg width="100%" height="100%"><defs><pattern id="partner-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="2" fill={buttonPink} /></pattern></defs><rect width="100%" height="100%" fill="url(#partner-pattern)" /></svg>
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-8 sm:w-10 md:w-12 h-0.5 bg-[#1D2130]" />
           <span className="uppercase text-[#1D2130] font-bold text-sm tracking-[2px]">Partner with us</span>
         </div>
-        <div className="text-center mb-12">
+        <div className="mb-12 text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1D2130] mb-4">Let's change the story together.</h1>
           <p className="text-lg text-[#525560] max-w-2xl mx-auto">
-            We collaborate with organisations, foundations, and changemakers who share our vision of accessible, quality women's health physiotherapy across Africa.
+            We collaborate with organisations, foundations, and changemakers who share our vision to change the narrative to improve women's health across Africa.
           </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
+        <div className="grid grid-cols-1 gap-12 mb-16 lg:grid-cols-2 lg:gap-16">
           <div>
             <h2 className="text-2xl font-bold text-[#1D2130] mb-6">Why partner with us?</h2>
             <div className="space-y-6">
               {benefits.map((benefit, idx) => {
                 const Icon = benefit.icon;
                 return (
-                  <div key={idx} className="flex gap-4 items-start">
+                  <div key={idx} className="flex items-start gap-4">
                     <div className="flex-shrink-0 w-10 h-10 bg-[#FD90A7]/10 rounded-full flex items-center justify-center text-[#FD90A7]">
                       <Icon className="w-5 h-5" />
                     </div>
@@ -78,7 +78,7 @@ const PartnerComponent = () => {
             </div>
           </div>
           <div>
-            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200">
+            <div className="p-6 bg-white border border-gray-200 shadow-lg rounded-2xl sm:p-8">
               <h2 className="text-2xl font-bold text-[#1D2130] mb-4">Become a partner</h2>
               <p className="text-[#525560] mb-6">Fill out the form and we'll reach out to explore opportunities together.</p>
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -103,7 +103,7 @@ const PartnerComponent = () => {
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] resize-none" required />
                 </div>
                 <button type="submit" disabled={isSubmitting}
-                  className="w-full py-3 px-6 rounded-full text-white font-semibold hover:opacity-90 transition shadow-md flex items-center justify-center gap-2"
+                  className="flex items-center justify-center w-full gap-2 px-6 py-3 font-semibold text-white transition rounded-full shadow-md hover:opacity-90"
                   style={{ backgroundColor: buttonPink }}>
                   {isSubmitting ? 'Sending...' : <><Send className="w-5 h-5" /> Send Inquiry</>}
                 </button>
@@ -111,10 +111,10 @@ const PartnerComponent = () => {
             </div>
           </div>
         </div>
-        <div className="text-center bg-gray-50 rounded-2xl p-8 border border-gray-200">
+        <div className="p-8 text-center border border-gray-200 bg-gray-50 rounded-2xl">
           <p className="text-[#525560] mb-3">Prefer to reach out directly?</p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 text-sm">
-            <a href="mailto:partners@herphysio.org" className="flex items-center gap-2 justify-center text-[#FD90A7] hover:underline"><Mail className="w-4 h-4" /> partners@herphysio.org</a>
+          <div className="flex flex-col justify-center gap-4 text-sm sm:flex-row">
+            <a href="mailto:herphysiomovement@gmail.com" className="flex items-center gap-2 justify-center text-[#FD90A7] hover:underline"><Mail className="w-4 h-4" /> herphysiomovement@gmail.com</a>
             <a href="tel:+2347089198901" className="flex items-center gap-2 justify-center text-[#FD90A7] hover:underline"><Phone className="w-4 h-4" /> +234 708 919 8901</a>
           </div>
         </div>

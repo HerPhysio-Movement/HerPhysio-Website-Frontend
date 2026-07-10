@@ -6,7 +6,7 @@ import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 const cards = [
   {
     type: 'vision',
-    title: 'Shift the narrative',
+    title: 'Change the Narrative',
     icon: FaEye,
     iconBg: '#FD90A7',
     iconColor: '#C7365B',
@@ -74,9 +74,14 @@ const MissionVision = () => {
   const renderDescription = (description) => {
     if (Array.isArray(description)) {
       return (
-        <ol className="w-full space-y-2 mb-5 text-left text-sm text-[#525560] leading-relaxed list-decimal list-inside h-40 overflow-scroll">
+        <ol className="w-full space-y-2 mb-5 text-left text-sm text-[#525560] leading-relaxed list-decimal list-inside h-60 md:h-64 overflow-y-auto">
           {description.map((item, index) => (
-            <li key={index}>{item}</li>
+            <li key={index} className="flex items-start gap-3">
+              <div className="min-w-[28px] h-[28px] rounded-full bg-[#C7365B20] flex items-center justify-center text-sm font-medium text-[#C7365B]">
+                {index + 1}
+              </div>
+              <span className="pt-0.5">{item}</span>
+            </li>
           ))}
         </ol>
       );
@@ -122,7 +127,7 @@ const MissionVision = () => {
             return (
               <div
                 key={idx}
-                className="absolute flex flex-col justify-between w-80 p-6 bg-white border border-gray-100 rounded-lg shadow-lg md:w-96 min-h-[450px]"
+                className="absolute flex flex-col justify-between w-80 p-6 bg-white border border-gray-100 rounded-lg shadow-lg md:w-[400px] min-h-[350px]"
                 style={style}
               >
                 <div className="absolute px-3 py-1 text-xs font-semibold text-white rounded-md shadow-md -top-4 left-6" style={{ backgroundColor: card.badgeBg }}>
@@ -136,11 +141,11 @@ const MissionVision = () => {
                     {card.title}
                   </h3>
                   {renderDescription(card.description)}
-                  <div className="w-full bg-[#FFF5F7] rounded-md p-4 border-l-4 transition-all duration-300" style={{ borderLeftColor: card.iconBg }}>
+                  {/* <div className="w-full bg-[#FFF5F7] rounded-md p-4 border-l-4 transition-all duration-300" style={{ borderLeftColor: card.iconBg }}>
                     <p className="text-sm italic text-[#1D2130]/80">
                       {card.quote}
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             );

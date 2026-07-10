@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { ArrowRight, X } from 'lucide-react';
 import EventHero from '../features/events/components/EventHero';
 import EventAbout from '../features/events/components/EventAbout';
@@ -65,12 +66,12 @@ const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4 py-6 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-black/45 backdrop-blur-sm" onClick={onClose}>
       <div className="w-full max-w-md rounded-[20px] border border-gray-100 bg-white p-6 shadow-2xl md:p-8" onClick={(e) => e.stopPropagation()}>
-        <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-gray-900">Register for Event</h2>
-          <button onClick={onClose} className="rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
-            <X className="h-5 w-5" />
+          <button onClick={onClose} className="p-1 text-gray-400 transition-colors rounded-full hover:bg-gray-100 hover:text-gray-600">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -83,23 +84,23 @@ const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) 
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-700">First Name</label>
+              <label className="block mb-1 text-xs font-medium text-gray-700">First Name</label>
               <input type="text" value={fName} onChange={(e) => setFName(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-transparent focus:ring-2 focus:ring-[#FD90A7]/50" required />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-700">Last Name</label>
+              <label className="block mb-1 text-xs font-medium text-gray-700">Last Name</label>
               <input type="text" value={lName} onChange={(e) => setLName(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-transparent focus:ring-2 focus:ring-[#FD90A7]/50" required />
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-700">Email Address</label>
+            <label className="block mb-1 text-xs font-medium text-gray-700">Email Address</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-transparent focus:ring-2 focus:ring-[#FD90A7]/50" required />
           </div>
 
           <button type="submit" disabled={submitting} className="flex w-full items-center justify-center gap-2 rounded-full bg-[#FD90A7] px-4 py-2.5 font-semibold text-white transition hover:bg-[#F77997] disabled:opacity-60">
             {submitting ? 'Registering...' : 'Confirm Registration'}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="w-4 h-4" />
           </button>
         </form>
       </div>
@@ -109,6 +110,7 @@ const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) 
 
 const Events = () => {
   const { currentUser } = useUser();
+  const { eventId } = useParams();
   const [nextEvent, setNextEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showRegModal, setShowRegModal] = useState(false);
@@ -117,15 +119,22 @@ const Events = () => {
   useEffect(() => {
     const fetchNextEvent = async () => {
       try {
-        const data = await eventAPI.getAllEvents();
-        const events = Array.isArray(data?.events) ? data.events : Array.isArray(data) ? data : [];
+        setLoading(true);
+        if (eventId) {
+          const response = await eventAPI.getEventById(eventId);
+          const event = response?.event || response?.data || response;
+          setNextEvent(event || null);
+        } else {
+          const data = await eventAPI.getAllEvents();
+          const events = Array.isArray(data?.events) ? data.events : Array.isArray(data) ? data : [];
 
-        const upcomingEvents = events
-          .map((event) => ({ ...event, parsedDate: parseEventDateTime(event) }))
-          .filter((event) => event.parsedDate && event.parsedDate >= new Date())
-          .sort((a, b) => a.parsedDate - b.parsedDate);
+          const upcomingEvents = events
+            .map((event) => ({ ...event, parsedDate: parseEventDateTime(event) }))
+            .filter((event) => event.parsedDate && event.parsedDate >= new Date())
+            .sort((a, b) => a.parsedDate - b.parsedDate);
 
-        setNextEvent(upcomingEvents[0] || events[0] || null);
+          setNextEvent(upcomingEvents[0] || events[0] || null);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -134,7 +143,7 @@ const Events = () => {
     };
 
     fetchNextEvent();
-  }, []);
+  }, [eventId]);
 
   const handleReserveSpot = () => {
     if (!nextEvent) return;
@@ -168,7 +177,7 @@ const Events = () => {
         currentUser={currentUser}
         onRegister={handleRegistration}
       />
-      {error && <div className="px-4 pb-4 text-center text-sm text-red-500">{error}</div>}
+      {error && <div className="px-4 pb-4 text-sm text-center text-red-500">{error}</div>}
     </main>
   );
 };

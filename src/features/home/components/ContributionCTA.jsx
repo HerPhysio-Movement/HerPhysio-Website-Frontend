@@ -54,7 +54,7 @@ const ContributionCTA = () => {
               {/* ---------- DOMINANT BRAND IMAGE ---------- */}
               <div className="absolute z-10 w-64 overflow-hidden -translate-x-1/2 -translate-y-1/2 shadow-xl top-1/2 left-1/2 md:w-72 rounded-2xl translate-z-10">
                 <img
-                  src="/event-4.jpeg"
+                  src="/event-6.jpeg"
                   alt="Her Physio Movement"
                   className="object-cover w-full h-auto"
                   style={{ filter: 'none' }}
@@ -103,9 +103,9 @@ const ContributionCTA = () => {
                Change
               </span> You Wish To See
             </h2>
-            <p className="max-w-md mb-10 text-base leading-relaxed text-gray-500 lg:text-lg">
+            {/* <p className="max-w-md mb-10 text-base leading-relaxed text-gray-500 lg:text-lg">
               From easy money management, to financial goals and investments. Open your account in a flash.
-            </p>
+            </p> */}
 
             {/* CTA buttons – visible on desktop only */}
             <div className="flex-row justify-center hidden gap-4 lg:flex lg:justify-start">

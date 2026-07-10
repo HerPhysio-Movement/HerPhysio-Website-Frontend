@@ -34,7 +34,7 @@ const heroSlides = [
     paragraph: 'We are bringing health education and physiotherapy services to low-income and marginalised communities.',
     italicParagraph: 'Teaching the woman about her health.',
     buttonLabel: 'Learn More',
-    backgroundImage: null,
+    backgroundImage: '/event-2.jpg',
   },
   {
     id: 'slide-2',
@@ -84,8 +84,8 @@ const HomeHero = () => {
         >
           <div className="relative grid items-center grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
             {/* ========== LEFT COLUMN (span 5) ========== */}
-            <div className="text-center lg:col-span-5 lg:text-left">
-              <div className="relative min-h-[650px] overflow-hidden sm:min-h-[680px] lg:min-h-[760px]">
+            <div className="text-center lg:col-span-7 lg:text-left">
+              <div className="relative min-h-[650px] overflow-hidden sm:min-h-[570px] md:min-h-[530px] lg:min-h-[600px]">
                 <div
                   className={`absolute inset-0 transition-all duration-700 ease-in-out ${
                     activeSlide === 0 ? 'translate-x-0 opacity-100' : '-translate-x-6 opacity-0 pointer-events-none'
@@ -94,7 +94,7 @@ const HomeHero = () => {
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0B132B] leading-tight mb-6">
                     {heroSlides[0].heading}
                   </h1>
-                  <p className="text-lg text-[#8A8E99] mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                  <p className="text-lg text-[#8A8E99] mb-8 lg:max-w-md xl:max-w-xl mx-auto lg:mx-0 leading-relaxed">
                     {heroSlides[0].paragraph}
                   </p>
                   <p className="max-w-xl mx-auto mb-8 text-lg italic leading-relaxed text-gray-600 lg:mx-0">
@@ -136,7 +136,7 @@ const HomeHero = () => {
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0B132B] leading-tight mb-6">
                     {heroSlides[1].heading}
                   </h1>
-                  <p className="text-lg text-[#8A8E99] mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                  <p className="text-lg text-[#8A8E99] mb-8 lg:max-w-md xl:max-w-xl mx-auto lg:mx-0 leading-relaxed">
                     {heroSlides[1].paragraph}
                   </p>
                   <p className="max-w-xl mx-auto mb-8 text-lg italic leading-relaxed text-gray-600 lg:mx-0">
@@ -173,11 +173,11 @@ const HomeHero = () => {
             </div>
 
             {/* ========== RIGHT COLUMN – Responsive Bento Grid ========== */}
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-5">
               {/* ---- Desktop / Tablet layout (absolute) – adjusted for tablet visibility ---- */}
               <div className="hidden md:block relative h-[550px]">
                 {/* Image Card 1 */}
-                <div className="absolute left-0 top-0 w-56 md:w-64 lg:w-72 h-72 md:h-80 rounded-[10px] overflow-hidden bg-[#FD90A7]/10 shadow-xl">
+                <div className="absolute left-0 lg:-left-28 bottom-0 lg:-bottom-5 w-56 md:w-[350px] lg:w-72 h-72 md:h-80 rounded-[10px] overflow-hidden bg-[#FD90A7]/10 shadow-xl z-10 transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:scale-105">
                   <img src={portraitMain} alt="Smiling woman physiotherapist" className="object-cover w-full h-full" />
                   <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-[#0B132B] shadow">
                     New Seed Foundation
@@ -185,15 +185,15 @@ const HomeHero = () => {
                 </div>
 
                 {/* Image Card 2 – moved slightly to avoid overlap on tablet */}
-                <div className="absolute right-0 md:right-4 lg:right-0 top-8 w-44 md:w-48 lg:w-56 h-56 md:h-64 rounded-[10px] overflow-hidden bg-[#FCD172] shadow-xl">
-                  <img src={portraitSecond} alt="Woman with glasses" className="object-cover w-full h-full" />
-                  <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-[#0B132B] shadow">
+                <div className="absolute right-0 md:right-4 lg:left-0 top-10 w-44 md:w-[400px] lg:w-[350px] h-52 md:h-60 rounded-[10px] overflow-hidden bg-[#FCD172] shadow-xl transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 hover:z-20">
+                  <img src={portraitSecond} alt="volunteer picture" className="object-cover w-full h-full" />
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-[#0B132B] shadow">
                     Volunteer Spotlight
                   </div>
                 </div>
 
                 {/* Metric Badge – repositioned for tablet */}
-                <div className="absolute right-0 md:right-4 lg:right-0 top-0 w-40 md:w-44 bg-[#FD90A7] text-white rounded-[10px] p-4 shadow-xl z-10">
+                <div className="absolute right-0 md:right-4 lg:right-0 top-0 w-36 md:w-40 bg-[#FD90A7] text-white rounded-[10px] px-4 py-2 shadow-xl z-10">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="w-2 h-2 bg-green-400 rounded-full" />
                     <span className="text-lg font-bold">100k+</span>
@@ -225,7 +225,7 @@ const HomeHero = () => {
                 </div>
 
                 {/* Circular Badge */}
-                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border-2 border-[#0B132B] bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg z-10">
+                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-[#0B132B] bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-lg z-10">
                   <ArrowUpRight className="w-6 h-6 text-[#FD90A7]" />
                 </div>
               </div>
