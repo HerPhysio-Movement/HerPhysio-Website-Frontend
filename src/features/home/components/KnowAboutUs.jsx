@@ -5,7 +5,7 @@ const statsData = [
   {
     id: 1,
     label: 'Community Members',
-    value: 660,
+    value: 696,
     suffix: '',
     target: 15000,
     color: '#FD90A7',
@@ -14,7 +14,7 @@ const statsData = [
   {
     id: 2,
     label: 'Webinar Attendees',
-    value: 931,
+    value: 1217,
     suffix: '',
     target: 5000,
     color: '#C7365B',
@@ -23,7 +23,7 @@ const statsData = [
   {
     id: 3,
     label: 'Women Impacted',
-    value: 250,
+    value: 911,
     suffix: '',
     target: 10000,
     color: '#F08020',
@@ -32,7 +32,7 @@ const statsData = [
   {
     id: 4,
     label: 'Webinars Hosted',
-    value: 21,
+    value: 27,
     suffix: '',
     target: 200,
     color: '#3070F0',
@@ -41,7 +41,7 @@ const statsData = [
   {
     id: 5,
     label: 'Collaborative Projects',
-    value: 3,
+    value: 4,
     suffix: '',
     target: 20,
     color: '#307050',
@@ -201,7 +201,7 @@ const KnowAboutUs = () => {
         </div>
 
         <p className="mt-12 text-xs text-center text-slate-400">
-          Impact measured from 2024 to present. Goals set for 2026.
+          Impact numbers from 2025 till date.
         </p>
       </div>
     </section>

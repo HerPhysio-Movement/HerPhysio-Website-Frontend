@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 const supporters = [
-  { name: 'Her Mobility', logo: '/rnrn.jpg', description: 'Women’s health advocacy' },
+  { name: 'RNRN Foundation', logo: '/rnrn.jpg', description: 'Women’s health advocacy' },
   { name: 'NeuroRehab Academia', logo: '/neuro.jpg', description: 'Neurological rehabilitation' },
   { name: 'New Seed Foundation', logo: '/newseed.jpg', description: 'Community development' },
   { name: 'Four Women One Truth', logo: '/fourWomenOneTruth.jpeg', description: 'Community development' },

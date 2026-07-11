@@ -1,7 +1,7 @@
 // src/features/about/components/WhatWeDoSpecial.jsx
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, Heart, Activity, BookOpen, Shield } from 'lucide-react';
+import { Sparkles, ArrowRight, Heart, Activity, BookOpen, Shield, Clock } from 'lucide-react';
 
 const services = [
   {
@@ -13,20 +13,26 @@ const services = [
   {
     id: 2,
     title: 'The 360 Panel Session',
-    description: 'Quarterly discussions that bring a diverse group of voices together around women\'s health.',
+    description: 'Quarterly discussions that bring a diverse group of voices together to discuss women\'s health.',
     icon: Activity,
   },
   {
     id: 3,
-    title: 'The Workshop2Outreach (W20)',
-    description: 'Community mini-projects are implemented, to address the health needs of women in the community.',
+    title: 'The Workshop2Outreach (W20) Program',
+    description: 'Community mini-projects are implemented to address the health needs of women in the community.',
     icon: BookOpen,
   },
   {
     id: 4,
     title: 'The 3-month Mentorship Program',
-    description: 'A cohort-based program that equips physiotherapists in the women\'s health field for 3 months which is completed with a capstone project.',
+    description: 'A cohort-based program that equips physiotherapists in the women\'s health field for 3 months and is completed with a capstone project.',
     icon: Shield,
+  },
+  {
+    id: 5,
+    title: 'Her Experience in 60 Seconds Contest',
+    description: 'A quarterly creative storytelling contest that empowers young people to raise awareness about women\'s health in 60-seconds.',
+    icon: Clock,
   },
 ];
 
@@ -86,7 +92,7 @@ const WhatWeDoSpecial = () => {
             <span>Our Programs</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-4">
-            4 ways we are changing the narratives around women's health in Africa.
+            5 ways we are changing the narratives around women's health in Africa.
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
           {/* <p className="text-[#525560] text-lg max-w-2xl mx-auto">
