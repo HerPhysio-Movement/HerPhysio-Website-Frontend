@@ -7,6 +7,8 @@ const supporters = [
   { name: 'NeuroRehab Academia', logo: '/neuro.jpg', description: 'Neurological rehabilitation' },
   { name: 'New Seed Foundation', logo: '/newseed.jpg', description: 'Community development' },
   { name: 'Four Women One Truth', logo: '/fourWomenOneTruth.jpeg', description: 'Community development' },
+  { name: 'Atti Theresa Foundation', logo: '/ATF.jpeg', description: 'Community development' },
+  { name: 'Swypatune', logo: '/swypatune.png', description: 'Community development' },
 ];
 
 const Supporters = () => {
@@ -30,7 +32,7 @@ const Supporters = () => {
         </div>
 
         {/* Supporters grid */}
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           {supporters.map((supporter, idx) => (
             <div
               key={idx}
@@ -40,7 +42,7 @@ const Supporters = () => {
                 <img
                   src={supporter.logo}
                   alt={supporter.name}
-                  className="object-contain w-auto h-16 transition-all duration-300 grayscale group-hover:grayscale-0"
+                  className="object-contain w-auto h-16 transition-all duration-300 lg:grayscale group-hover:grayscale-0"
                 />
               </div>
               <h3 className="font-semibold text-[#1D2130] text-lg">{supporter.name}</h3>

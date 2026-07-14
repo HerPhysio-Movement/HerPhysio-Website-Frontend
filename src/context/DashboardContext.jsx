@@ -14,6 +14,7 @@ export const DashboardProvider = ({ children }) => {
     webinars: [],
     volunteers: [],
     courses: [],
+    gallery: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -56,6 +56,12 @@ const modalFields = {
     { name: 'category', label: 'Category', type: 'text', required: true },
     { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
   ],
+  Gallery: [
+    { name: 'title', label: 'Title', type: 'text', required: true },
+    { name: 'caption', label: 'Category', type: 'select', options: ['Outreach', 'Training', 'Event'], required: true },
+    { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 4 },
+    { name: 'image_url', label: 'Image URL', type: 'url', required: true },
+  ],
   Volunteers: [
     { name: 'f_name', label: 'First Name', type: 'text', required: true },
     { name: 'l_name', label: 'Last Name', type: 'text', required: true },

@@ -1,37 +1,63 @@
 // src/features/about/components/TeamGrid.jsx
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaLinkedin } from 'react-icons/fa';
 import { Info, X } from 'lucide-react';
-import { teamMembers } from '../data/teamData';
+import { coFounders, leadersTeam, websiteTeam } from '../data/teamData';
+
+const teamSections = [
+  { title: 'Meet Our Co-founders', members: coFounders },
+  { title: 'Meet Our Leaders', members: leadersTeam },
+  { title: 'Meet Our Website Team', members: websiteTeam },
+];
 
 const TeamGrid = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
-  const scrollContainerRef = useRef(null);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
+  const scrollContainerRefs = useRef({});
+  const sectionRef = useRef(null);
+  const location = useLocation(); // Get location
 
   // Handle mouse drag for horizontal scroll
-  const handleMouseDown = (e) => {
-    isDragging.current = true;
-    startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
-    scrollLeft.current = scrollContainerRef.current.scrollLeft;
-    scrollContainerRef.current.style.cursor = 'grabbing';
-  };
+  const handleMouseDown = useCallback((e, sectionKey) => {
+    const container = scrollContainerRefs.current[sectionKey];
+    if (!container) return;
+    const isDragging = container.dataset.dragging === 'true';
+    if (isDragging) return;
+    
+    container.dataset.dragging = 'true';
+    container.dataset.startX = e.pageX - container.offsetLeft;
+    container.dataset.scrollLeft = container.scrollLeft;
+    container.style.cursor = 'grabbing';
+    container.style.userSelect = 'none';
+  }, []);
 
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    e.preventDefault();
-    const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
-  };
+  const handleMouseMove = useCallback((e) => {
+    // Find which container we're dragging
+    for (const key in scrollContainerRefs.current) {
+      const container = scrollContainerRefs.current[key];
+      if (!container || container.dataset.dragging !== 'true') continue;
+      
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - parseFloat(container.dataset.startX)) * 1.5;
+      container.scrollLeft = parseFloat(container.dataset.scrollLeft) - walk;
+      break;
+    }
+  }, []);
 
-  const handleMouseUp = () => {
-    isDragging.current = false;
-    scrollContainerRef.current.style.cursor = 'grab';
-  };
+  const handleMouseUp = useCallback(() => {
+    for (const key in scrollContainerRefs.current) {
+      const container = scrollContainerRefs.current[key];
+      if (!container) continue;
+      
+      if (container.dataset.dragging === 'true') {
+        container.dataset.dragging = 'false';
+        container.style.cursor = 'grab';
+        container.style.userSelect = '';
+      }
+    }
+  }, []);
 
   // Mouse move for individual card 3D tilt
   const handleCardMouseMove = (e, cardEl) => {
@@ -54,25 +80,59 @@ const TeamGrid = () => {
     setSelectedMember(null);
   };
 
+  // Handle hash-based scrolling
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.style.cursor = 'grab';
-      container.addEventListener('mousedown', handleMouseDown);
-      container.addEventListener('mouseleave', handleMouseUp);
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        container.removeEventListener('mousedown', handleMouseDown);
-        container.removeEventListener('mouseleave', handleMouseUp);
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-      };
+    if (location.hash === '#team' && sectionRef.current) {
+      setTimeout(() => {
+        sectionRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
     }
-  }, []);
+  }, [location]);
+
+  useEffect(() => {
+    // Add global event listeners
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [handleMouseMove, handleMouseUp]);
+
+  // Set up individual container event listeners
+  useEffect(() => {
+    const containers = scrollContainerRefs.current;
+    const mouseDownHandlers = {};
+
+    for (const key in containers) {
+      const container = containers[key];
+      if (!container) continue;
+      
+      container.style.cursor = 'grab';
+      
+      const handler = (e) => handleMouseDown(e, key);
+      mouseDownHandlers[key] = handler;
+      container.addEventListener('mousedown', handler);
+      container.addEventListener('mouseleave', handleMouseUp);
+    }
+
+    return () => {
+      for (const key in containers) {
+        const container = containers[key];
+        if (!container) continue;
+        
+        container.removeEventListener('mousedown', mouseDownHandlers[key]);
+        container.removeEventListener('mouseleave', handleMouseUp);
+      }
+    };
+  }, [handleMouseDown, handleMouseUp]);
 
   return (
-    <section className="px-4 py-20 overflow-hidden bg-white sm:px-8 md:px-16">
+    <section id="team" ref={sectionRef} className="px-4 py-20 overflow-hidden bg-white sm:px-8 md:px-16">
       <div className="mx-auto max-w-7xl">
         {/* Section header */}
         <div className="max-w-3xl mx-auto mb-12 text-center">
@@ -80,89 +140,103 @@ const TeamGrid = () => {
             <span className="w-2 h-2 bg-[#FD90A7] rounded-full" />
             <span>Our People</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-3">Meet Our Co-founders</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#1D2130] mb-3">Meet Our Team</h2>
           <div className="w-16 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4" />
-          {/* <p className="text-[#525560]">Leaders in health, education, and community impact.</p> */}
         </div>
 
-        {/* Horizontal scroll, no visible scrollbar, drag to scroll */}
-        <div
-          ref={scrollContainerRef}
-          className="flex gap-8 pb-8 overflow-x-auto scrollbar-hide cursor-grab"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {teamMembers.map((member, idx) => {
-            const isActive = activeIndex === idx;
-            return (
-              <div
-                key={idx}
-                className="relative flex-shrink-0 p-6 transition-all duration-300 border border-gray-100 rounded-lg w-72 md:w-80 bg-white/70 backdrop-blur-sm group"
-                style={{
-                  transformStyle: 'preserve-3d',
-                  transition: 'box-shadow 0.3s, transform 0.2s',
-                }}
-                onMouseMove={(e) => handleCardMouseMove(e, e.currentTarget)}
-                onMouseLeave={(e) => handleCardMouseLeave(e.currentTarget)}
-                onMouseEnter={() => setActiveIndex(idx)}
-              >
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-[#FD90A7]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                
-                {/* Decorative corner accent */}
-                <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-[#FD90A7]/30 rounded-tr-lg" />
-
-                {/* Image with rounded corners (not circle) */}
-                <div className="relative mb-5 overflow-hidden rounded-md shadow-md aspect-square">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                    style={{ objectPosition: member.objectPosition }}
-                  />
-                  {/* Overlay with social and info actions */}
-                  <div className="absolute inset-0 flex items-center justify-center gap-3 transition-opacity duration-300 opacity-0 bg-black/50 group-hover:opacity-100">
-                    <a
-                      href={member.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 bg-white rounded-md text-[#FD90A7] hover:bg-[#FD90A7] hover:text-white transition-all duration-300 shadow-lg"
-                      aria-label={`Visit ${member.name} on LinkedIn`}
-                    >
-                      <FaLinkedin className="w-5 h-5" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openMemberModal(member);
-                      }}
-                      className="p-2 bg-white rounded-md text-[#C7365B] hover:bg-[#C7365B] hover:text-white transition-all duration-300 shadow-lg"
-                      aria-label={`Learn more about ${member.name}`}
-                    >
-                      <Info className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Name and role */}
-                <h3 className="text-xl font-bold text-[#1D2130] mb-1">{member.name}</h3>
-                <p className="text-sm text-gray-500">{member.role}</p>
-
-                {/* Animated bottom border on active */}
-                <div
-                  className={`absolute bottom-0 left-6 right-6 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] transform origin-left transition-transform duration-300 ${
-                    isActive ? 'scale-x-100' : 'scale-x-0'
-                  }`}
-                />
+        {teamSections.map((section, sectionIndex) => {
+          const sectionKey = `section-${sectionIndex}`;
+          
+          return (
+            <div key={section.title} className="mb-14">
+              <div className="mb-6">
+                <h3 className="text-3xl font-semibold text-[#1D2130]">{section.title}</h3>
+                <div className="w-12 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mt-2" />
               </div>
-            );
-          })}
-        </div>
 
-        {/* Instruction for drag scroll */}
-        <div className="flex justify-center gap-2 mt-4 text-xs text-center text-gray-400">
-          <span>← Drag to explore →</span>
-        </div>
+              <div
+                ref={(el) => {
+                  if (el) {
+                    scrollContainerRefs.current[sectionKey] = el;
+                  }
+                }}
+                className="flex gap-8 pb-8 overflow-x-auto scrollbar-hide"
+                style={{ 
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                  cursor: 'grab'
+                }}
+                data-dragging="false"
+              >
+                {section.members.map((member, idx) => {
+                  const isActive = activeIndex === `${sectionKey}-${idx}`;
+                  return (
+                    <div
+                      key={`${sectionKey}-${member.name}`}
+                      className="relative flex-shrink-0 p-6 transition-all duration-300 border border-gray-100 rounded-lg w-72 md:w-80 bg-white/70 backdrop-blur-sm group"
+                      style={{
+                        transformStyle: 'preserve-3d',
+                        transition: 'box-shadow 0.3s, transform 0.2s',
+                        cursor: 'pointer'
+                      }}
+                      onMouseMove={(e) => handleCardMouseMove(e, e.currentTarget)}
+                      onMouseLeave={(e) => handleCardMouseLeave(e.currentTarget)}
+                      onMouseEnter={() => setActiveIndex(`${sectionKey}-${idx}`)}
+                    >
+                      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-[#FD90A7]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-[#FD90A7]/30 rounded-tr-lg" />
+
+                      <div className="relative mb-5 overflow-hidden rounded-md shadow-md aspect-square">
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
+                          style={{ objectPosition: member.objectPosition }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center gap-3 transition-opacity duration-300 opacity-0 bg-black/50 group-hover:opacity-100">
+                          <a
+                            href={member.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white rounded-md text-[#FD90A7] hover:bg-[#FD90A7] hover:text-white transition-all duration-300 shadow-lg"
+                            aria-label={`Visit ${member.name} on LinkedIn`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <FaLinkedin className="w-5 h-5" />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openMemberModal(member);
+                            }}
+                            className="p-2 bg-white rounded-md text-[#C7365B] hover:bg-[#C7365B] hover:text-white transition-all duration-300 shadow-lg"
+                            aria-label={`Learn more about ${member.name}`}
+                          >
+                            <Info className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <h3 className="text-xl font-bold text-[#1D2130] mb-1">{member.name}</h3>
+                      <p className="text-sm text-gray-500">{member.role}</p>
+
+                      <div
+                        className={`absolute bottom-0 left-6 right-6 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] transform origin-left transition-transform duration-300 ${
+                          isActive ? 'scale-x-100' : 'scale-x-0'
+                        }`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="flex justify-center gap-2 mt-4 text-xs text-center text-gray-400">
+                <span>← Drag to explore →</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {selectedMember && (
@@ -203,8 +277,7 @@ const TeamGrid = () => {
         </div>
       )}
 
-      {/* Hide scrollbar for all browsers */}
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }

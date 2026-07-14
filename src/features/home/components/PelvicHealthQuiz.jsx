@@ -134,7 +134,7 @@ const PelvicHealthQuiz = () => {
   const currentQuestion = step < questions.length ? questions[step] : null;
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-white">
+    <section className="relative py-20 overflow-hidden bg-white md:py-28">
       {/* Ambient geometric shapes */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-12 h-12 rounded-full bg-[#FD90A7]/10 blur-xl" />
@@ -143,23 +143,24 @@ const PelvicHealthQuiz = () => {
         <svg className="absolute bottom-10 left-1/2 text-[#FD90A7]/10 w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L13.5 9H22.5L14.25 14.25L15.75 22.5L12 17.25L8.25 22.5L9.75 14.25L1.5 9H10.5L12 0Z" /></svg>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 px-4 mx-auto text-center max-w-7xl sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12">
           <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#FD90A7]/10 rounded-full text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
             <Sparkles className="w-4 h-4" />
             Pelvic Health Quiz
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
-            Discover Your Path to Wellness
-          </h2>
-          <p className="text-gray-500 mt-3 max-w-md mx-auto">
+          <h2 className="text-4xl font-black tracking-tight text-gray-900 md:text-5xl">
+            {/* Discover Your Path to Wellness */}
             Answer three simple questions and receive personalised guidance.
-          </p>
+          </h2>
+          {/* <p className="max-w-md mx-auto mt-3 text-gray-500">
+            Answer three simple questions and receive personalised guidance.
+          </p> */}
         </div>
 
         {/* Quiz Content */}
-        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
+        <div className="relative flex flex-col items-center justify-center gap-12 lg:flex-row lg:gap-20">
           {/* LEFT: Central Card (like a phone screen) */}
           <div className="relative w-full max-w-sm">
             {/* Background floating chips (decorative) */}
@@ -212,7 +213,7 @@ const PelvicHealthQuiz = () => {
                   ))}
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-6">{currentQuestion.question}</h3>
+                <h3 className="mb-6 text-xl font-bold text-gray-900">{currentQuestion.question}</h3>
 
                 {/* Options */}
                 <div className="space-y-3">
@@ -235,28 +236,28 @@ const PelvicHealthQuiz = () => {
           </div>
 
           {/* RIGHT: Additional info / CTA (optional) */}
-          <div className="hidden lg:block w-56">
+          <div className="hidden w-56 lg:block">
             {/* Decorative empty space or a small stat */}
           </div>
         </div>
 
         {/* Results */}
         {step === 3 && (
-          <div className="mt-10 max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto mt-10">
             <div className="bg-white rounded-[32px] shadow-2xl border border-gray-100 overflow-hidden">
               <div className="bg-gradient-to-r from-[#FD90A7] to-[#C7365B] p-6 text-white text-center">
                 <Sparkles className="w-8 h-8 mx-auto mb-2" />
                 <h3 className="text-2xl font-bold">Your Personalised Plan</h3>
-                <p className="text-white/80 text-sm mt-1">Based on your answers</p>
+                <p className="mt-1 text-sm text-white/80">Based on your answers</p>
               </div>
-              <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
                 {recommendations.map((rec, idx) => (
                   <Link
                     key={idx}
                     to={rec.link}
                     className="p-5 rounded-[14px] border border-gray-200 hover:border-[#FD90A7] hover:bg-[#FD90A7]/5 transition-all group"
                   >
-                    <h4 className="font-bold text-gray-900 mb-1">{rec.title}</h4>
+                    <h4 className="mb-1 font-bold text-gray-900">{rec.title}</h4>
                     <p className="text-sm text-gray-500">{rec.description}</p>
                     <span className="inline-flex items-center gap-1 text-sm font-medium mt-3 text-[#FD90A7] group-hover:gap-2 transition-all">
                       Explore <ArrowRight className="w-3 h-3" />
@@ -264,7 +265,7 @@ const PelvicHealthQuiz = () => {
                   </Link>
                 ))}
               </div>
-              <div className="px-6 pb-6 flex justify-center">
+              <div className="flex justify-center px-6 pb-6">
                 <button
                   onClick={resetQuiz}
                   className="inline-flex items-center gap-2 px-6 py-3 border border-[#FD90A7] text-[#FD90A7] rounded-full font-semibold hover:bg-[#FD90A7]/10 transition"
@@ -277,14 +278,14 @@ const PelvicHealthQuiz = () => {
         )}
 
         {/* Social Proof Row (Finsy inspired) */}
-        <div className="mt-16 flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-4 mt-16">
           <div className="text-center">
             <p className="text-2xl font-bold text-gray-900">100k+</p>
             <p className="text-sm text-gray-500">Trusted by thousands of women worldwide</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <Shield className="w-4 h-4" /> Secure & Confidential
-            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <span className="w-1 h-1 bg-gray-300 rounded-full" />
             <Users className="w-4 h-4" /> Community Driven
           </div>
         </div>

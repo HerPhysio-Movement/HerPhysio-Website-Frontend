@@ -7,34 +7,26 @@ const partners = [
   {
     name: 'Her Mobility',
     logo: '/rnrn.jpg',
-    testimonial:
-      'Partnering with Her Physio Movement has amplified our reach tenfold. Their dedication to pelvic health education is unmatched.',
-    author: 'Dr. Amina O.',
-    role: 'Founder, Her Mobility',
   },
   {
     name: 'NeuroRehab Academia',
     logo: '/neuro.jpg',
-    testimonial:
-      'The collaboration has allowed us to bring cutting‑edge neurological rehab training to communities that need it most.',
-    author: 'Prof. Chuka E.',
-    role: 'Director, NeuroRehab Academia',
   },
   {
     name: 'New Seed Foundation',
     logo: '/newseed.jpg',
-    testimonial:
-      'Together we’ve built sustainable health infrastructure. Her Physio Movement’s community model is truly transformative.',
-    author: 'Martha W.',
-    role: 'Program Lead, New Seed Foundation',
   },
   {
     name: 'Four Women One Truth',
     logo: '/fourWomenOneTruth.jpeg',
-    testimonial:
-      'Together we’ve built sustainable health infrastructure. Her Physio Movement’s community model is truly transformative.',
-    author: 'Martha W.',
-    role: 'Program Lead, New Seed Foundation',
+  },
+  {
+    name: 'Atti Theresa Foundation',
+    logo: '/ATF.jpeg',
+  },
+  {
+    name: 'Swypatune',
+    logo: '/swypatune.png',
   },
 ];
 

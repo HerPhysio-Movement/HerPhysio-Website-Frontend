@@ -1,7 +1,9 @@
 import { 
   GraduationCap, Users, Stethoscope, BookOpen, 
-  Youtube, Heart, Instagram, Twitter, Linkedin, Mail  
+  Youtube, Heart, Instagram, Twitter, Linkedin, Mail, Facebook  
 } from 'lucide-react';
+import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
+import { IoIosMail } from "react-icons/io";
 
 /**
  * Static data for "Care That Moves With You" section
@@ -14,8 +16,8 @@ export const notesData = [
     iconBg: '#FD90A7',
     bgColor: '#FD90A7/10',
     color: '#FD90A7',
-    description: 'Seminars, videos, and guides that make the women\'s health field accessible and easy to navigate for...',
-    fullDescription: 'Seminars, videos, and guides that make the women\'s health field accessible and easy to navigate for students, physiotherapists, and healthcare professionals.',
+    description: 'Webinars, audios, videos, and guides that make the women\'s health field accessible and easy to navigate for...',
+    fullDescription: 'Webinars, audios, videos, and guides that make the women\'s health field accessible and easy to navigate for students, physiotherapists, and healthcare professionals.',
     cta: 'Explore resources',
     ctaLink: '/resources',
     rotation: '-rotate-3',
@@ -108,8 +110,7 @@ export const socialLinksData = [
   {
     id: 1,
     title: 'Twitter(X)',
-    description: 'Watch, learn, and subscribe.',
-    icon: Twitter,
+    icon: FaTwitter,
     url: 'https://www.x.com/Her_Physio',
     color: '#1DA1F2',
     bgColor: '#FD90A7/10',
@@ -118,35 +119,52 @@ export const socialLinksData = [
   },
   {
     id: 2,
-    title: 'LinkedIn',
-    description: 'Watch, learn, and subscribe.',
-    icon: Linkedin,
-    url: 'https://www.linkedin.com/company/herphysio-movement',
-    color: '#4A90E2',
+    title: 'Facebook',
+    icon: FaFacebookF,
+    url: 'https://www.https://www.facebook.com/people/Her-Physio-Movement/61574901334874/',
+    color: '#1877F2',
     bgColor: '#4A90E2/10',
-    rotation: '-rotate-1',
+    rotation: 'rotate-0',
     zIndex: 'z-10',
   },
   {
     id: 3,
-    title: 'Instagram',
-    description: 'Daily tips and community stories.',
-    icon: Instagram,
-    url: 'https://www.instagram.com/herphysio_movement',
-    color: '#DD00DD',
+    title: 'LinkedIn',
+    icon: FaLinkedinIn,
+    url: 'https://www.linkedin.com/company/herphysio-movement',
+    color: '#4A90E2',
     bgColor: '#4A90E2/10',
-    rotation: 'rotate-1',
-    zIndex: 'z-15',
+    rotation: 'rotate-2',
+    zIndex: 'z-10',
   },
   {
     id: 4,
-    title: "Email",
-    description: 'Curated resources and articles.',
-    icon: Mail,
-    url: 'mailto:herphysiomovement@gmail.com',
-    color: 'red',
-    bgColor: '#C7365B/10',
+    title: 'Instagram',
+    icon: FaInstagram,
+    url: 'https://www.instagram.com/herphysio_movement',
+    color: '#833AB4',
+    bgColor: '#4A90E2/10',
     rotation: 'rotate-2',
+    zIndex: 'z-15',
+  },
+  {
+    id: 5,
+    title: "Email",
+    icon: IoIosMail,
+    url: 'mailto:herphysiomovement@gmail.com',
+    color: '#EA4335',
+    bgColor: '#C7365B/10',
+    rotation: 'rotate-0',
+    zIndex: 'z-20',
+  },
+  {
+    id: 6,
+    title: "Youtube",
+    icon: FaYoutube,
+    url: 'https://www.youtube.com/@HerPhysioMovement',
+    color: '#FF0033',
+    bgColor: '#C7365B/10',
+    rotation: '-rotate-2',
     zIndex: 'z-20',
   },
 ];

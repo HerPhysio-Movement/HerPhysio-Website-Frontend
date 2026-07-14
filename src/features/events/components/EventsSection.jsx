@@ -289,7 +289,7 @@ const EventsSection = ({ showHeading = true }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#FD90A7]/5 rounded-2xl p-4"><p className="text-3xl font-black text-[#FD90A7]">{totalEvents}</p><p className="text-xs text-gray-500">Total Events</p></div>
                 <div className="bg-[#6020F0]/5 rounded-2xl p-4"><p className="text-3xl font-black text-[#6020F0]">{upcomingEvents}</p><p className="text-xs text-gray-500">Upcoming</p></div>
-                <div className="bg-[#FCD172]/10 rounded-2xl p-4 col-span-2"><p className="text-2xl font-black text-gray-900">{totalRegistrations}+</p><p className="text-xs text-gray-500">Attendees & Growing</p></div>
+                {/* <div className="bg-[#FCD172]/10 rounded-2xl p-4 col-span-2"><p className="text-2xl font-black text-gray-900">{totalRegistrations}+</p><p className="text-xs text-gray-500">Attendees & Growing</p></div> */}
               </div>
             </div>
 

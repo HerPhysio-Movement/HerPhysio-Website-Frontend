@@ -1,17 +1,63 @@
 import { apiClient } from './apiClient';
 
+const normalizeGalleryImage = (item, index = 0) => {
+  if (!item || typeof item !== 'object') return null;
+
+  return {
+    id: item.id || item._id || item.image_id || item.image?.id || `${item.image_url || 'gallery'}-${index}`,
+    title: item.title || '',
+    caption: item.caption || item.category || 'Event',
+    description: item.description || '',
+    image_url: item.image_url || item.image?.image_url || item.src || item.url || '',
+    created_at: item.created_at || item.createdAt || null,
+    updated_at: item.updated_at || item.updatedAt || null,
+  };
+};
+
+const normalizeGalleryList = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === 'object') {
+    if (Array.isArray(payload.images)) return payload.images;
+    if (Array.isArray(payload.data)) return payload.data;
+    if (Array.isArray(payload.results)) return payload.results;
+    if (payload.image) return [payload.image];
+  }
+  return [];
+};
+
 export const galleryAPI = {
-  // If no dedicated gallery endpoint, we can use project images or a placeholder
   getGallery: async () => {
-    // Return mock data or fetch from a future endpoint
-    return [];
+    const response = await apiClient.get('/gallery/');
+    return normalizeGalleryList(response)
+      .map((item, index) => normalizeGalleryImage(item, index))
+      .filter(Boolean);
   },
-  uploadImage: (formData) => {
-    console.warn('Gallery upload not implemented');
-    return Promise.resolve({ id: Date.now(), ...formData });
+
+  createImage: async (data) => {
+    const payload = {
+      title: data.title || '',
+      caption: data.caption || '',
+      description: data.description || '',
+      image_url: data.image_url || data.image?.image_url || '',
+    };
+
+    const response = await apiClient.post('/gallery/', payload);
+    const image = response?.image || response?.data || response;
+    return normalizeGalleryImage(image);
   },
-  deleteImage: (id) => {
-    console.warn('Gallery delete not implemented');
-    return Promise.resolve();
+
+  updateImage: async (imageId, data) => {
+    const payload = {
+      title: data.title || '',
+      caption: data.caption || '',
+      description: data.description || '',
+      image_url: data.image_url || data.image?.image_url || '',
+    };
+
+    const response = await apiClient.put(`/gallery/${imageId}`, payload);
+    const image = response?.image || response?.data || response;
+    return normalizeGalleryImage(image);
   },
+
+  deleteImage: (imageId) => apiClient.delete(`/gallery/${imageId}`),
 };

@@ -69,14 +69,14 @@ const EventAbout = ({ event, loading, onReserveSpot }) => {
                 )}
               </div>
 
-            {!isPastEvent && (
+            {/* {!isPastEvent && (
               <div className="mt-8 p-5 bg-[#FFF5F7] rounded-lg border-l-4 border-[#FD90A7]">
                 <p className="text-[#1D2130] italic text-base sm:text-lg">
                   "This event isn't just about learning – it's about finding your tribe and realizing you're not alone."
                 </p>
                 <p className="mt-2 text-sm text-gray-500">— Dr. Funmi Adebayo, Volunteer Physiotherapist</p>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Right column – image + stats */}

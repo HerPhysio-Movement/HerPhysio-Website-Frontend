@@ -227,7 +227,7 @@ const CommunityComponent = () => {
             </div>
             <h2 className="text-4xl sm:text-5xl font-bold text-[#1D2130] mb-3">Join a Movement</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-5 rounded-full" />
-            <p className="text-[#525560] text-lg max-w-xl mx-auto">Three pillars that make our community different.</p>
+            <p className="text-[#525560] text-lg max-w-xl mx-auto"> Three pillars that make our community different.</p>
           </div>
 
           <div className="relative grid grid-cols-1 gap-8 md:grid-cols-3"><div className="p-6 text-center transition-all duration-300 group hover:-translate-y-2">
@@ -240,7 +240,7 @@ const CommunityComponent = () => {
                 </div>
               </div>
               <h3 className="text-2xl font-bold text-[#1D2130] mb-3 group-hover:text-[#FD90A7] transition-colors">Learn from Experts</h3>
-              <p className="leading-relaxed text-gray-500">Access monthly seminars, and resources designed to empower you with women’s health knowledge.</p>
+              <p className="leading-relaxed text-gray-500">Access monthly webinars, and resources designed to empower you with women’s health knowledge.</p>
               <div className="mt-4 w-12 h-0.5 bg-gradient-to-r from-[#FD90A7] to-transparent mx-auto group-hover:w-20 transition-all duration-300" />
             </div>
             
@@ -275,7 +275,7 @@ const CommunityComponent = () => {
           <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-gray-500">
             <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#FD90A7]" /> Free membership</div>
             <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#FD90A7]" /> Global network</div>
-            <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#FD90A7]" /> No pressure, all support</div>
+            <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#FD90A7]" /> Certificate of Recognition</div>
           </div>
         </div>
       </section>
@@ -290,7 +290,7 @@ const CommunityComponent = () => {
             </div>
             <h2 className="text-4xl sm:text-5xl font-bold text-[#1D2130] mb-3">Get Involved</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-5 rounded-full" />
-            <p className="max-w-xl mx-auto text-gray-500">Choose a simple next step and help strengthen women's health in your community.</p>
+            <p className="max-w-xl mx-auto text-gray-500">Choose a next step and help strengthen women's health in your community.</p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

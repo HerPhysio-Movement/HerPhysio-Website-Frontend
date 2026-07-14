@@ -74,7 +74,7 @@ const ContactForm = () => {
             </span>
           </h1>
           <p className="max-w-xl mx-auto text-base leading-relaxed text-gray-600">
-            Have a question, want to collaborate, or just say hello? We're here to help and respond within 24 hours.
+            Have a question, want to collaborate, or just say hello?<br/> We are here to help and will respond within 24 hours.
           </p>
         </div>
 
@@ -168,9 +168,9 @@ const ContactForm = () => {
                   )}
                 </button>
 
-                <p className="mt-2 text-xs text-center text-gray-500">
+                {/* <p className="mt-2 text-xs text-center text-gray-500">
                   We’ll get back to you as soon as possible – usually within 24 hours.
-                </p>
+                </p> */}
               </form>
             </div>
           </div>
@@ -203,12 +203,12 @@ const ContactForm = () => {
             </div>
 
             {/* Response time card with tiny brand hint */}
-            <div className="bg-[#FD90A7]/5 border border-[#FD90A7]/10 rounded-xl p-5">
+            {/* <div className="bg-[#FD90A7]/5 border border-[#FD90A7]/10 rounded-xl p-5">
               <p className="text-sm text-gray-700">
                 <span className="font-bold text-[#C7365B]">Response Time: </span>
                 We typically reply within 24 hours. For urgent matters, please call directly.
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

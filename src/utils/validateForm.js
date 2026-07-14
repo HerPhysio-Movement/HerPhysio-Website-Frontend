@@ -57,6 +57,12 @@ const rules = {
     tags: [validators.required],
     youtube_url: [validators.url],
   },
+  Gallery: {
+    title: [validators.required],
+    caption: [validators.required],
+    description: [validators.required, validators.minLength(10)],
+    image_url: [validators.required, validators.url],
+  },
   Volunteers: {
     f_name: [validators.required],
     l_name: [validators.required],

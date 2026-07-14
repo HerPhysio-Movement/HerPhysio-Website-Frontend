@@ -11,8 +11,8 @@ const footerLinks = [
     title: 'Explore',
     links: [
       { name: 'About us', path: '/about-us' },
-      { name: 'What we do', path: '/what-we-do' },
-      { name: 'Team', path: '/team' },
+      { name: 'What we do', path: '/#what-we-do' },
+      { name: 'Meet our team', path: '/about-us#team' },
       { name: 'Contact', path: '/contact-us' },
     ],
   },

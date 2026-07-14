@@ -1,5 +1,6 @@
 // src/features/home/components/WhatWeDo.jsx
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { ArrowRight, MonitorPlay, Users, Wrench, GraduationCap, Sparkles, Maximize2, X } from 'lucide-react';
 
@@ -53,11 +54,24 @@ const services = [
 const WhatWeDo = () => {
   const [animated, setAnimated] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+  const location = useLocation(); // Get location
   const sectionRef = useRef(null);
 
   const openImageModal = (service) => setSelectedService(service);
   const closeImageModal = () => setSelectedService(null);
-
+  
+  // Handle hash-based scrolling
+  useEffect(() => {
+    if (location.hash === '#what-we-do' && sectionRef.current) {
+      setTimeout(() => {
+        sectionRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [location]);
+  
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

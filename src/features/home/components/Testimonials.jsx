@@ -16,14 +16,16 @@ const testimonials = [
 ];
 
 const partners = [
-  { name: 'Her Mobility' },
+  { name: 'RNRN Foundation' },
   { name: 'NeuroRehab Academia' },
   { name: 'New Seed Foundation' },
   { name: 'Four Women One Truth' },
+  { name: 'Atti Theresa Foundation' },
+  { name: 'Swypatune' },
 ];
 
 const impactMiniStats = [
-  { value: '660', label: 'Mambers in the Community', icon: Users, color: '#FD90A7' },
+  { value: '660', label: 'Members in the Community', icon: Users, color: '#FD90A7' },
   { value: '931', label: 'Attended our Webinars', icon: Users, color: '#C7365B' },
   { value: '250', label: 'Women Impacted', icon: Venus, color: '#F08020' },
   { value: '21', label: 'Webinars Hosted', icon: Video, color: '#FD90A7' },

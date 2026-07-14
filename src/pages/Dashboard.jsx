@@ -18,6 +18,7 @@ import {
   webinarAPI,
   volunteerAPI,
   courseAPI,
+  galleryAPI,
 } from '../services';
 import {
   createItem as dashboardCreateItem,
@@ -60,6 +61,7 @@ const Dashboard = () => {
     webinars,
     volunteers,
     courses, // now fetched from context
+    gallery,
     loading: dataLoading,
     error: dataError,
     refresh,
@@ -101,6 +103,7 @@ const Dashboard = () => {
       case 'Events':     return events;
       case 'Webinar':    return webinars;
       case 'Courses':    return courses || [];
+      case 'Gallery':    return gallery || [];
       case 'Volunteers': return volunteers;
       default:           return [];
     }
@@ -127,6 +130,8 @@ const Dashboard = () => {
           return item.title?.toLowerCase().includes(q);
         case 'Courses':
           return item.title?.toLowerCase().includes(q);
+        case 'Gallery':
+          return item.title?.toLowerCase().includes(q) || item.caption?.toLowerCase().includes(q) || item.description?.toLowerCase().includes(q);
         case 'Volunteers':
           return (
             `${item.f_name} ${item.l_name}`.toLowerCase().includes(q) ||
@@ -281,6 +286,7 @@ const Dashboard = () => {
         case 'Events':     await eventAPI.deleteEvent(id); break;
         case 'Webinar':    await webinarAPI.deleteWebinar(id); break;
         case 'Courses':    await courseAPI.deleteCourse(id); break;
+        case 'Gallery':    await galleryAPI.deleteImage(id); break;
         default: break;
       }
       toast.success('Deleted successfully');

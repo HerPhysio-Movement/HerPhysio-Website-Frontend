@@ -173,10 +173,10 @@ const KnowAboutUs = () => {
 
       <div className="relative max-w-6xl px-4 mx-auto text-center sm:px-6 lg:px-8">
         <div className="mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
+          {/* <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-sm font-semibold text-[#FD90A7] mb-5 shadow-sm">
             <span className="w-2 h-2 bg-[#FD90A7] rounded-full" />
             Our Impact in Numbers
-          </span>
+          </span> */}
           <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4">
             Our{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FD90A7] to-[#C7365B]">

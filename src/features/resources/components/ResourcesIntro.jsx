@@ -51,10 +51,10 @@ const ResourcesIntro = () => {
                 Read more about our mission
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#FFF5F7] px-4 py-2 text-sm font-medium text-[#C7365B]">
+              {/* <div className="inline-flex items-center gap-2 rounded-full bg-[#FFF5F7] px-4 py-2 text-sm font-medium text-[#C7365B]">
                 <BookOpen className="w-4 h-4" />
                 Practical, evidence-based, and community-led
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -64,7 +64,7 @@ const ResourcesIntro = () => {
                 Why these resources matter
               </p>
               <p className="mt-4 leading-8 text-[#1D2130]">
-                They help you grow your knowledge, strengthen your confidence, and stay connected to practical tools that support women’s health practice and advocacy.
+                They help you grow your knowledge, build your confidence, and stay connected to practical tools that support women’s health practice and advocacy.
               </p>
             </div>
 

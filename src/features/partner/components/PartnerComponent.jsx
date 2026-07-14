@@ -36,9 +36,9 @@ const PartnerComponent = () => {
 
   const benefits = [
     { icon: Heart, title: 'Shared Mission', description: 'Align with a movement transforming women\'s health across Africa.' },
-    { icon: Users, title: 'Community Impact', description: 'Reach thousands of women and healthcare professionals directly.' },
+    { icon: Users, title: 'Community Impact', description: 'Reach thousands of women and healthcare professionals.' },
     { icon: Lightbulb, title: 'Innovation & Visibility', description: 'Co‑create programs and gain recognition as a change‑maker.' },
-    { icon: Building2, title: 'Networking', description: 'Connect with like‑minded organizations and experts.' },
+    { icon: Building2, title: 'Networking', description: 'Connect with like‑minded individuals and experts.' },
   ];
 
   return (
@@ -84,21 +84,22 @@ const PartnerComponent = () => {
               <form onSubmit={handleSubmit} className="space-y-5">
                 {['name', 'organization', 'email'].map((field) => (
                   <div key={field} className="relative">
-                    <label className={`absolute left-4 transition-all duration-200 font-poppins ${
-                      focused[field] || formData[field] ? 'text-xs -top-2 bg-white px-2 text-[#FD90A7]' : 'top-3 text-gray-400'
+                    <label htmlFor={`partner-${field}`} className={`absolute left-4 transition-all duration-200 font-poppins ${
+                     
+                      focused[field] || formData[field] ? 'text-xs -top-2 bg-white px-2 text-[#FD90A7]' : 'top-3 text-gray-400 cursor-text'
                     }`}>
                       {field === 'name' ? 'Full Name' : field === 'organization' ? 'Organization / Company' : 'Email Address'}
                     </label>
-                    <input type={field === 'email' ? 'email' : 'text'} name={field} value={formData[field]} onChange={handleChange}
+                    <input id={`partner-${field}`} type={field === 'email' ? 'email' : 'text'} name={field} value={formData[field]} onChange={handleChange}
                       onFocus={handleFocus} onBlur={handleBlur} disabled={isSubmitting}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] font-poppins" required />
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] font-poppins bg-transparent" required />
                   </div>
                 ))}
                 <div className="relative">
-                  <label className={`absolute left-4 transition-all duration-200 font-poppins ${
-                    focused.message || formData.message ? 'text-xs -top-2 bg-white px-2 text-[#FD90A7]' : 'top-3 text-gray-400'
+                  <label htmlFor="partner-message" className={`absolute left-4 transition-all duration-200 font-poppins ${
+                    focused.message || formData.message ? 'text-xs -top-2 bg-white px-2 text-[#FD90A7]' : 'top-3 text-gray-400 cursor-text'
                   }`}>How can we partner?</label>
-                  <textarea name="message" rows="4" value={formData.message} onChange={handleChange}
+                  <textarea id="partner-message" name="message" rows="4" value={formData.message} onChange={handleChange}
                     onFocus={handleFocus} onBlur={handleBlur} disabled={isSubmitting}
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FD90A7] resize-none" required />
                 </div>

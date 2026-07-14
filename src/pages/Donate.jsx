@@ -20,7 +20,7 @@ const donationOptions = [
     id: 'other',
     label: 'Other / Custom Message',
     icon: MessageSquare,
-    description: 'I have another way I’d like to help.',
+    description: 'I have another way I would like to help.',
   },
 ];
 

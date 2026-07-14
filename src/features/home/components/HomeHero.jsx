@@ -6,7 +6,7 @@ import { Star, ArrowRight, ArrowUpRight } from 'lucide-react';
 /*  Splash images – replace with your own Black women photos           */
 /* ------------------------------------------------------------------ */
 // const portraitMain   = '/Antonia.jpg'; 
-const portraitMain   = '/event-1.jpeg'; 
+const portraitMain   = '/heroImg.jpeg'; 
 // const portraitSecond = '/Modupe.jpg';
 const portraitSecond = '/event-3.jpg';
 const avatar1        = '/Joseph.jpg';
@@ -85,7 +85,8 @@ const HomeHero = () => {
           <div className="relative grid items-center grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
             {/* ========== LEFT COLUMN (span 5) ========== */}
             <div className="text-center lg:col-span-7 lg:text-left">
-              <div className="relative min-h-[650px] overflow-hidden sm:min-h-[570px] md:min-h-[530px] lg:min-h-[600px]">
+              <div className="relative min-h-132
+               overflow-hidden sm:min-h-112.5 md:min-h-110 lg:min-h-137.5">
                 <div
                   className={`absolute inset-0 transition-all duration-700 ease-in-out ${
                     activeSlide === 0 ? 'translate-x-0 opacity-100' : '-translate-x-6 opacity-0 pointer-events-none'
@@ -101,7 +102,7 @@ const HomeHero = () => {
                     {heroSlides[0].italicParagraph}
                   </p>
 
-                  <div className="flex flex-wrap justify-center gap-4 mb-10 lg:justify-start">
+                  <div className="flex flex-col flex-wrap items-center justify-center gap-4 mb-10 sm:flex-row lg:justify-start">
                     <a
                       href="#what-we-do"
                       className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#FCD172] text-[#0B132B] rounded-xl font-bold shadow-md hover:shadow-lg transition transform hover:scale-105"
@@ -116,7 +117,7 @@ const HomeHero = () => {
                     </a>
                   </div>
 
-                  <div className="inline-block">
+                  {/* <div className="inline-block">
                     <p className="text-sm font-semibold text-[#8A8E99] mb-1">
                       Trusted By{' '}
                       <span className="inline-block ml-1 text-[#FD90A7]">
@@ -125,7 +126,7 @@ const HomeHero = () => {
                     </p>
                     <p className="text-3xl font-black text-[#0B132B]">100k+</p>
                     <p className="text-sm text-[#8A8E99]">Active Women Impacted</p>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div
@@ -143,7 +144,7 @@ const HomeHero = () => {
                     {heroSlides[1].italicParagraph}
                   </p>
 
-                  <div className="flex flex-wrap justify-center gap-4 mb-10 lg:justify-start">
+                  <div className="flex flex-col flex-wrap items-center justify-center gap-4 mb-10 sm:flex-row lg:justify-start">
                     <a
                       href="#what-we-do"
                       className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#FCD172] text-[#0B132B] rounded-xl font-bold shadow-md hover:shadow-lg transition transform hover:scale-105"
@@ -158,7 +159,7 @@ const HomeHero = () => {
                     </a>
                   </div>
 
-                  <div className="inline-block">
+                  {/* <div className="inline-block">
                     <p className="text-sm font-semibold text-[#8A8E99] mb-1">
                       Trusted By{' '}
                       <span className="inline-block ml-1 text-[#FD90A7]">
@@ -167,7 +168,7 @@ const HomeHero = () => {
                     </p>
                     <p className="text-3xl font-black text-[#0B132B]">100k+</p>
                     <p className="text-sm text-[#8A8E99]">Active Women Impacted</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -175,25 +176,29 @@ const HomeHero = () => {
             {/* ========== RIGHT COLUMN – Responsive Bento Grid ========== */}
             <div className="lg:col-span-5">
               {/* ---- Desktop / Tablet layout (absolute) – adjusted for tablet visibility ---- */}
-              <div className="hidden md:block relative h-[550px]">
+              <div className="relative">
                 {/* Image Card 1 */}
-                <div className="absolute left-0 lg:-left-28 bottom-0 lg:-bottom-5 w-56 md:w-[350px] lg:w-72 h-72 md:h-80 rounded-[10px] overflow-hidden bg-[#FD90A7]/10 shadow-xl z-10 transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:scale-105">
+                {/* <div className="absolute left-0 lg:-left-28 bottom-0 lg:-bottom-5 w-56 md:w-[350px] lg:w-72 h-72 md:h-80 rounded-[10px] overflow-hidden bg-[#FD90A7]/10 shadow-xl z-10 transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:scale-105">
                   <img src={portraitMain} alt="Smiling woman physiotherapist" className="object-cover w-full h-full" />
                   <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-[#0B132B] shadow">
                     New Seed Foundation
                   </div>
-                </div>
+                </div> */}
 
                 {/* Image Card 2 – moved slightly to avoid overlap on tablet */}
-                <div className="absolute right-0 md:right-4 lg:left-0 top-10 w-44 md:w-[400px] lg:w-[350px] h-52 md:h-60 rounded-[10px] overflow-hidden bg-[#FCD172] shadow-xl transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 hover:z-20">
+                {/* <div className="absolute right-0 md:right-4 lg:left-0 top-10 w-44 md:w-[400px] lg:w-[350px] h-52 md:h-60 rounded-[10px] overflow-hidden bg-[#FCD172] shadow-xl transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:scale-105 hover:z-20">
                   <img src={portraitSecond} alt="volunteer picture" className="object-cover w-full h-full" />
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-semibold text-[#0B132B] shadow">
                     Volunteer Spotlight
                   </div>
+                </div> */}
+
+                <div className="rounded-[10px] overflow-hidden shadow-xl lg:h-112.5">
+                  <img src={portraitMain} alt="Smiling woman physiotherapist" className="object-cover w-full h-full" />
                 </div>
 
                 {/* Metric Badge – repositioned for tablet */}
-                <div className="absolute right-0 md:right-4 lg:right-0 top-0 w-36 md:w-40 bg-[#FD90A7] text-white rounded-[10px] px-4 py-2 shadow-xl z-10">
+                {/* <div className="absolute right-0 md:right-4 lg:right-0 top-0 w-36 md:w-40 bg-[#FD90A7] text-white rounded-[10px] px-4 py-2 shadow-xl z-10">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="w-2 h-2 bg-green-400 rounded-full" />
                     <span className="text-lg font-bold">100k+</span>
@@ -202,10 +207,10 @@ const HomeHero = () => {
                   <div className="absolute bottom-2 right-2">
                     <ArrowUpRight className="w-4 h-4 text-white/80" />
                   </div>
-                </div>
+                </div> */}
 
                 {/* Rating Component – centered */}
-                <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white rounded-[10px] shadow-2xl p-4 flex items-center gap-4 z-20">
+                {/* <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white rounded-[10px] shadow-2xl p-4 flex items-center gap-4 z-20">
                   <div>
                     <p className="text-2xl font-black text-[#0B132B]">4.9</p>
                     <div className="flex gap-0.5 mt-1">
@@ -222,16 +227,16 @@ const HomeHero = () => {
                       247
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Circular Badge */}
-                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-[#0B132B] bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-lg z-10">
+                {/* <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-[#0B132B] bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-lg z-10">
                   <ArrowUpRight className="w-6 h-6 text-[#FD90A7]" />
-                </div>
+                </div> */}
               </div>
 
               {/* ---- Mobile layout (flex stacked) – full width images, no overlap ---- */}
-              <div className="flex flex-col gap-6 md:hidden">
+              {/* <div className="flex flex-col gap-6 md:hidden">
                 <div className="w-full rounded-[10px] overflow-hidden bg-[#FD90A7]/10 shadow-xl">
                   <img src={portraitMain} alt="Smiling woman physiotherapist" className="object-cover w-full h-56" />
                   <div className="p-4 bg-white/90 backdrop-blur-sm text-sm font-semibold text-[#0B132B]">
@@ -276,7 +281,7 @@ const HomeHero = () => {
                     <ArrowUpRight className="w-6 h-6 text-[#FD90A7]" />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -295,7 +300,7 @@ const HomeHero = () => {
           </div>
 
           {/* ---------- TRUST BAR / FOOTER ---------- */}
-          <div className="pt-8 mt-12 border-t border-gray-200">
+          {/* <div className="pt-8 mt-12 border-t border-gray-200">
             <p className="text-center text-sm font-semibold text-[#8A8E99] mb-4">
               Over 100k+ Smart Women trusting our care
             </p>
@@ -309,7 +314,7 @@ const HomeHero = () => {
                 />
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

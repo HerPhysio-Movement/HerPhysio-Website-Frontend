@@ -16,13 +16,13 @@ const Home = () => {
   return (
     <main id="main-content">
       <HomeHero />   
-      <PelvicHealthQuiz />   
       {/* <SymptomFinder /> */}
       <KnowAboutUs />
-      <Partners />
       <WhatWeDo />
+      <Partners />
       <ProjectsDone />
       <HealthTips />
+      <PelvicHealthQuiz />   
       <ContributionCTA />
       <EventsSection />
       <Testimonials />

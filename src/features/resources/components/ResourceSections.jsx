@@ -174,7 +174,7 @@ export const SocialSection = () => {
       <div className="relative mx-auto max-w-7xl">
         <DividerWithText text="Connect with us" />
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {socialLinksData.map((link) => {
             const Icon = link.icon;
             return (

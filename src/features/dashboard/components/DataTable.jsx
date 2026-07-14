@@ -42,6 +42,7 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
       case 'Events':     return ['Name', 'Date', 'Location', 'Registered', 'Actions'];
       case 'Webinar':    return ['Title', 'Host', 'Date', 'Actions'];
       case 'Courses':    return ['Course Title', 'Category', 'Caption', 'Actions'];
+      case 'Gallery':    return ['Title', 'Category', 'Description', 'Actions'];
       case 'Volunteers': return ['Name', 'Email', 'Phone', 'Status', 'Actions'];
       default:           return [];
     }
@@ -121,6 +122,15 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
             <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.course_title || item.title}</td>
             <td className="px-4 py-3 text-sm text-gray-500">{item.category || '—'}</td>
             <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.caption || '—'}</td>
+            <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
+          </tr>
+        ));
+      case 'Gallery':
+        return data.map((item) => (
+          <tr key={item.id || item._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.title || 'Untitled'}</td>
+            <td className="px-4 py-3 text-sm text-gray-500">{item.caption || '—'}</td>
+            <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.description || '—'}</td>
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));

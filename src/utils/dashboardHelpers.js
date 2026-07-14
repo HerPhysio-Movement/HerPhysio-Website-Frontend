@@ -6,7 +6,7 @@
 import { extractArrayFromResponse, formatErrorMessage, validateRequired } from './apiHelpers';
 import { VALIDATION_RULES, TOAST_MESSAGES } from './constants';
 import {
-  projectAPI, eventAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI
+  projectAPI, eventAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI, galleryAPI
 } from '../services';
 
 /**
@@ -23,7 +23,8 @@ export const fetchDashboardData = async (currentUser) => {
       eventAPI.getAllEvents?.() || Promise.resolve({}),
       blogAPI.getAllBlogsAdmin?.() || Promise.resolve({}),
       webinarAPI.getAllWebinars?.() || Promise.resolve({}),
-      volunteerAPI.getAllVolunteers?.() || Promise.resolve({})
+      volunteerAPI.getAllVolunteers?.() || Promise.resolve({}),
+      galleryAPI.getGallery?.() || Promise.resolve([])
     ]);
 
     return {
@@ -31,7 +32,8 @@ export const fetchDashboardData = async (currentUser) => {
       events: extractArrayFromResponse(results[1].value, ['events', 'data']),
       articles: extractArrayFromResponse(results[2].value, ['blogs', 'data', 'articles']),
       webinars: extractArrayFromResponse(results[3].value, ['webinars', 'data']),
-      volunteers: extractArrayFromResponse(results[4].value, ['volunteers', 'data'])
+      volunteers: extractArrayFromResponse(results[4].value, ['volunteers', 'data']),
+      gallery: extractArrayFromResponse(results[5].value, ['images', 'data'])
     };
   } catch (error) {
     console.error('Dashboard data fetch failed:', error);
@@ -151,6 +153,7 @@ export const validateItemData = (item, filterType) => {
     Blogs: ['author', 'email', 'title', 'content'],
     Webinar: ['webinar_title', 'webinar_host', 'description'],
     Courses: ['course_title', 'caption', 'description', 'category'],
+    Gallery: ['title', 'caption', 'description', 'image_url'],
     Volunteers: ['f_name', 'l_name', 'email', 'p_number', 'motivation_note']
   };
 
@@ -196,6 +199,8 @@ export const createItem = async (item, filterType, currentUser) => {
       return await webinarAPI.createWebinar(payload);
     case 'Courses':
       return await courseAPI.createCourse(payload);
+    case 'Gallery':
+      return await galleryAPI.createImage(payload);
     case 'Volunteers':
       return await volunteerAPI.signup({ ...payload, role: 'volunteer' });
     default:
@@ -233,6 +238,8 @@ export const updateItem = async (id, item, filterType, currentUser) => {
       return await webinarAPI.updateWebinar(id, payload);
     case 'Courses':
       return await courseAPI.updateCourse(id, payload);
+    case 'Gallery':
+      return await galleryAPI.updateImage(id, payload);
     default:
       throw new Error(`Unknown item type: ${filterType}`);
   }
@@ -258,6 +265,8 @@ export const deleteItem = async (id, filterType) => {
       return await webinarAPI.deleteWebinar(id);
     case 'Courses':
       return await courseAPI.deleteCourse(id);
+    case 'Gallery':
+      return await galleryAPI.deleteImage(id);
     default:
       throw new Error(`Unknown item type: ${filterType}`);
   }
@@ -290,6 +299,8 @@ export const filterData = (data, query, filterType) => {
         return item.webinar_title?.toLowerCase().includes(q) || item.title?.toLowerCase().includes(q) || item.webinar_host?.toLowerCase().includes(q);
       case 'Courses':
         return item.course_title?.toLowerCase().includes(q) || item.category?.toLowerCase().includes(q);
+      case 'Gallery':
+        return item.title?.toLowerCase().includes(q) || item.caption?.toLowerCase().includes(q) || item.description?.toLowerCase().includes(q);
       case 'Volunteers':
         return `${item.f_name} ${item.l_name}`.toLowerCase().includes(q) || item.email?.toLowerCase().includes(q);
       default:
