@@ -7,29 +7,6 @@ import EventsSection from '../features/events/components/EventsSection';
 import { useUser } from '../context/UserContext';
 import { eventAPI } from '../services/eventAPI';
 
-const parseEventDateTime = (event) => {
-  if (!event?.event_date) return null;
-
-  const baseDate = new Date(event.event_date);
-  if (Number.isNaN(baseDate.getTime())) return null;
-
-  if (event.event_time) {
-    const timeMatch = event.event_time.match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?/i);
-    if (timeMatch) {
-      let hour = Number(timeMatch[1]);
-      const minute = Number(timeMatch[2] || 0);
-      const meridian = timeMatch[3]?.toUpperCase();
-
-      if (meridian === 'PM' && hour < 12) hour += 12;
-      if (meridian === 'AM' && hour === 12) hour = 0;
-
-      baseDate.setHours(hour, minute, 0, 0);
-    }
-  }
-
-  return baseDate;
-};
-
 const RegistrationModal = ({ isOpen, onClose, event, currentUser, onRegister }) => {
   const [email, setEmail] = useState(currentUser?.email || '');
   const [fName, setFName] = useState(currentUser?.f_name || '');
@@ -117,32 +94,29 @@ const Events = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchNextEvent = async () => {
+    if (!eventId) {
+      setNextEvent(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    const fetchEvent = async () => {
       try {
         setLoading(true);
-        if (eventId) {
-          const response = await eventAPI.getEventById(eventId);
-          const event = response?.event || response?.data || response;
-          setNextEvent(event || null);
-        } else {
-          const data = await eventAPI.getAllEvents();
-          const events = Array.isArray(data?.events) ? data.events : Array.isArray(data) ? data : [];
-
-          const upcomingEvents = events
-            .map((event) => ({ ...event, parsedDate: parseEventDateTime(event) }))
-            .filter((event) => event.parsedDate && event.parsedDate >= new Date())
-            .sort((a, b) => a.parsedDate - b.parsedDate);
-
-          setNextEvent(upcomingEvents[0] || events[0] || null);
-        }
+        setError(null);
+        const response = await eventAPI.getEventById(eventId);
+        const event = response?.event || response?.data || response;
+        setNextEvent(event || null);
       } catch (err) {
         setError(err.message);
+        setNextEvent(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchNextEvent();
+    fetchEvent();
   }, [eventId]);
 
   const handleReserveSpot = () => {
@@ -164,6 +138,30 @@ const Events = () => {
       alert('Registration failed: ' + err.message);
     }
   };
+
+  if (!eventId) {
+    return (
+      <main id="main-content">
+        <EventsSection />
+      </main>
+    );
+  }
+
+  if (!loading && !nextEvent) {
+    return (
+      <main id="main-content">
+        <div className="px-4 pt-24 pb-8 text-center bg-white">
+          <p className="text-sm font-semibold text-[#FD90A7]">Event details unavailable</p>
+          <h1 className="mt-2 text-3xl font-black text-gray-900 md:text-5xl">Explore our events</h1>
+          <p className="max-w-2xl mx-auto mt-3 text-gray-500">
+            We could not find that event, but you can browse upcoming and past events below.
+          </p>
+        </div>
+        <EventsSection />
+        {error && <div className="px-4 pb-4 text-sm text-center text-red-500">{error}</div>}
+      </main>
+    );
+  }
 
   return (
     <main id="main-content">
