@@ -66,7 +66,7 @@ const ResourcesComponent = () => {
       <NotesSection />
 
       {/* Online Courses */}
-      {/* <CoursesSection /> */}
+      <CoursesSection />
 
       {/* Webinar Recordings */}
       <WebinarsSection webinars={webinars} />

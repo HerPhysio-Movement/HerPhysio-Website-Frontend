@@ -19,10 +19,11 @@ const footerLinks = [
   {
     title: 'Resources',
     links: [
-      { name: 'Projects', path: '/projects' },
-      { name: 'Events', path: '/events' },
       { name: 'Blog', path: '/blog' },
+      { name: 'Courses', path: '/courses' },
+      { name: 'Events', path: '/events' },
       { name: 'Gallery', path: '/gallery' },
+      { name: 'Projects', path: '/projects' },
     ],
   },
   {

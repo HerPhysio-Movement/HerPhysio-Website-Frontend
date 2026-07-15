@@ -1,9 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, X, Play, BookOpen } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles, DividerWithText } from './SectionComponents';
-import { notesData, coursesData, socialLinksData } from '../data/resourcesData';
+import { notesData, socialLinksData } from '../data/resourcesData';
+import { courseAPI } from '../../../services/courseAPI';
+import { extractArrayFromResponse } from '../../../utils/apiHelpers';
+
+const cardStyles = [
+  { rotation: '-rotate-2', zIndex: 'z-10' },
+  { rotation: 'rotate-1', zIndex: 'z-20' },
+  { rotation: 'rotate-2', zIndex: 'z-15' },
+];
+
+const getCourseId = (course) =>
+  course?.id || course?._id || course?.course_id || course?.courseId;
+
+const getCourseTitle = (course) =>
+  course?.course_title || course?.title || 'Untitled course';
+
+const getCourseDescription = (course) =>
+  course?.description || course?.fullDescription || course?.caption || '';
+
+const getCourseTimestamp = (course) => {
+  const dateValue =
+    course?.created_at ||
+    course?.createdAt ||
+    course?.date_created ||
+    course?.updated_at ||
+    course?.updatedAt ||
+    course?.published_at ||
+    course?.publishedAt;
+
+  const timestamp = Date.parse(dateValue);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+};
+
+const normalizeCourse = (course, index) => {
+  const style = cardStyles[index % cardStyles.length];
+
+  return {
+    ...course,
+    id: getCourseId(course) || `course-${index}`,
+    title: getCourseTitle(course),
+    description: getCourseDescription(course),
+    fullDescription: getCourseDescription(course),
+    duration: course?.duration || course?.course_duration || '',
+    level: course?.level || course?.difficulty || course?.category || '',
+    rotation: style.rotation,
+    zIndex: style.zIndex,
+  };
+};
 
 /**
  * Section: Care That Moves With You (Notes/Approaches)
@@ -90,6 +137,48 @@ export const NotesSection = () => {
  */
 export const CoursesSection = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [recentCourses, setRecentCourses] = useState([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRecentCourses = async () => {
+      try {
+        const response = await courseAPI.getAllCourses();
+        const apiCourses = extractArrayFromResponse(response, ['courses', 'data', 'items']);
+        const sortedCourses = apiCourses
+          .map((course, index) => ({ course, index }))
+          .sort((a, b) => {
+            const timestampDifference =
+              getCourseTimestamp(b.course) - getCourseTimestamp(a.course);
+
+            return timestampDifference || a.index - b.index;
+          })
+          .slice(0, 3)
+          .map(({ course }, index) => normalizeCourse(course, index));
+
+        if (isMounted) {
+          setRecentCourses(sortedCourses);
+        }
+      } catch (error) {
+        console.error('Failed to load recent courses:', error);
+        if (isMounted) {
+          setRecentCourses([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingCourses(false);
+        }
+      }
+    };
+
+    loadRecentCourses();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <section id="courses" className="relative px-4 py-16 overflow-hidden md:py-24 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50">
@@ -98,33 +187,46 @@ export const CoursesSection = () => {
       <div className="relative mx-auto max-w-7xl">
         <SectionHeader title="Online Courses" />
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {coursesData.map((course) => (
-            <FloatingCard
-              key={course.id}
-              item={course}
-              isSelected={selectedCourse?.id === course.id}
-              onSelect={() => setSelectedCourse(course)}
-              rotation={course.rotation}
-              zIndex={course.zIndex}
-            >
-              <CardContent
-                icon={BookOpen}
-                title={course.title}
-                description={course.description}
-                bgColor="#FD90A7/10"
-                color="#FD90A7"
-                metadata={
-                  <>
-                    <span>{course.duration}</span>
-                    <span>•</span>
-                    <span>{course.level}</span>
-                  </>
-                }
-              />
-            </FloatingCard>
-          ))}
-        </div>
+        {loadingCourses ? (
+          <div className="py-12 text-center text-[#FD90A7]">
+            Loading courses...
+          </div>
+        ) : recentCourses.length === 0 ? (
+          <div className="py-14 px-6 text-center bg-white/70 backdrop-blur-sm border border-[#F3E4E2] rounded-2xl shadow-sm">
+            <BookOpen className="w-12 h-12 mx-auto mb-4 text-[#F3E4E2]" />
+            <p className="text-[#A19390] text-lg">
+              No courses available yet. Check back soon!
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {recentCourses.map((course) => (
+              <FloatingCard
+                key={course.id}
+                item={course}
+                isSelected={selectedCourse?.id === course.id}
+                onSelect={() => setSelectedCourse(course)}
+                rotation={course.rotation}
+                zIndex={course.zIndex}
+              >
+                <CardContent
+                  icon={BookOpen}
+                  title={course.title}
+                  description={course.description}
+                  bgColor="#FD90A7/10"
+                  color="#FD90A7"
+                  metadata={
+                    <>
+                      {course.duration && <span>{course.duration}</span>}
+                      {course.duration && course.level && <span>&bull;</span>}
+                      {course.level && <span>{course.level}</span>}
+                    </>
+                  }
+                />
+              </FloatingCard>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Course Modal */}
@@ -145,10 +247,12 @@ export const CoursesSection = () => {
             <p className="mb-4 leading-relaxed text-gray-600">
               {selectedCourse.fullDescription}
             </p>
-            <div className="flex items-center gap-3 mb-6 text-sm text-gray-500">
-              <span>⏱ {selectedCourse.duration}</span>
-              <span>📚 {selectedCourse.level}</span>
-            </div>
+            {(selectedCourse.duration || selectedCourse.level) && (
+              <div className="flex items-center gap-3 mb-6 text-sm text-gray-500">
+                {selectedCourse.duration && <span>{selectedCourse.duration}</span>}
+                {selectedCourse.level && <span>{selectedCourse.level}</span>}
+              </div>
+            )}
             <Link
               to="/courses"
               className="inline-flex items-center gap-2 text-sm font-medium text-[#FD90A7] hover:underline"
@@ -202,3 +306,5 @@ export const SocialSection = () => {
     </section>
   );
 };
+
+
