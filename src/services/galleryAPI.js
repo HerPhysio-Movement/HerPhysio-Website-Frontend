@@ -55,17 +55,13 @@ export const galleryAPI = {
 
   updateImage: async (imageId, data) => {
     const hasImageFile = typeof File !== 'undefined' && data.image_file instanceof File;
-    const payload = hasImageFile ? new FormData() : {
-      title: data.title || '',
-      caption: data.caption || '',
-      description: data.description || '',
-    };
+    const payload = new FormData();
 
+    payload.append('title', data.title || '');
+    payload.append('caption', data.caption || '');
+    payload.append('description', data.description || '');
     if (hasImageFile) {
       payload.append('image_file', data.image_file);
-      payload.append('title', data.title || '');
-      payload.append('caption', data.caption || '');
-      payload.append('description', data.description || '');
     }
 
     const response = await apiClient.put(`/gallery/${imageId}`, payload);

@@ -3,7 +3,6 @@ import { ArrowRight, BookOpen, Clock, Play, Search, Sparkles, Tag, X } from 'luc
 import { courseAPI } from '../../../services/courseAPI';
 import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import { getYouTubeEmbedUrl } from '../../../utils/videoHelpers';
-import { coursesData } from '../data/resourcesData';
 import { BackgroundParticles } from './SectionComponents';
 
 const getCourseId = (course) =>
@@ -13,11 +12,8 @@ const getCourseTitle = (course) =>
   course?.course_title || course?.title || 'Untitled course';
 
 const getCourseVideoUrl = (course) =>
-  course?.youtube_url ||
-  course?.youtubeUrl ||
-  course?.video_url ||
-  course?.videoUrl ||
   course?.link ||
+  course?.youtube_url ||
   '';
 
 const getCourseImage = (course) =>
@@ -26,12 +22,19 @@ const getCourseImage = (course) =>
 const getCourseDescription = (course) =>
   course?.description || course?.fullDescription || course?.caption || '';
 
-const normalizeStaticCourse = (course) => ({
+const normalizeCourse = (course) => ({
   ...course,
-  course_title: course.title,
-  description: course.fullDescription || course.description,
-  caption: course.description,
-  category: course.level,
+  course_title: course.course_title || course.title || '',
+  caption: course.caption || '',
+  description: course.description || '',
+  link: course.link || course.youtube_url || '',
+  category: course.category || '',
+  tags: Array.isArray(course.tags)
+    ? course.tags
+    : String(course.tags || '')
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean),
 });
 
 const CoursesComponent = () => {
@@ -46,10 +49,10 @@ const CoursesComponent = () => {
     try {
       const response = await courseAPI.getAllCourses();
       const apiCourses = extractArrayFromResponse(response, ['courses', 'data', 'items']);
-      setCourses(apiCourses.length > 0 ? apiCourses : coursesData.map(normalizeStaticCourse));
+      setCourses(apiCourses.map(normalizeCourse));
     } catch (error) {
       console.error('Failed to load courses:', error);
-      setCourses(coursesData.map(normalizeStaticCourse));
+      setCourses([]);
     }
   }, []);
 
@@ -83,7 +86,7 @@ const CoursesComponent = () => {
     setSearching(true);
     try {
       const response = await courseAPI.getCoursesByCategory(category);
-      setCourses(extractArrayFromResponse(response, ['courses', 'data', 'items']));
+      setCourses(extractArrayFromResponse(response, ['courses', 'data', 'items']).map(normalizeCourse));
       setActiveCategory(category);
     } catch (error) {
       console.error('Failed to search courses by category:', error);
@@ -241,9 +244,23 @@ const CoursesComponent = () => {
                     <h2 className="text-xl font-bold text-[#1A1A1A] mb-2 line-clamp-2 group-hover:text-[#FD90A7] transition-colors">
                       {title}
                     </h2>
+                    {course.caption && (
+                      <p className="text-[#C7365B] text-xs font-semibold uppercase tracking-[0.12em] mb-2 line-clamp-1">
+                        {course.caption}
+                      </p>
+                    )}
                     <p className="text-[#A19390] text-sm leading-relaxed line-clamp-3 flex-1">
                       {getCourseDescription(course)}
                     </p>
+                    {course.tags?.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {course.tags.slice(0, 3).map((tag) => (
+                          <span key={tag} className="px-2.5 py-1 rounded-full bg-[#FEE7E4] text-[#C7365B] text-xs font-medium">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div className="mt-4 flex items-center text-sm font-medium text-[#FD90A7]">
                       View course
                       <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -320,6 +337,16 @@ const CoursesComponent = () => {
               <p className="text-[#1A1A1A] leading-relaxed whitespace-pre-line">
                 {getCourseDescription(selectedCourse)}
               </p>
+
+              {selectedCourse.tags?.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {selectedCourse.tags.map((tag) => (
+                    <span key={tag} className="px-3 py-1.5 rounded-full bg-[#FEE7E4] text-[#C7365B] text-sm font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {selectedVideoUrl && (
                 <div className="mt-6 pt-4 border-t border-[#F3E4E2]">

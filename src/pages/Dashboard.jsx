@@ -129,7 +129,14 @@ const Dashboard = () => {
         case 'Webinar':
           return item.title?.toLowerCase().includes(q);
         case 'Courses':
-          return item.title?.toLowerCase().includes(q);
+          return (
+            item.course_title?.toLowerCase().includes(q) ||
+            item.title?.toLowerCase().includes(q) ||
+            item.caption?.toLowerCase().includes(q) ||
+            item.category?.toLowerCase().includes(q) ||
+            item.link?.toLowerCase().includes(q) ||
+            (Array.isArray(item.tags) ? item.tags.join(' ') : item.tags || '').toLowerCase().includes(q)
+          );
         case 'Gallery':
           return item.title?.toLowerCase().includes(q) || item.caption?.toLowerCase().includes(q) || item.description?.toLowerCase().includes(q);
         case 'Volunteers':

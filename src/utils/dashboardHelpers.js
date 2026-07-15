@@ -92,6 +92,24 @@ const normalizeEventDate = (dateValue) => {
 export const prepareItemPayload = (item, filterType, currentUser) => {
   let payload = { ...item };
 
+  if (filterType === 'Courses') {
+    const normalizedTags = Array.isArray(payload.tags)
+      ? payload.tags
+      : String(payload.tags || '')
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean);
+
+    payload = {
+      course_title: payload.course_title,
+      caption: payload.caption,
+      description: payload.description,
+      link: payload.link,
+      category: payload.category,
+      tags: normalizedTags,
+    };
+  }
+
   if (filterType === 'Events') {
     // Normalize event time format
     payload.event_time = normalizeEventTime(payload.event_time);
@@ -152,7 +170,7 @@ export const validateItemData = (item, filterType) => {
     Articles: ['author', 'email', 'title', 'content'],
     Blogs: ['author', 'email', 'title', 'content'],
     Webinar: ['webinar_title', 'webinar_host', 'description'],
-    Courses: ['course_title', 'caption', 'description', 'category'],
+    Courses: ['course_title', 'caption', 'description', 'link', 'category', 'tags'],
     Gallery: ['title', 'caption', 'description'],
     Volunteers: ['f_name', 'l_name', 'email', 'p_number', 'motivation_note']
   };
@@ -164,13 +182,6 @@ export const validateItemData = (item, filterType) => {
     return {
       isValid: false,
       error: validation.errors[0]
-    };
-  }
-
-  if (filterType === 'Gallery' && !item.image_file && !item.image_url) {
-    return {
-      isValid: false,
-      error: 'image_file is required'
     };
   }
 
@@ -188,6 +199,9 @@ export const createItem = async (item, filterType, currentUser) => {
   // Validate
   const validation = validateItemData(item, filterType);
   if (!validation.isValid) throw new Error(validation.error);
+  if (filterType === 'Gallery' && !item.image_file) {
+    throw new Error('image_file is required');
+  }
 
   // Prepare payload
   const payload = prepareItemPayload(item, filterType, currentUser);
@@ -305,7 +319,7 @@ export const filterData = (data, query, filterType) => {
       case 'Webinar':
         return item.webinar_title?.toLowerCase().includes(q) || item.title?.toLowerCase().includes(q) || item.webinar_host?.toLowerCase().includes(q);
       case 'Courses':
-        return item.course_title?.toLowerCase().includes(q) || item.category?.toLowerCase().includes(q);
+        return item.course_title?.toLowerCase().includes(q) || item.category?.toLowerCase().includes(q) || item.caption?.toLowerCase().includes(q);
       case 'Gallery':
         return item.title?.toLowerCase().includes(q) || item.caption?.toLowerCase().includes(q) || item.description?.toLowerCase().includes(q);
       case 'Volunteers':

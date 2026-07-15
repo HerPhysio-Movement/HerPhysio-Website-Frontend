@@ -53,9 +53,9 @@ const rules = {
     course_title: [validators.required],
     caption: [validators.required],
     description: [validators.required, validators.minLength(10)],
+    link: [validators.required],
     category: [validators.required],
     tags: [validators.required],
-    youtube_url: [validators.url],
   },
   Gallery: {
     title: [validators.required],

@@ -52,9 +52,9 @@ const modalFields = {
     { name: 'course_title', label: 'Course Title', type: 'text', required: true },
     { name: 'caption', label: 'Caption', type: 'text', required: true },
     { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 4 },
-    { name: 'youtube_url', label: 'YouTube URL', type: 'url' },
+    { name: 'link', label: 'Course Link', type: 'text', required: true },
     { name: 'category', label: 'Category', type: 'text', required: true },
-    { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
+    { name: 'tags', label: 'Tags (comma separated)', type: 'text', required: true },
   ],
   Gallery: [
     { name: 'title', label: 'Title', type: 'text', required: true },
@@ -91,6 +91,10 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
       delete data.image_file;
       if (activeFilter === 'Courses' && Array.isArray(data.tags)) {
         data.tags = data.tags.join(', ');
+      }
+      if (activeFilter === 'Courses') {
+        data.link = data.link || data.youtube_url || '';
+        delete data.youtube_url;
       }
       if (activeFilter === 'Projects' && data.status) {
         data.status = String(data.status).toLowerCase();
