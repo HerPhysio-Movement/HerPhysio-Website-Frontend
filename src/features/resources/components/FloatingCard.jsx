@@ -54,17 +54,17 @@ export const ResourceModal = ({
       >
         <button 
           onClick={onClose} 
-          className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100"
+          className="absolute p-1 rounded-full top-4 right-4 hover:bg-gray-100"
         >
           <X className="w-5 h-5 text-gray-500" />
         </button>
 
         {hasImage && imageUrl && (
-          <div className="aspect-video rounded-lg overflow-hidden mb-4 bg-gray-200">
+          <div className="mb-4 overflow-hidden bg-gray-200 rounded-lg aspect-video">
             <img 
               src={imageUrl} 
               alt={item.title} 
-              className="w-full h-full object-cover" 
+              className="object-cover w-full h-full" 
             />
           </div>
         )}
@@ -91,7 +91,7 @@ export const CardContent = ({
     <div className="flex items-start gap-4">
       {Icon && (
         <div 
-          className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" 
+          className="flex items-center justify-center flex-shrink-0 w-12 h-12 rounded-full" 
           style={{ backgroundColor: bgColor }}
         >
           <Icon className="w-6 h-6" style={{ color }} />
@@ -99,7 +99,7 @@ export const CardContent = ({
       )}
       <div className="flex-1">
         <h3 className="font-bold text-xl text-[#1D2130] mb-2">{title}</h3>
-        <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
+        <p className="text-sm leading-relaxed text-gray-600 line-clamp-3">{description}</p>
         {metadata && <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">{metadata}</div>}
         {showHoverText && (
           <div className="mt-3 text-xs text-[#FD90A7] opacity-0 group-hover:opacity-100 transition">

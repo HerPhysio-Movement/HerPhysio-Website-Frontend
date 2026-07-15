@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, Tag, X } from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles, DividerWithText } from './SectionComponents';
 import { notesData, socialLinksData } from '../data/resourcesData';
 import { courseAPI } from '../../../services/courseAPI';
 import { extractArrayFromResponse } from '../../../utils/apiHelpers';
+import { getYouTubeEmbedUrl } from '../../../utils/videoHelpers';
 
 const cardStyles = [
   { rotation: '-rotate-2', zIndex: 'z-10' },
@@ -21,6 +22,23 @@ const getCourseTitle = (course) =>
 
 const getCourseDescription = (course) =>
   course?.description || course?.fullDescription || course?.caption || '';
+
+const getCourseVideoUrl = (course) =>
+  course?.link ||
+  course?.youtube_url ||
+  course?.youtubeUrl ||
+  course?.video_url ||
+  course?.videoUrl ||
+  '';
+
+const getCourseImage = (course) =>
+  course?.image_url ||
+  course?.imageUrl ||
+  course?.thumbnail_url ||
+  course?.thumbnailUrl ||
+  course?.image ||
+  course?.thumbnail ||
+  '';
 
 const getCourseTimestamp = (course) => {
   const dateValue =
@@ -47,6 +65,13 @@ const normalizeCourse = (course, index) => {
     fullDescription: getCourseDescription(course),
     duration: course?.duration || course?.course_duration || '',
     level: course?.level || course?.difficulty || course?.category || '',
+    link: getCourseVideoUrl(course),
+    tags: Array.isArray(course?.tags)
+      ? course.tags
+      : String(course?.tags || '')
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean),
     rotation: style.rotation,
     zIndex: style.zIndex,
   };
@@ -139,6 +164,8 @@ export const CoursesSection = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [recentCourses, setRecentCourses] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
+  const selectedVideoUrl = getCourseVideoUrl(selectedCourse);
+  const selectedEmbedUrl = getYouTubeEmbedUrl(selectedVideoUrl);
 
   useEffect(() => {
     let isMounted = true;
@@ -227,42 +254,112 @@ export const CoursesSection = () => {
             ))}
           </div>
         )}
+
+        <div className="flex justify-center mt-10">
+          <Link
+            to="/courses"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#FD90A7] text-white font-semibold shadow-md hover:bg-[#F77997] transition"
+          >
+            View courses page <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
 
-      {/* Course Modal */}
-      <ResourceModal
-        item={selectedCourse}
-        isOpen={!!selectedCourse}
-        onClose={() => setSelectedCourse(null)}
-        maxWidth="max-w-md"
-      >
-        {selectedCourse && (
-          <>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#FD90A7]/10 flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-[#FD90A7]" />
-              </div>
-              <h3 className="text-xl font-bold text-[#1D2130]">{selectedCourse.title}</h3>
+      {selectedCourse && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300"
+          onClick={() => setSelectedCourse(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-[#F3E4E2]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 sm:p-6 flex justify-between items-center border-b border-[#F3E4E2]">
+              <h2 className="text-2xl font-bold text-[#1A1A1A] pr-8">
+                {getCourseTitle(selectedCourse)}
+              </h2>
+              <button
+                onClick={() => setSelectedCourse(null)}
+                className="p-2 rounded-lg hover:bg-[#F3E4E2] transition text-[#A19390]"
+                aria-label="Close course details"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <p className="mb-4 leading-relaxed text-gray-600">
-              {selectedCourse.fullDescription}
-            </p>
-            {(selectedCourse.duration || selectedCourse.level) && (
-              <div className="flex items-center gap-3 mb-6 text-sm text-gray-500">
-                {selectedCourse.duration && <span>{selectedCourse.duration}</span>}
-                {selectedCourse.level && <span>{selectedCourse.level}</span>}
+
+            <div className="p-4 sm:p-6">
+              {selectedEmbedUrl ? (
+                <div className="aspect-video rounded-xl overflow-hidden bg-gray-900 mb-5">
+                  <iframe
+                    src={selectedEmbedUrl}
+                    title={getCourseTitle(selectedCourse)}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <div className="aspect-video rounded-xl overflow-hidden bg-[#F3E4E2] flex items-center justify-center mb-5">
+                  {getCourseImage(selectedCourse) ? (
+                    <img
+                      src={getCourseImage(selectedCourse)}
+                      alt={getCourseTitle(selectedCourse)}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <BookOpen className="w-12 h-12 text-[#FD90A7]" />
+                  )}
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-[#A19390] mb-4">
+                {selectedCourse.category && (
+                  <span className="flex items-center gap-1">
+                    <Tag className="w-4 h-4" />
+                    {selectedCourse.category}
+                  </span>
+                )}
+                {selectedCourse.duration && (
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {selectedCourse.duration}
+                  </span>
+                )}
               </div>
-            )}
-            <Link
-              to="/courses"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#FD90A7] hover:underline"
-              onClick={() => setSelectedCourse(null)}
-            >
-              Enroll now <ArrowRight className="w-4 h-4" />
-            </Link>
-          </>
-        )}
-      </ResourceModal>
+
+              <p className="text-[#1A1A1A] leading-relaxed whitespace-pre-line">
+                {getCourseDescription(selectedCourse)}
+              </p>
+
+              {selectedCourse.tags?.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {selectedCourse.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1.5 rounded-full bg-[#FEE7E4] text-[#C7365B] text-sm font-medium"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {selectedVideoUrl && (
+                <div className="mt-6 pt-4 border-t border-[#F3E4E2]">
+                  <a
+                    href={selectedVideoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[#FD90A7] hover:text-[#C7365B] font-semibold transition"
+                  >
+                    Watch on source <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
