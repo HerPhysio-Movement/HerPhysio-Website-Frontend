@@ -153,7 +153,7 @@ export const validateItemData = (item, filterType) => {
     Blogs: ['author', 'email', 'title', 'content'],
     Webinar: ['webinar_title', 'webinar_host', 'description'],
     Courses: ['course_title', 'caption', 'description', 'category'],
-    Gallery: ['title', 'caption', 'description', 'image_url'],
+    Gallery: ['title', 'caption', 'description'],
     Volunteers: ['f_name', 'l_name', 'email', 'p_number', 'motivation_note']
   };
 
@@ -164,6 +164,13 @@ export const validateItemData = (item, filterType) => {
     return {
       isValid: false,
       error: validation.errors[0]
+    };
+  }
+
+  if (filterType === 'Gallery' && !item.image_file && !item.image_url) {
+    return {
+      isValid: false,
+      error: 'image_file is required'
     };
   }
 

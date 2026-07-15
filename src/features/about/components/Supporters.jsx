@@ -27,7 +27,7 @@ const Supporters = () => {
             We don't do this alone
           </p>
           <p className="text-[#525560] max-w-2xl mx-auto mt-3">
-            We are proud of our partner organizations, who share our mission of getting health education to women in low-income communities, one outreach at a time.
+            We are proud of our partner organizations, who share our mission of getting health education to women in low-income communities, and empowering healthcare experts with interest in women's health
           </p>
         </div>
 

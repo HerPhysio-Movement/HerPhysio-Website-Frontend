@@ -8,7 +8,15 @@ const normalizeGalleryImage = (item, index = 0) => {
     title: item.title || '',
     caption: item.caption || item.category || 'Event',
     description: item.description || '',
-    image_url: item.image_url || item.image?.image_url || item.src || item.url || '',
+    image_url:
+      item.image_url ||
+      item.file_url ||
+      item.image_file_url ||
+      item.image?.image_url ||
+      item.image?.file_url ||
+      item.src ||
+      item.url ||
+      '',
     created_at: item.created_at || item.createdAt || null,
     updated_at: item.updated_at || item.updatedAt || null,
   };
@@ -34,12 +42,11 @@ export const galleryAPI = {
   },
 
   createImage: async (data) => {
-    const payload = {
-      title: data.title || '',
-      caption: data.caption || '',
-      description: data.description || '',
-      image_url: data.image_url || data.image?.image_url || '',
-    };
+    const payload = new FormData();
+    payload.append('image_file', data.image_file);
+    payload.append('title', data.title || '');
+    payload.append('caption', data.caption || '');
+    payload.append('description', data.description || '');
 
     const response = await apiClient.post('/gallery/', payload);
     const image = response?.image || response?.data || response;
@@ -47,12 +54,19 @@ export const galleryAPI = {
   },
 
   updateImage: async (imageId, data) => {
-    const payload = {
+    const hasImageFile = typeof File !== 'undefined' && data.image_file instanceof File;
+    const payload = hasImageFile ? new FormData() : {
       title: data.title || '',
       caption: data.caption || '',
       description: data.description || '',
-      image_url: data.image_url || data.image?.image_url || '',
     };
+
+    if (hasImageFile) {
+      payload.append('image_file', data.image_file);
+      payload.append('title', data.title || '');
+      payload.append('caption', data.caption || '');
+      payload.append('description', data.description || '');
+    }
 
     const response = await apiClient.put(`/gallery/${imageId}`, payload);
     const image = response?.image || response?.data || response;

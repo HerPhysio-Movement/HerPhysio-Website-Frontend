@@ -77,7 +77,7 @@ export const leadersTeam = [
   },
   {
     name: "Jubril Mariam",
-    role: "Head of Design",
+    role: "Head of Design Team",
     image: "/Mariam Jubril.jpg",
     linkedin: "https://www.linkedin.com/in/mariam-jubril-6723b423a",
     objectPosition: "center",
@@ -87,7 +87,7 @@ export const leadersTeam = [
   {
     name: "Boluwatife Williams",
     role: "Head of Outreach Team",
-    image: "/Williams Boluwatife.jpg",
+    image: "/Williams Boluwatife.jpeg",
     linkedin: "https://www.linkedin.com/in/boluwatife-williams",
     objectPosition: "center",
     about:
@@ -107,7 +107,7 @@ export const websiteTeam = [
   },
   {
     name: "Akinsulire Oluwaseun",
-    role: "UIUX designer",
+    role: "UI/UX designer",
     image: "/Akinsulire Oluwaseun.jpeg",
     linkedin: "https://www.linkedin.com/in/akinsulireoluwaseun?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
     objectPosition: "center",

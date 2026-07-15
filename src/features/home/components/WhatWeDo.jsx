@@ -9,7 +9,7 @@ const services = [
     id: 1,
     title: 'Her Physio Webinar',
     description:
-      'Monthly live sessions with women’s health specialists. Interactive Q&A, expert insights, and practical guidance.',
+      'Monthly conversations with healthcare specialists on women\'s health topics.',
     image: '/webinar.jpg',
     thumbnail: '/HerPhysio Webinar.svg',
     link: '/resources#webinars',
@@ -20,7 +20,7 @@ const services = [
     id: 2,
     title: 'The 360 Panel Session',
     description:
-      'Quarterly multi‑voice discussions bringing together experts, advocates, and community members for impactful dialogue.',
+      'Quarterly discussions that bring a diverse group of voices together around women\'s health.',
     image: '/degreeWomen.jpg',
     thumbnail: '/360 Panel.svg',
     link: '/events',
@@ -42,7 +42,7 @@ const services = [
     id: 4,
     title: 'The 3‑Month Mentorship Program',
     description:
-      'Cohort‑based advanced training for physiotherapists, combining leadership skills with clinical expertise.',
+      'A cohort-based program that equips physiotherapists in the women\'s health field for 3 months which is completed with a capstone project',
     image: '/hpmMentorss.jpg',
     thumbnail: '/HPM Mentorship.svg',
     link: '/volunteer-signup',

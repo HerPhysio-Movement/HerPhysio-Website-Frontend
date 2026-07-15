@@ -42,7 +42,7 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
       case 'Events':     return ['Name', 'Date', 'Location', 'Registered', 'Actions'];
       case 'Webinar':    return ['Title', 'Host', 'Date', 'Actions'];
       case 'Courses':    return ['Course Title', 'Category', 'Caption', 'Actions'];
-      case 'Gallery':    return ['Title', 'Category', 'Description', 'Actions'];
+      case 'Gallery':    return ['Image', 'Title', 'Category', 'Description', 'Actions'];
       case 'Volunteers': return ['Name', 'Email', 'Phone', 'Status', 'Actions'];
       default:           return [];
     }
@@ -128,6 +128,19 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
       case 'Gallery':
         return data.map((item) => (
           <tr key={item.id || item._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <td className="px-4 py-3">
+              {item.image_url ? (
+                <img
+                  src={item.image_url}
+                  alt={item.title || 'Gallery image'}
+                  className="h-12 w-16 rounded-md object-cover border border-gray-100"
+                />
+              ) : (
+                <div className="h-12 w-16 rounded-md bg-gray-100 text-gray-400 text-xs flex items-center justify-center">
+                  No image
+                </div>
+              )}
+            </td>
             <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.title || 'Untitled'}</td>
             <td className="px-4 py-3 text-sm text-gray-500">{item.caption || '—'}</td>
             <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.description || '—'}</td>

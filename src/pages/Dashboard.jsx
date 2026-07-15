@@ -107,7 +107,7 @@ const Dashboard = () => {
       case 'Volunteers': return volunteers;
       default:           return [];
     }
-  }, [activeFilter, projects, articles, blogs, events, webinars, courses, volunteers]);
+  }, [activeFilter, projects, articles, blogs, events, webinars, courses, gallery, volunteers]);
 
   const shouldSearchEventsByEmail = activeFilter === 'Events' && isEmailSearch(searchQuery);
 

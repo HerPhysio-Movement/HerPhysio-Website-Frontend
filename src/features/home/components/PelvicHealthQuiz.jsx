@@ -280,8 +280,8 @@ const PelvicHealthQuiz = () => {
         {/* Social Proof Row (Finsy inspired) */}
         <div className="flex flex-col items-center gap-4 mt-16">
           <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">100k+</p>
-            <p className="text-sm text-gray-500">Trusted by thousands of women worldwide</p>
+            <p className="text-2xl font-bold text-gray-900">900+</p>
+            <p className="text-sm text-gray-500">Trusted by hundreds of women worldwide</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <Shield className="w-4 h-4" /> Secure & Confidential

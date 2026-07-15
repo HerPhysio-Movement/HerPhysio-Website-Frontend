@@ -48,9 +48,10 @@ class ApiClient {
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     const token = this.getToken();
-    
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+
     const headers = {
-      'Content-Type': 'application/json',
+      ...(!isFormData && { 'Content-Type': 'application/json' }),
       ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     };
@@ -58,7 +59,7 @@ class ApiClient {
     const config = {
       ...options,
       headers,
-      body: options.body ? JSON.stringify(options.body) : undefined,
+      body: options.body ? (isFormData ? options.body : JSON.stringify(options.body)) : undefined,
     };
 
     try {

@@ -1,4 +1,4 @@
-import { projectAPI, eventAPI, articleAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI } from '../services';
+import { projectAPI, eventAPI, articleAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI, galleryAPI } from '../services';
 import { extractArrayFromResponse } from './apiHelpers';
 
 export const fetchDashboardData = async () => {
@@ -10,6 +10,7 @@ export const fetchDashboardData = async () => {
     webinarAPI.getAllWebinars(),
     volunteerAPI.getAllVolunteers(),
     courseAPI.getAllCourses(),
+    galleryAPI.getGallery(),
   ]);
 
   return {
@@ -20,5 +21,6 @@ export const fetchDashboardData = async () => {
     webinars:   extractArrayFromResponse(results[4].value, ['webinars', 'data']),
     volunteers: extractArrayFromResponse(results[5].value, ['volunteers', 'data']),
     courses:    extractArrayFromResponse(results[6].value, ['courses', 'data']),
+    gallery:    extractArrayFromResponse(results[7].value, ['images', 'data']),
   };
 };

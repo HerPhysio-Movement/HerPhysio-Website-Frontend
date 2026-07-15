@@ -60,7 +60,7 @@ const modalFields = {
     { name: 'title', label: 'Title', type: 'text', required: true },
     { name: 'caption', label: 'Category', type: 'select', options: ['Outreach', 'Training', 'Event'], required: true },
     { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 4 },
-    { name: 'image_url', label: 'Image URL', type: 'url', required: true },
+    { name: 'image_file', label: 'Image File', type: 'file', accept: 'image/*', requiredOnAdd: true },
   ],
   Volunteers: [
     { name: 'f_name', label: 'First Name', type: 'text', required: true },
@@ -88,6 +88,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
     if (mode === 'edit' && currentItem) {
       const data = { ...currentItem };
       // Flatten tags array to comma-separated string for the input
+      delete data.image_file;
       if (activeFilter === 'Courses' && Array.isArray(data.tags)) {
         data.tags = data.tags.join(', ');
       }
@@ -144,8 +145,12 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
     }
 
     const validation = validateForm(activeFilter, payload);
-    setErrors(validation.errors);
-    if (!validation.isValid) return;
+    const nextErrors = { ...validation.errors };
+    if (activeFilter === 'Gallery' && mode === 'add' && !payload.image_file) {
+      nextErrors.image_file = 'image_file is required';
+    }
+    setErrors(nextErrors);
+    if (!validation.isValid || Object.keys(nextErrors).length > 0) return;
 
     setIsSubmitting(true);
     try {
@@ -210,7 +215,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
       return (
         <div key={field.name} className="mb-4">
           <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-            {field.label}
+            {field.label} {field.requiredOnAdd && mode === 'add' && <span className="text-[#FD90A7]">*</span>}
           </label>
           <input
             type="file"
@@ -219,7 +224,13 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
             onChange={handleChange}
             className={`${baseClass} ${errorClass} file:mr-3 file:rounded-full file:border-0 file:bg-[#FD90A7]/10 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[#FD90A7] hover:file:bg-[#FD90A7]/20`}
           />
-          <p className="mt-1 text-xs text-gray-500">Optional. Upload an image file to use as the event thumbnail.</p>
+          <p className="mt-1 text-xs text-gray-500">
+            {activeFilter === 'Gallery'
+              ? mode === 'add'
+                ? 'Required. Upload the gallery image file.'
+                : 'Optional. Upload a new file to replace the current gallery image.'
+              : 'Optional. Upload an image file to use as the event thumbnail.'}
+          </p>
           {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
         </div>
       );

@@ -74,7 +74,7 @@ const ContributionCTA = () => {
                   <div className="w-8 h-8 rounded-full bg-[#FCD172] flex items-center justify-center">
                     <Star className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-xs font-bold text-gray-900">100k+</span>
+                  <span className="text-xs font-bold text-gray-900">900+</span>
                 </div>
                 <p className="text-[10px] text-gray-500">Women Impacted</p>
               </div>

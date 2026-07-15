@@ -150,7 +150,7 @@ const TeamGrid = () => {
           return (
             <div key={section.title} className="mb-14">
               <div className="mb-6">
-                <h3 className="text-3xl font-semibold text-[#1D2130]">{section.title}</h3>
+                <h3 className="text-2xl lg:text-3xl font-semibold text-[#1D2130]">{section.title}</h3>
                 <div className="w-12 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mt-2" />
               </div>
 
@@ -193,7 +193,7 @@ const TeamGrid = () => {
                           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
                           style={{ objectPosition: member.objectPosition }}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center gap-3 transition-opacity duration-300 opacity-0 bg-black/50 group-hover:opacity-100">
+                        <div className="absolute inset-0 flex items-end justify-center gap-3 transition-opacity duration-300 opacity-100 bg-black/30 lg:items-center lg:opacity-0 lg:bg-black/50 group-hover:opacity-100 pb-7 lg:pb-0">
                           <a
                             href={member.linkedin}
                             target="_blank"

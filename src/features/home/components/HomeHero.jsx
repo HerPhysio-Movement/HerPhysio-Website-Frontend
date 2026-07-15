@@ -6,6 +6,7 @@ import { Star, ArrowRight, ArrowUpRight } from 'lucide-react';
 /*  Splash images – replace with your own Black women photos           */
 /* ------------------------------------------------------------------ */
 // const portraitMain   = '/Antonia.jpg'; 
+const heroVideo   = '/heroVid.mp4'; 
 const portraitMain   = '/heroImg.jpeg'; 
 // const portraitSecond = '/Modupe.jpg';
 const portraitSecond = '/event-3.jpg';
@@ -193,8 +194,8 @@ const HomeHero = () => {
                   </div>
                 </div> */}
 
-                <div className="rounded-[10px] overflow-hidden shadow-xl lg:h-112.5">
-                  <img src={portraitMain} alt="Smiling woman physiotherapist" className="object-cover w-full h-full" />
+                <div className="rounded-[10px] overflow-hidden shadow-xl lg:h-135">
+                  <video src={heroVideo} className="object-cover w-full h-full" controls autoPlay loop playsInline />
                 </div>
 
                 {/* Metric Badge – repositioned for tablet */}
