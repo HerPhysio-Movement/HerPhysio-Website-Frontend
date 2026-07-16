@@ -3,10 +3,10 @@
  * Centralizes API calls, data transformation, and validation
  */
 
-import { extractArrayFromResponse, formatErrorMessage, validateRequired } from './apiHelpers';
+import { extractArrayFromResponse, validateRequired } from './apiHelpers';
 import { VALIDATION_RULES, TOAST_MESSAGES } from './constants';
 import {
-  projectAPI, eventAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI, galleryAPI
+  projectAPI, eventAPI, articleAPI, blogAPI, webinarAPI, volunteerAPI, courseAPI, galleryAPI
 } from '../services';
 
 /**
@@ -45,7 +45,6 @@ export const fetchDashboardData = async (currentUser) => {
  * Prepare item for API submission based on filter type
  * @param {Object} item - Item data
  * @param {string} filterType - Type of item (Projects, Events, Articles, etc.)
- * @param {Object} currentUser - Current user
  * @returns {Object} - Prepared payload
  */
 const normalizeEventTime = (time) => {
@@ -89,8 +88,24 @@ const normalizeEventDate = (dateValue) => {
   return dateValue;
 };
 
-export const prepareItemPayload = (item, filterType, currentUser) => {
+export const prepareItemPayload = (item, filterType) => {
   let payload = { ...item };
+
+  if (filterType === 'Projects') {
+    payload = {
+      title: payload.title,
+      description: payload.description,
+      category: payload.category,
+      tags: Array.isArray(payload.tags)
+        ? payload.tags
+        : String(payload.tags || '')
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+      thumbnail_url: payload.thumbnail_url,
+      thumbnail_file: payload.thumbnail_file,
+    };
+  }
 
   if (filterType === 'Courses') {
     const normalizedTags = Array.isArray(payload.tags)
@@ -143,14 +158,22 @@ export const prepareItemPayload = (item, filterType, currentUser) => {
   }
 
   if (filterType === 'Articles') {
-    // Add current user email if not provided
-    if (!payload.email && currentUser?.email) {
-      payload.email = currentUser.email;
-    }
-    
-    // Validate content length
-    if (payload.content && payload.content.length < VALIDATION_RULES.MIN_CONTENT_LENGTH) {
-      throw new Error(`Content must be at least ${VALIDATION_RULES.MIN_CONTENT_LENGTH} characters`);
+    payload = {
+      title: payload.title,
+      author: payload.author,
+      category: payload.category,
+      bio: payload.bio,
+      link: payload.link,
+      tags: Array.isArray(payload.tags)
+        ? payload.tags
+        : String(payload.tags || '')
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+    };
+
+    if (payload.bio && payload.bio.length < VALIDATION_RULES.MIN_CONTENT_LENGTH) {
+      throw new Error(`Bio must be at least ${VALIDATION_RULES.MIN_CONTENT_LENGTH} characters`);
     }
   }
 
@@ -167,7 +190,7 @@ export const validateItemData = (item, filterType) => {
   const requiredFields = {
     Projects: ['title', 'description', 'category'],
     Events: ['event_name', 'event_host', 'caption', 'description', 'event_date', 'event_time', 'venue'],
-    Articles: ['author', 'email', 'title', 'content'],
+    Articles: ['author', 'title', 'category', 'bio', 'link'],
     Blogs: ['author', 'email', 'title', 'content'],
     Webinar: ['webinar_title', 'webinar_host', 'description'],
     Courses: ['course_title', 'caption', 'description', 'link', 'category', 'tags'],
@@ -204,7 +227,7 @@ export const createItem = async (item, filterType, currentUser) => {
   }
 
   // Prepare payload
-  const payload = prepareItemPayload(item, filterType, currentUser);
+  const payload = prepareItemPayload(item, filterType);
 
   // Submit to API
   switch (filterType) {
@@ -213,7 +236,7 @@ export const createItem = async (item, filterType, currentUser) => {
     case 'Events':
       return await eventAPI.createEvent(payload);
     case 'Articles':
-      return await blogAPI.createBlog(payload);
+      return await articleAPI.createArticle(payload);
     case 'Blogs':
       return await blogAPI.createBlog(payload);
     case 'Webinar':
@@ -243,7 +266,7 @@ export const updateItem = async (id, item, filterType, currentUser) => {
   if (!validation.isValid) throw new Error(validation.error);
 
   // Prepare payload
-  const payload = prepareItemPayload(item, filterType, currentUser);
+  const payload = prepareItemPayload(item, filterType);
 
   // Submit to API
   switch (filterType) {
@@ -252,7 +275,7 @@ export const updateItem = async (id, item, filterType, currentUser) => {
     case 'Events':
       return await eventAPI.updateEvent(id, payload);
     case 'Articles':
-      return await blogAPI.updateBlog(id, payload);
+      return await articleAPI.updateArticle(id, payload);
     case 'Blogs':
       return await blogAPI.updateBlog(id, payload);
     case 'Webinar':
@@ -279,7 +302,7 @@ export const deleteItem = async (id, filterType) => {
     case 'Events':
       return await eventAPI.deleteEvent(id);
     case 'Articles':
-      return await blogAPI.deleteBlog(id);
+      return await articleAPI.deleteArticle(id);
     case 'Blogs':
       return await blogAPI.deleteBlog(id);
     case 'Webinar':

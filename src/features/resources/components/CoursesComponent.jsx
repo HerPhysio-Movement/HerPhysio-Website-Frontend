@@ -135,8 +135,7 @@ const CoursesComponent = () => {
         </h1>
         <div className="w-20 h-1 bg-linear-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
         <p className="text-[#A19390] max-w-xl mx-auto text-lg">
-          Learn practical movement, posture, pelvic health, and recovery skills
-          through focused courses created for women&apos;s wellbeing.
+          Grow your knowledge on women's health topic through online courses to improve women's health and wellbeing.
         </p>
       </div>
 

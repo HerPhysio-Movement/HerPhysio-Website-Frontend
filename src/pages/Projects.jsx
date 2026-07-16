@@ -12,7 +12,19 @@ const getProjectTitle = (project) =>
   project?.title || project?.name || 'Untitled project';
 
 const getProjectImage = (project) =>
-  project?.thumbnail_url || project?.image_url || project?.thumbnail || project?.image;
+  project?.thumbnail_url ||
+  project?.preview_image ||
+  project?.image_url ||
+  project?.thumbnail ||
+  project?.image;
+
+const getProjectTags = (project) =>
+  Array.isArray(project?.tags)
+    ? project.tags.filter(Boolean)
+    : String(project?.tags || '')
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -124,6 +136,18 @@ const Projects = () => {
                     <p className="text-[#A19390] text-sm leading-relaxed line-clamp-3 flex-1">
                       {project.description}
                     </p>
+                    {getProjectTags(project).length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {getProjectTags(project).slice(0, 3).map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-[#FFFAF9] px-2.5 py-1 text-xs font-medium text-[#A19390]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div className="mt-4 flex items-center text-sm font-medium text-[#FD90A7]">
                       Open project
                       <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -182,6 +206,19 @@ const Projects = () => {
               <p className="text-[#1A1A1A] leading-relaxed whitespace-pre-line">
                 {selectedProject.description}
               </p>
+
+              {getProjectTags(selectedProject).length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {getProjectTags(selectedProject).map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-[#FEE7E4] px-3 py-1 text-xs font-semibold text-[#C7365B]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

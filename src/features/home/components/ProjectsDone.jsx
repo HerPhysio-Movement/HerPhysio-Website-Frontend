@@ -3,6 +3,21 @@ import { Link } from 'react-router-dom';
 import { ExternalLink, Sparkles, Calendar, MapPin, FolderOpen } from 'lucide-react';
 import { projectAPI } from '../../../services/projectAPI';
 
+const getProjectImage = (project) =>
+  project?.thumbnail_url ||
+  project?.preview_image ||
+  project?.image_url ||
+  project?.thumbnail ||
+  project?.image;
+
+const getProjectTags = (project) =>
+  Array.isArray(project?.tags)
+    ? project.tags.filter(Boolean)
+    : String(project?.tags || '')
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
 const ProjectsDone = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,9 +83,9 @@ const ProjectsDone = () => {
             >
               <div className="relative h-56 overflow-hidden">
                 <div className="relative aspect-video bg-linear-to-br from-[#FD90A7]/15 to-[#6020F0]/10 flex items-center justify-center overflow-hidden">
-                {project.thumbnail_url ? (
+                {getProjectImage(project) ? (
                   <img
-                    src={project.thumbnail_url}
+                    src={getProjectImage(project)}
                     alt={project.title}
                     className="w-full h-full object-cover"
                   />
@@ -95,6 +110,18 @@ const ProjectsDone = () => {
                 <p className="text-[#525560] text-sm leading-relaxed mb-4 line-clamp-3">
                   {project.description}
                 </p>
+                {getProjectTags(project).length > 0 && (
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {getProjectTags(project).slice(0, 3).map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-[#FFFAF9] px-2.5 py-1 text-xs font-medium text-[#A19390]"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <button
                   onClick={() => openModal(project)}
                   className="inline-flex items-center gap-2 text-sm font-semibold text-[#FD90A7] hover:gap-3 transition-all"
@@ -129,9 +156,9 @@ const ProjectsDone = () => {
           >
             <div className="relative h-64 overflow-hidden rounded-t-2xl">
               <div className="relative aspect-video bg-linear-to-br from-[#FD90A7]/15 to-[#6020F0]/10 flex items-center justify-center overflow-hidden">
-                {selectedProject.thumbnail_url ? (
+                {getProjectImage(selectedProject) ? (
                   <img
-                    src={selectedProject.thumbnail_url}
+                    src={getProjectImage(selectedProject)}
                     alt={selectedProject.title}
                     className="w-full h-full object-cover"
                   />
@@ -159,6 +186,18 @@ const ProjectsDone = () => {
                 </div>
               )}
               <p className="text-[#525560] leading-relaxed mb-6">{selectedProject.description}</p>
+              {getProjectTags(selectedProject).length > 0 && (
+                <div className="mb-6 flex flex-wrap gap-2">
+                  {getProjectTags(selectedProject).map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-[#FEE7E4] px-3 py-1 text-xs font-semibold text-[#C7365B]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               {selectedProject.created_at && (
                 <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
                   <Calendar className="w-4 h-4" />

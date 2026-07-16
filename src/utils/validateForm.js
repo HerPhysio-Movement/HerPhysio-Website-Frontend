@@ -9,6 +9,7 @@ const validators = {
   phone: (value) => (!/^\+?[\d\s\-()]{7,15}$/.test(value) ? 'Invalid phone number' : null),
   password: (value) => (value && value.length < 6 ? 'Password must be at least 6 characters' : null),
   minLength: (min) => (value) => ((value || '').length < min ? `Must be at least ${min} characters` : null),
+  maxLength: (max) => (value) => ((value || '').length > max ? `Must be ${max} characters or less` : null),
   url: (value) => {
     if (!value) return null;
     try { new URL(value); return null; } catch { return 'Must be a valid URL'; }
@@ -17,9 +18,10 @@ const validators = {
 
 const rules = {
   Projects: {
-    title: [validators.required],
+    title: [validators.required, validators.minLength(3), validators.maxLength(200)],
     description: [validators.required, validators.minLength(10)],
     category: [validators.required],
+    thumbnail_url: [validators.url],
   },
   Events: {
     event_name: [validators.required],
@@ -33,9 +35,10 @@ const rules = {
   },
   Articles: {
     title: [validators.required],
-    content: [validators.required, validators.minLength(10)],
     author: [validators.required],
-    email: [validators.required, validators.email],
+    category: [validators.required],
+    bio: [validators.required, validators.minLength(10)],
+    link: [validators.required, validators.url],
   },
   Blogs: {
     title: [validators.required],

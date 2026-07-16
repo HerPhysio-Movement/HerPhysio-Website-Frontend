@@ -1,20 +1,31 @@
 import { apiClient } from './apiClient';
 
+const appendProjectFormFields = (formData, data) => {
+  formData.append('title', data.title);
+  formData.append('description', data.description);
+  formData.append('category', data.category);
+
+  const tags = Array.isArray(data.tags)
+    ? data.tags
+    : String(data.tags || '')
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
+  tags.forEach((tag) => formData.append('tags', tag));
+
+  if (data.thumbnail_url) {
+    formData.append('thumbnail_url', data.thumbnail_url);
+  }
+  if (data.thumbnail_file instanceof File) {
+    formData.append('thumbnail_file', data.thumbnail_file);
+  }
+};
+
 export const projectAPI = {
   createProject: async (data) => {
     const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    formData.append('category', data.category);
-    if (data.thumbnail_url) {
-      formData.append('thumbnail_url', data.thumbnail_url);
-    }
-    if (data.image && data.image instanceof File) {
-      formData.append('image', data.image);
-    }
-    if (data.status) {
-      formData.append('status', data.status);
-    }
+    appendProjectFormFields(formData, data);
 
     const response = await fetch(`${apiClient.baseURL}/projects/`, {
       method: 'POST',
@@ -47,18 +58,7 @@ export const projectAPI = {
 
   updateProject: async (projectId, data) => {
     const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    formData.append('category', data.category);
-    if (data.thumbnail_url) {
-      formData.append('thumbnail_url', data.thumbnail_url);
-    }
-    if (data.image && data.image instanceof File) {
-      formData.append('image', data.image);
-    }
-    if (data.status) {
-      formData.append('status', data.status);
-    }
+    appendProjectFormFields(formData, data);
 
     const response = await fetch(`${apiClient.baseURL}/projects/${projectId}`, {
       method: 'PUT',

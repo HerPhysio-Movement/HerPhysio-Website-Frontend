@@ -9,7 +9,9 @@ const modalFields = {
     { name: 'title', label: 'Title', type: 'text', required: true },
     { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 4 },
     { name: 'category', label: 'Category', type: 'text', required: true },
+    { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
     { name: 'thumbnail_url', label: 'Thumbnail URL', type: 'url' },
+    { name: 'thumbnail_file', label: 'Thumbnail File', type: 'file', accept: 'image/*' },
     { name: 'status', label: 'Status', type: 'select', options: ['published', 'archived'] },
   ],
   Articles: [
@@ -89,7 +91,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
       const data = { ...currentItem };
       // Flatten tags array to comma-separated string for the input
       delete data.image_file;
-      if (activeFilter === 'Courses' && Array.isArray(data.tags)) {
+      if ((activeFilter === 'Courses' || activeFilter === 'Projects' || activeFilter === 'Articles') && Array.isArray(data.tags)) {
         data.tags = data.tags.join(', ');
       }
       if (activeFilter === 'Courses') {
@@ -133,15 +135,9 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Build payload – convert tags string to array for Courses and Webinar
+    // Build payload - convert comma-separated tags to arrays for APIs that expect them.
     const payload = { ...formData };
-    if (activeFilter === 'Courses' && typeof payload.tags === 'string') {
-      payload.tags = payload.tags
-        .split(',')
-        .map((t) => t.trim())
-        .filter((t) => t.length > 0);
-    }
-    if (activeFilter === 'Webinar' && typeof payload.tags === 'string') {
+    if (['Courses', 'Webinar', 'Projects', 'Articles'].includes(activeFilter) && typeof payload.tags === 'string') {
       payload.tags = payload.tags
         .split(',')
         .map((t) => t.trim())
@@ -233,6 +229,8 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
               ? mode === 'add'
                 ? 'Required. Upload the gallery image file.'
                 : 'Optional. Upload a new file to replace the current gallery image.'
+              : activeFilter === 'Projects'
+                ? 'Optional. Upload an image file to use as the project thumbnail.'
               : 'Optional. Upload an image file to use as the event thumbnail.'}
           </p>
           {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
