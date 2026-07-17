@@ -383,79 +383,84 @@ export const ArticlesSection = () => {
         </div>
       </div>
 
-      <ResourceModal
+      {/* <ResourceModal
         item={selectedArticle}
         isOpen={!!selectedArticle}
         onClose={() => setSelectedArticle(null)}
         maxWidth="max-w-2xl"
         hasImage={true}
         imageUrl={selectedArticle?.image_url}
-      >
+      > */}
         {selectedArticle && (
           <div
-            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#F3E4E2]"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 bg-black/40 backdrop-blur-sm"
+            onClick={() => setSelectedArticle(null)}
           >
-            <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 sm:p-6 flex justify-between items-center border-b border-[#F3E4E2]">
-              <h2 className="text-2xl font-bold text-[#1A1A1A] pr-8">
-                {selectedArticle.title}
-              </h2>
-              <button
-                onClick={() => setSelectedArticle(null)}
-                className="p-2 rounded-lg hover:bg-[#F3E4E2] transition text-[#A19390]"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-4 sm:p-6">
-              <div className="flex items-center gap-4 text-sm text-[#A19390] mb-4">
-                <span className="flex items-center gap-1">
-                  <User className="w-4 h-4" />
-                  {selectedArticle.author || 'Her Physio'}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  {selectedArticle.created_at
-                    ? new Date(selectedArticle.created_at).toLocaleDateString(
-                        'en-US',
-                        {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        }
-                      )
-                    : 'Recent'}
-                </span>
+            <div
+              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#F3E4E2]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 sm:p-6 flex justify-between items-center border-b border-[#F3E4E2]">
+                <h2 className="text-2xl font-bold text-[#1A1A1A] pr-8">
+                  {selectedArticle.title}
+                </h2>
+                <button
+                  onClick={() => setSelectedArticle(null)}
+                  className="p-2 rounded-lg hover:bg-[#F3E4E2] transition text-[#A19390]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-              {selectedArticle.type === 'article' && selectedArticle.bio && (
-                <div className="p-4 mb-6 border border-gray-200 rounded-lg bg-gray-50">
-                  <p className="text-sm text-[#1A1A1A] leading-relaxed">{selectedArticle.bio}</p>
+              <div className="p-4 sm:p-6">
+                <div className="flex items-center gap-4 text-sm text-[#A19390] mb-4">
+                  <span className="flex items-center gap-1">
+                    <User className="w-4 h-4" />
+                    {selectedArticle.author || 'Her Physio'}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    {selectedArticle.created_at
+                      ? new Date(selectedArticle.created_at).toLocaleDateString(
+                          'en-US',
+                          {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          }
+                        )
+                      : 'Recent'}
+                  </span>
                 </div>
-              )}
-              {selectedArticle.content && (
-                <div
-                  className="prose prose-sm max-w-none text-[#1A1A1A] leading-relaxed whitespace-pre-line"
-                  dangerouslySetInnerHTML={{
-                    __html: sanitizeHtml(selectedArticle.content),
-                  }}
-                />
-              )}
-              {selectedArticle.link && (
-                <div className="pt-4 mt-6 border-t border-gray-200">
-                  <a
-                    href={selectedArticle.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[#FD90A7] hover:text-[#C7365B] font-semibold transition"
-                  >
-                    Read full article <ArrowRight className="w-4 h-4" />
-                  </a>
-                </div>
-              )}
+                {selectedArticle.type === 'article' && selectedArticle.bio && (
+                  <div className="p-4 mb-6 border border-gray-200 rounded-lg bg-gray-50">
+                    <p className="text-sm text-[#1A1A1A] leading-relaxed">{selectedArticle.bio}</p>
+                  </div>
+                )}
+                {selectedArticle.content && (
+                  <div
+                    className="prose prose-sm max-w-none text-[#1A1A1A] leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{
+                      __html: sanitizeHtml(selectedArticle.content),
+                    }}
+                  />
+                )}
+                {selectedArticle.link && (
+                  <div className="pt-4 mt-6 border-t border-gray-200">
+                    <a
+                      href={selectedArticle.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[#FD90A7] hover:text-[#C7365B] font-semibold transition"
+                    >
+                      Read full article <ArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
-      </ResourceModal>
+      {/* </ResourceModal> */}
     </section>
   );
 };
