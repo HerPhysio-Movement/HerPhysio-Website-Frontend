@@ -142,7 +142,12 @@ export const ArticlesSection = ({ articles = [] }) => {
 
   if (articles.length === 0) return null;
 
-  const publishedArticles = articles.filter(article => article.status === 'published');
+  const isPublished = (article) =>
+    article.status === 'published' ||
+    article.status === 'Published' ||
+    article.is_published === true ||
+    article.published === true;
+  const publishedArticles = articles.filter(isPublished);
   if (publishedArticles.length === 0) return null;
 
   const rotations = ['-rotate-2', 'rotate-1', 'rotate-2'];

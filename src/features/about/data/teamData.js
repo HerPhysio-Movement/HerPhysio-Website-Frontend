@@ -50,7 +50,7 @@ export const coFounders = [
 export const leadersTeam = [
   {
     name: "Temiloluwa Akanle",
-    role: "Head of Community managers team",
+    role: "Head of Community Managers Team",
     image: "/Temiloluwa Akanle.jpg",
     linkedin: "https://www.linkedin.com/in/temiloluwa-akanle-588b41256?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
     objectPosition: "center",
@@ -59,7 +59,7 @@ export const leadersTeam = [
   },
   {
     name: "Okereke Immaculata Adamaka",
-    role: "Head of Content team",
+    role: "Head of Content Team",
     image: "/Okereke Maris.jpg",
     linkedin: "https://www.linkedin.com/in/maris-okereke-a28b79350?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
     objectPosition: "center",
@@ -107,7 +107,7 @@ export const websiteTeam = [
   },
   {
     name: "Akinsulire Oluwaseun",
-    role: "UI/UX designer",
+    role: "UI/UX Designer",
     image: "/Akinsulire Oluwaseun.jpeg",
     linkedin: "https://www.linkedin.com/in/akinsulireoluwaseun?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
     objectPosition: "center",
@@ -116,7 +116,7 @@ export const websiteTeam = [
   },
   {
     name: "Adebola Adedeji",
-    role: "UI/UX designer",
+    role: "UI/UX Designer",
     image: "/Adebola Adedeji.jpg",
     linkedin: "https://www.linkedin.com/in/adebola-adedeji",
     objectPosition: "center",
@@ -134,7 +134,7 @@ export const websiteTeam = [
   },
   {
     name: "Aniago Chiamaka",
-    role: "Frontend developer",
+    role: "Frontend Developer",
     image: "/Chiamaka Aniago.png",
     linkedin: "https://www.linkedin.com/in/chiamaka-aniago/",
     objectPosition: "center",

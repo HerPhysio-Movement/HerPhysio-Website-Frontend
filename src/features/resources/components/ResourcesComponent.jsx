@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { webinarAPI } from '../../../services/webinarAPI';
 import { blogAPI } from '../../../services/blogAPI';
+import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import ContributionCTA from '../../home/components/ContributionCTA';
 import EventsSection from '../../events/components/EventsSection';
 import ResourcesIntro from './ResourcesIntro';
@@ -23,8 +24,8 @@ const ResourcesComponent = () => {
       ]);
       
       // Handle inconsistent API response structures
-      const webinarsArray = webinarsData?.webinars || (Array.isArray(webinarsData) ? webinarsData : []);
-      const articlesArray = articlesData?.blogs || (Array.isArray(articlesData) ? articlesData : []);
+      const webinarsArray = extractArrayFromResponse(webinarsData, ['webinars', 'data', 'items']);
+      const articlesArray = extractArrayFromResponse(articlesData, ['blogs', 'data', 'items']);
       
       setWebinars(webinarsArray);
       setArticles(articlesArray);
