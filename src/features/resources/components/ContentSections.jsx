@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, BookOpen, FileText, PenLine } from 'lucide-react';
+import { ArrowRight, Play, BookOpen, FileText, PenLine, X } from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles } from './SectionComponents';
 import {
