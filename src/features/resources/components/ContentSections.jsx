@@ -1,15 +1,84 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Play, BookOpen, FileText, PenLine, X, User, Calendar } from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles } from './SectionComponents';
+import { blogAPI } from '../../../services/blogAPI';
+import { articleAPI } from '../../../services/articleAPI';
+import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import {
   getWebinarHost,
   getWebinarId,
   getWebinarTitle,
   getWebinarVideoUrl,
   getYouTubeEmbedUrl,
+  // extractArrayFromResponse,
 } from '../../../utils/videoHelpers';
+const ALLOWED_TAGS = new Set([
+  'a',
+  'b',
+  'blockquote',
+  'br',
+  'code',
+  'em',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'hr',
+  'i',
+  'li',
+  'ol',
+  'p',
+  'pre',
+  'span',
+  'strong',
+  'ul',
+]);
+
+const ALLOWED_ATTRIBUTES = new Set(['href', 'target', 'rel', 'title']);
+
+const stripHtml = (value = '') => value.replace(/<[^>]*>/g, '').trim();
+
+const sanitizeHtml = (html = '') => {
+  if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
+    return stripHtml(html);
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  doc.body.querySelectorAll('*').forEach((element) => {
+    const tagName = element.tagName.toLowerCase();
+
+    if (!ALLOWED_TAGS.has(tagName)) {
+      element.replaceWith(...element.childNodes);
+      return;
+    }
+
+    [...element.attributes].forEach((attribute) => {
+      const attributeName = attribute.name.toLowerCase();
+      const attributeValue = attribute.value.trim();
+
+      if (
+        attributeName.startsWith('on') ||
+        !ALLOWED_ATTRIBUTES.has(attributeName) ||
+        (attributeName === 'href' && /^javascript:/i.test(attributeValue))
+      ) {
+        element.removeAttribute(attribute.name);
+      }
+    });
+
+    if (tagName === 'a') {
+      element.setAttribute('target', '_blank');
+      element.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+
+  return doc.body.innerHTML;
+};
 
 /**
  * Section: Webinar Recordings (fetches from API)
@@ -137,9 +206,86 @@ export const WebinarsSection = ({ webinars = [] }) => {
 /**
  * Section: Articles & Insights (fetches from API)
  */
-export const ArticlesSection = ({ articles = [] }) => {
+export const ArticlesSection = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState(null);
+  
+  useEffect(() => {
+    const normalizeItem = (item, source) => {
+      const publishedAt =
+        item.created_at || item.published_at || item.publishedAt || item.date || item.publish_date;
+      return {
+        ...item,
+        type: source,
+        id:
+          item.id ||
+          item._id ||
+          item.blog_id ||
+          item.article_id ||
+          item.articleId ||
+          `${source}-${item.title?.replace(/\s+/g, '-').toLowerCase()}`,
+        title: item.title || item.heading || 'Untitled',
+        author: item.author || item.publisher || 'Her Physio',
+        created_at: publishedAt,
+        excerpt:
+          stripHtml(
+            item.excerpt ||
+              item.summary ||
+              item.description ||
+              (typeof item.content === 'string' ? item.content.substring(0, 120) : '')
+          ),
+        content: item.content || item.body || item.description || '',
+        image_url:
+          item.image_url || item.image || item.featured_image || item.thumbnail || '',
+        status: item.status || item.state || 'published',
+      };
+    };
 
+    const fetchArticles = async () => {
+      try {
+        const [blogData, articleData] = await Promise.all([
+          blogAPI.getAllBlogsPublic(),
+          articleAPI.getAllArticles(),
+        ]);
+
+        const blogItems = extractArrayFromResponse(blogData, ['blogs', 'data', 'items']);
+        const articleItems = extractArrayFromResponse(articleData, ['articles', 'data', 'items']);
+
+        const publishedBlogs = blogItems
+          .map((item) => normalizeItem(item, 'blog'))
+          .filter((item) => item.status === 'published');
+
+        const publishedArticles = articleItems
+          .map((item) => normalizeItem(item, 'article'))
+          .filter((item) => item.status === 'published');
+
+        const combined = [...publishedBlogs, ...publishedArticles].sort(
+          (a, b) =>
+            new Date(b.created_at || 0).getTime() -
+            new Date(a.created_at || 0).getTime()
+        );
+
+        setArticles(combined);
+      } catch (error) {
+        console.error('Failed to load articles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchArticles();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FFFAF9] flex items-center justify-center">
+        <div className="animate-pulse text-[#FD90A7] text-lg">
+          Loading articles...
+        </div>
+      </div>
+    );
+  }
+  
   if (articles.length === 0) return null;
 
   const isPublished = (article) =>
@@ -177,23 +323,6 @@ export const ArticlesSection = ({ articles = [] }) => {
   const rotations = ['-rotate-2', 'rotate-1', 'rotate-2'];
   const zIndices = ['z-10', 'z-20', 'z-15'];
 
-  const TypeBadge = ({ item }) => {
-    const type = getArticleType(item);
-    const isBlog = type === 'blog';
-    return (
-      <span
-        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide ${
-          isBlog
-            ? 'bg-[#E8F0FE] text-[#1A56DB]'
-            : 'bg-[#FEE7E4] text-[#C7365B]'
-        }`}
-      >
-        {isBlog ? <PenLine className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
-        {isBlog ? 'Blog' : 'Article'}
-      </span>
-    );
-  };
-
   return (
     <section className="relative px-4 py-16 overflow-hidden bg-white md:py-24 sm:px-8 md:px-16">
       <BackgroundParticles variant="articles" />
@@ -215,8 +344,11 @@ export const ArticlesSection = ({ articles = [] }) => {
               rotation={rotations[idx]}
               zIndex={zIndices[idx]}
             >
-              <div className="mb-3">
-                <TypeBadge item={article} />
+              
+              <div className="flex items-center justify-between mb-3">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.12em] bg-[#FEE7E4] text-[#C7365B]">
+                  {article.type === 'blog' ? 'Blog' : 'Article'}
+                </span>
               </div>
               <CardContent
                 icon={BookOpen}

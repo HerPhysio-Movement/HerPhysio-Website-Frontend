@@ -161,7 +161,7 @@ const BlogComponent = () => {
   return (
     <main className="min-h-screen bg-[#FFFAF9] pt-20 pb-16">
       {/* Hero header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
+      <div className="px-4 mx-auto mb-16 text-center max-w-7xl sm:px-6 lg:px-8">
         <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#F3E4E2] text-sm font-semibold text-[#F08020] mb-5">
           <Sparkles className="w-4 h-4" />
           Our Blog
@@ -177,7 +177,7 @@ const BlogComponent = () => {
       </div>
 
       {/* Articles grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {articles.length === 0 ? (
           <div className="text-center py-20 bg-white/40 backdrop-blur-sm rounded-2xl border border-[#F3E4E2]">
             <BookOpen className="w-16 h-16 text-[#F3E4E2] mx-auto mb-4" />
@@ -186,15 +186,15 @@ const BlogComponent = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {articles.map((article) => (
               <article
                 key={`${article.type}-${article.id}`}
                 className="group bg-white/60 backdrop-blur-md border border-[#F3E4E2] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer"
                 onClick={() => setSelectedArticle(article)}
               >
-                <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-center justify-between mb-3">
+                <div className="flex flex-col flex-1 p-5">
+                <div className="flex items-center justify-between mb-3">
                   <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.12em] bg-[#FEE7E4] text-[#C7365B]">
                     {article.type === 'blog' ? 'Blog' : 'Article'}
                   </span>
@@ -226,7 +226,7 @@ const BlogComponent = () => {
                 </p>
                 <div className="mt-4 flex items-center text-sm font-medium text-[#FD90A7] group-hover:gap-2 transition-all">
                   Read more
-                  <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
                 </div>
               </div>
             </article>
@@ -239,7 +239,7 @@ const BlogComponent = () => {
       {/* Article Modal */}
       {selectedArticle && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 bg-black/40 backdrop-blur-sm"
           onClick={() => setSelectedArticle(null)}
         >
           <div
@@ -278,7 +278,7 @@ const BlogComponent = () => {
                 </span>
               </div>
               {selectedArticle.type === 'article' && selectedArticle.bio && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="p-4 mb-6 border border-gray-200 rounded-lg bg-gray-50">
                   <p className="text-sm text-[#1A1A1A] leading-relaxed">{selectedArticle.bio}</p>
                 </div>
               )}
@@ -291,7 +291,7 @@ const BlogComponent = () => {
                 />
               )}
               {selectedArticle.link && (
-                <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="pt-4 mt-6 border-t border-gray-200">
                   <a
                     href={selectedArticle.link}
                     target="_blank"

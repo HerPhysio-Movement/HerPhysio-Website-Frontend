@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { webinarAPI } from '../../../services/webinarAPI';
 import { blogAPI } from '../../../services/blogAPI';
+import { articleAPI } from '../../../services/articleAPI';
 import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import ContributionCTA from '../../home/components/ContributionCTA';
 import EventsSection from '../../events/components/EventsSection';
