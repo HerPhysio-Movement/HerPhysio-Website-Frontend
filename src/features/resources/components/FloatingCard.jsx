@@ -49,7 +49,7 @@ export const ResourceModal = ({
       onClick={onClose}
     >
       <div 
-        className={`bg-white rounded-lg ${maxWidth} w-full p-6 shadow-2xl border border-gray-200 relative`}
+        className={`bg-white rounded-lg ${maxWidth} w-full max-h-[80vh] overflow-y-auto p-6 shadow-2xl border border-gray-200 relative`}
         onClick={(e) => e.stopPropagation()}
       >
         <button 

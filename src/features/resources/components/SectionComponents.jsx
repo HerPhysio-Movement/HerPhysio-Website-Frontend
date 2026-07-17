@@ -22,7 +22,7 @@ export const SectionHeader = ({
       </h2>
       <div className="w-16 h-0.5 bg-gradient-to-r from-[#FD90A7] to-[#C7365B] mx-auto rounded-full" />
       {subtitle && (
-        <p className="text-gray-500 max-w-xl mx-auto mt-4">
+        <p className="max-w-xl mx-auto mt-4 text-gray-500">
           {subtitle}
         </p>
       )}
@@ -62,7 +62,7 @@ export const BackgroundParticles = ({ variant = 'default' }) => {
   const config = particleConfigs[variant] || particleConfigs.default;
 
   return (
-    <div className="absolute inset-0 pointer-events-none hidden md:block">
+    <div className="absolute inset-0 hidden pointer-events-none md:block">
       {config.map((particle, idx) => {
         const posClass = [
           particle.top || '',
@@ -89,7 +89,7 @@ export const BackgroundParticles = ({ variant = 'default' }) => {
  */
 export const DividerWithText = ({ text }) => {
   return (
-    <div className="flex items-center gap-3 mb-12 justify-center">
+    <div className="flex items-center justify-center gap-3 mb-12">
       <div className="w-8 sm:w-10 md:w-12 h-0.5 bg-[#1D2130]" />
       <h2 className="uppercase text-[#1D2130] font-bold text-sm tracking-[2px]">
         {text}

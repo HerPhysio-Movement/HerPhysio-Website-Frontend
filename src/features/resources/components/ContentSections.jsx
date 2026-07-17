@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, BookOpen } from 'lucide-react';
+import { ArrowRight, Play, BookOpen, FileText, PenLine } from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles } from './SectionComponents';
 import {
@@ -147,11 +147,52 @@ export const ArticlesSection = ({ articles = [] }) => {
     article.status === 'Published' ||
     article.is_published === true ||
     article.published === true;
+
+  const getArticleType = (item) => {
+    const type = (item.type || item.category || '').toString().toLowerCase();
+    if (type.includes('blog')) return 'blog';
+    return 'article';
+  };
+
+  const getItemTimestamp = (item) => {
+    const dateValue =
+      item.created_at ||
+      item.createdAt ||
+      item.published_at ||
+      item.publishedAt ||
+      item.date ||
+      item.updated_at ||
+      item.updatedAt;
+    const timestamp = Date.parse(dateValue);
+    return Number.isNaN(timestamp) ? 0 : timestamp;
+  };
+
   const publishedArticles = articles.filter(isPublished);
   if (publishedArticles.length === 0) return null;
 
+  const latestArticles = [...publishedArticles]
+    .sort((a, b) => getItemTimestamp(b) - getItemTimestamp(a))
+    .slice(0, 3);
+
   const rotations = ['-rotate-2', 'rotate-1', 'rotate-2'];
   const zIndices = ['z-10', 'z-20', 'z-15'];
+
+  const TypeBadge = ({ item }) => {
+    const type = getArticleType(item);
+    const isBlog = type === 'blog';
+    return (
+      <span
+        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide ${
+          isBlog
+            ? 'bg-[#E8F0FE] text-[#1A56DB]'
+            : 'bg-[#FEE7E4] text-[#C7365B]'
+        }`}
+      >
+        {isBlog ? <PenLine className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
+        {isBlog ? 'Blog' : 'Article'}
+      </span>
+    );
+  };
 
   return (
     <section className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-white overflow-hidden">
@@ -165,7 +206,7 @@ export const ArticlesSection = ({ articles = [] }) => {
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {publishedArticles.slice(0, 3).map((article, idx) => (
+          {latestArticles.map((article, idx) => (
             <FloatingCard
               key={article.id}
               item={article}
@@ -174,6 +215,9 @@ export const ArticlesSection = ({ articles = [] }) => {
               rotation={rotations[idx]}
               zIndex={zIndices[idx]}
             >
+              <div className="mb-3">
+                <TypeBadge item={article} />
+              </div>
               <CardContent
                 icon={BookOpen}
                 title={article.title}
@@ -216,7 +260,10 @@ export const ArticlesSection = ({ articles = [] }) => {
         imageUrl={selectedArticle?.image_url}
       >
         {selectedArticle && (
-          <>
+          <div className="flex flex-col max-h-[80vh] overflow-y-auto">
+            <div className="mb-3">
+              <TypeBadge item={selectedArticle} />
+            </div>
             <h3 className="text-2xl font-bold text-[#1D2130] mb-2">
               {selectedArticle.title}
             </h3>
@@ -247,7 +294,7 @@ export const ArticlesSection = ({ articles = [] }) => {
                 Close
               </button>
             </div>
-          </>
+          </div>
         )}
       </ResourceModal>
     </section>
