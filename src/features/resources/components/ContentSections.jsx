@@ -26,11 +26,11 @@ export const WebinarsSection = ({ webinars = [] }) => {
   const selectedWebinarEmbedUrl = getYouTubeEmbedUrl(selectedWebinarVideoUrl);
 
   return (
-    <section id="webinars" className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+    <section id="webinars" className="relative px-4 py-16 overflow-hidden md:py-24 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50">
       <BackgroundParticles variant="webinars" />
 
-      <div className="relative max-w-7xl mx-auto">
-        <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
+      <div className="relative mx-auto max-w-7xl">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
             <h2 className="uppercase text-[#1D2130] font-bold text-sm tracking-[2px] mb-2">
               Webinar Recordings
@@ -47,7 +47,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {previewWebinars.map((webinar, idx) => {
             const webinarId = getWebinarId(webinar) || idx;
             const title = getWebinarTitle(webinar);
@@ -73,7 +73,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
                     <p className="text-xs text-[#FD90A7] font-medium mb-2">
                       {host}
                     </p>
-                    <p className="text-gray-500 text-sm line-clamp-2">
+                    <p className="text-sm text-gray-500 line-clamp-2">
                       {webinar.description || webinar.caption}
                     </p>
                     <div className="mt-3 text-xs text-[#FD90A7] opacity-0 group-hover:opacity-100 transition">
@@ -98,7 +98,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
         {selectedWebinar && (
           <>
             {selectedWebinarEmbedUrl && (
-              <div className="aspect-video rounded-lg overflow-hidden mb-5 bg-gray-900">
+              <div className="mb-5 overflow-hidden bg-gray-900 rounded-lg aspect-video">
                 <iframe
                   src={selectedWebinarEmbedUrl}
                   title={getWebinarTitle(selectedWebinar)}
@@ -114,7 +114,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
             <p className="text-sm text-[#FD90A7] font-medium mb-3">
               Presented by {getWebinarHost(selectedWebinar)}
             </p>
-            <p className="text-gray-600 leading-relaxed mb-6">
+            <p className="mb-6 leading-relaxed text-gray-600">
               {selectedWebinar.description || selectedWebinar.caption}
             </p>
             {selectedWebinarVideoUrl && (
@@ -195,17 +195,17 @@ export const ArticlesSection = ({ articles = [] }) => {
   };
 
   return (
-    <section className="relative py-16 md:py-24 px-4 sm:px-8 md:px-16 bg-white overflow-hidden">
+    <section className="relative px-4 py-16 overflow-hidden bg-white md:py-24 sm:px-8 md:px-16">
       <BackgroundParticles variant="articles" />
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative mx-auto max-w-7xl">
         <SectionHeader
           tag="From our blog"
           title="Articles & Insights"
           subtitle="Practical advice, stories, and expert perspectives."
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {latestArticles.map((article, idx) => (
             <FloatingCard
               key={article.id}
@@ -223,7 +223,7 @@ export const ArticlesSection = ({ articles = [] }) => {
                 title={article.title}
                 description={
                   <>
-                    <div className="text-xs text-gray-400 mb-1">
+                    <div className="mb-1 text-xs text-gray-400">
                       {article.created_at
                         ? new Date(article.created_at).toLocaleDateString()
                         : 'Recent'}
@@ -241,7 +241,7 @@ export const ArticlesSection = ({ articles = [] }) => {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="mt-12 text-center">
           <Link
             to="/blog"
             className="inline-flex items-center gap-2 text-sm font-medium text-[#FD90A7] hover:underline"
@@ -260,39 +260,71 @@ export const ArticlesSection = ({ articles = [] }) => {
         imageUrl={selectedArticle?.image_url}
       >
         {selectedArticle && (
-          <div className="flex flex-col max-h-[80vh] overflow-y-auto">
-            <div className="mb-3">
-              <TypeBadge item={selectedArticle} />
-            </div>
-            <h3 className="text-2xl font-bold text-[#1D2130] mb-2">
-              {selectedArticle.title}
-            </h3>
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-              <span>By {selectedArticle.author || 'Her Physio'}</span>
-              <span>-</span>
-              <span>
-                {selectedArticle.created_at
-                  ? new Date(selectedArticle.created_at).toLocaleDateString()
-                  : 'Recent'}
-              </span>
-            </div>
-            {selectedArticle.image_url && (
-              <img
-                src={selectedArticle.image_url}
-                alt={selectedArticle.title}
-                className="w-full h-48 object-cover rounded-lg mb-4"
-              />
-            )}
-            <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed">
-              <p>{selectedArticle.content || selectedArticle.excerpt}</p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-gray-100 flex justify-end">
-              <button
-                onClick={() => setSelectedArticle(null)}
-                className="px-4 py-2 bg-[#FD90A7] text-white rounded-full hover:bg-[#f77997] transition"
-              >
-                Close
-              </button>
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 bg-black/40 backdrop-blur-sm"
+            onClick={() => setSelectedArticle(null)}
+          >
+            <div
+              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#F3E4E2]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 sm:p-6 flex justify-between items-center border-b border-[#F3E4E2]">
+                <h2 className="text-2xl font-bold text-[#1A1A1A] pr-8">
+                  {selectedArticle.title}
+                </h2>
+                <button
+                  onClick={() => setSelectedArticle(null)}
+                  className="p-2 rounded-lg hover:bg-[#F3E4E2] transition text-[#A19390]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="p-4 sm:p-6">
+                <div className="flex items-center gap-4 text-sm text-[#A19390] mb-4">
+                  <span className="flex items-center gap-1">
+                    <User className="w-4 h-4" />
+                    {selectedArticle.author || 'Her Physio'}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    {selectedArticle.created_at
+                      ? new Date(selectedArticle.created_at).toLocaleDateString(
+                          'en-US',
+                          {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          }
+                        )
+                      : 'Recent'}
+                  </span>
+                </div>
+                {selectedArticle.type === 'article' && selectedArticle.bio && (
+                  <div className="p-4 mb-6 border border-gray-200 rounded-lg bg-gray-50">
+                    <p className="text-sm text-[#1A1A1A] leading-relaxed">{selectedArticle.bio}</p>
+                  </div>
+                )}
+                {selectedArticle.content && (
+                  <div
+                    className="prose prose-sm max-w-none text-[#1A1A1A] leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{
+                      __html: sanitizeHtml(selectedArticle.content),
+                    }}
+                  />
+                )}
+                {selectedArticle.link && (
+                  <div className="pt-4 mt-6 border-t border-gray-200">
+                    <a
+                      href={selectedArticle.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[#FD90A7] hover:text-[#C7365B] font-semibold transition"
+                    >
+                      Read full article <ArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
