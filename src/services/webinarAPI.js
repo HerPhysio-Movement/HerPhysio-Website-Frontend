@@ -8,6 +8,9 @@ const pickThumbnail = (item = {}) => {
   if (item.thumbnail_urls && typeof item.thumbnail_urls === 'object') {
     return Object.values(item.thumbnail_urls).find(Boolean) || '';
   }
+  if (typeof item.thumbnail_url === 'string' && item.thumbnail_url) {
+    return item.thumbnail_url;
+  }
   return '';
 };
 
@@ -21,15 +24,27 @@ const normalizeWebinar = (item) => {
     webinar_host: item.webinar_host || item.host || item.preview_site_name || 'Expert Speaker',
     caption: item.caption || item.preview_title || '',
     description: item.description || item.preview_description || item.caption || '',
-    youtube_url: item.youtube_url || item.youtubeUrl || item.video_url || item.videoUrl || item.link || '',
+    link: item.link || item.youtube_url || item.youtubeUrl || item.video_url || item.videoUrl || '',
+    youtube_id: item.youtube_id || '',
+    vimeo_id: item.vimeo_id || '',
+    provider: item.provider || '',
+    embeddable: item.embeddable || false,
     embed_url: item.embed_url || item.embedUrl || item.iframe_url || item.iframeUrl || '',
-    preview_image:
-      item.preview_image ||
-      item.image_url ||
-      item.thumbnail_url ||
-      item.thumbnail ||
-      pickThumbnail(item),
+    preview_title: item.preview_title || '',
+    preview_description: item.preview_description || '',
+    preview_image: item.preview_image || '',
+    preview_site_name: item.preview_site_name || '',
+    thumbnail_url: item.thumbnail_url || '',
+    thumbnail_file: item.thumbnail_file || null,
+    thumbnail_urls: item.thumbnail_urls || {},
+    best_thumbnail: item.best_thumbnail || {},
     tags: Array.isArray(item.tags) ? item.tags : [],
+    // Keep for backward compatibility
+    preview_image: item.preview_image || 
+      item.image_url || 
+      item.thumbnail_url || 
+      item.thumbnail || 
+      pickThumbnail(item),
   };
 };
 
@@ -53,14 +68,25 @@ const cleanWebinarPayload = (data = {}) => {
         .map((tag) => tag.trim())
         .filter(Boolean);
 
-  return {
+  const payload = {
     webinar_title: data.webinar_title || data.title || '',
     webinar_host: data.webinar_host || data.host || '',
     caption: data.caption || '',
     description: data.description || '',
-    youtube_url: data.youtube_url || data.youtubeUrl || data.link || '',
-    tags,
+    link: data.link || data.youtube_url || data.youtubeUrl || data.video_url || data.videoUrl || '',
+    tags: tags,
   };
+
+  // Only add thumbnail fields if they exist
+  if (data.thumbnail_url) {
+    payload.thumbnail_url = data.thumbnail_url;
+  }
+  
+  if (data.thumbnail_file) {
+    payload.thumbnail_file = data.thumbnail_file;
+  }
+
+  return payload;
 };
 
 export const webinarAPI = {
@@ -68,18 +94,22 @@ export const webinarAPI = {
     const response = await apiClient.post('/webinar/create', cleanWebinarPayload(data));
     return normalizeWebinar(response?.webinar || response?.data || response);
   },
+  
   getAllWebinars: async (params = {}) => {
     const query = new URLSearchParams(params).toString();
     const response = await apiClient.get(`/webinar/${query ? `?${query}` : ''}`);
     return normalizeWebinarList(response).map(normalizeWebinar).filter(Boolean);
   },
+  
   getWebinarById: async (webinarId) => {
     const response = await apiClient.get(`/webinar/${webinarId}`);
     return normalizeWebinar(response?.webinar || response?.data || response);
   },
+  
   updateWebinar: async (webinarId, data) => {
     const response = await apiClient.put(`/webinar/${webinarId}`, cleanWebinarPayload(data));
     return normalizeWebinar(response?.webinar || response?.data || response);
   },
+  
   deleteWebinar: (webinarId) => apiClient.delete(`/webinar/${webinarId}`),
 };

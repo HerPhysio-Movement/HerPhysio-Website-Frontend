@@ -178,12 +178,13 @@ export const prepareItemPayload = (item, filterType) => {
   }
 
   if (filterType === 'Webinar') {
+    // Build payload with new API fields
     payload = {
       webinar_title: payload.webinar_title,
       webinar_host: payload.webinar_host,
       caption: payload.caption,
       description: payload.description,
-      youtube_url: payload.youtube_url || payload.link,
+      link: payload.link || payload.youtube_url || payload.youtubeUrl || payload.video_url || payload.videoUrl || '',
       tags: Array.isArray(payload.tags)
         ? payload.tags
         : String(payload.tags || '')
@@ -191,6 +192,14 @@ export const prepareItemPayload = (item, filterType) => {
             .map((tag) => tag.trim())
             .filter(Boolean),
     };
+
+    // Handle thumbnail fields
+    if (payload.thumbnail_url) {
+      payload.thumbnail_url = payload.thumbnail_url;
+    }
+    if (payload.thumbnail_file) {
+      payload.thumbnail_file = payload.thumbnail_file;
+    }
   }
 
   return payload;
@@ -208,7 +217,7 @@ export const validateItemData = (item, filterType) => {
     Events: ['event_name', 'event_host', 'caption', 'description', 'event_date', 'event_time', 'venue'],
     Articles: ['author', 'title', 'category', 'bio', 'link'],
     Blogs: ['author', 'email', 'title', 'content'],
-    Webinar: ['webinar_title', 'webinar_host', 'description', 'youtube_url'],
+    Webinar: ['webinar_title', 'webinar_host', 'description', 'link'],
     Courses: ['course_title', 'caption', 'description', 'link', 'category', 'tags'],
     Gallery: ['title', 'caption', 'description'],
     Volunteers: ['f_name', 'l_name', 'email', 'p_number', 'motivation_note']
@@ -363,6 +372,7 @@ export const filterData = (data, query, filterType) => {
           item.webinar_host?.toLowerCase().includes(q) ||
           item.preview_site_name?.toLowerCase().includes(q) ||
           item.provider?.toLowerCase().includes(q) ||
+          item.link?.toLowerCase().includes(q) ||
           (Array.isArray(item.tags) ? item.tags.join(' ') : item.tags || '').toLowerCase().includes(q)
         );
       case 'Courses':
