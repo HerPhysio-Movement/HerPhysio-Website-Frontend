@@ -32,19 +32,64 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
   
   // Safe time formatter
   const formatTime = (time) => {
-    if (!time || time === 'Time TBD') return 'Time TBD';
-  
-    // Create a date object with today's date and the provided time
-    const [hours, minutes] = time.split(':');
-    const date = new Date();
-    date.setHours(parseInt(hours, 10));
-    date.setMinutes(parseInt(minutes, 10));
-    
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+    if (!time || time === 'Time TBD' || time === 'TBD') return 'Time TBD';
+
+    try {
+      const cleanTime = time.trim();
+      
+      // Check if time already contains AM/PM (12-hour format)
+      if (/[ap]m/i.test(cleanTime)) {
+        // If it's like "2:30 PM" or "02:30 PM", format it consistently
+        const timeMatch = cleanTime.match(/(\d{1,2}):?(\d{2})?\s*([ap]m)/i);
+        if (timeMatch) {
+          let hours = parseInt(timeMatch[1], 10);
+          const minutes = timeMatch[2] || '00';
+          const ampm = timeMatch[3].toUpperCase();
+          
+          // Convert 12-hour to 24-hour for proper formatting
+          if (ampm === 'PM' && hours !== 12) hours += 12;
+          if (ampm === 'AM' && hours === 12) hours = 0;
+          
+          const date = new Date();
+          date.setHours(hours);
+          date.setMinutes(parseInt(minutes, 10));
+          
+          return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+        }
+        // If regex fails but has AM/PM, return as is
+        return cleanTime;
+      }
+      
+      // Try to parse as 24-hour format (HH:mm or H:mm)
+      const timeParts = cleanTime.split(':');
+      if (timeParts.length === 2) {
+        const hours = parseInt(timeParts[0], 10);
+        const minutes = parseInt(timeParts[1], 10);
+        
+        // Check if it's a valid 24-hour time
+        if (!isNaN(hours) && !isNaN(minutes) && hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+          const date = new Date();
+          date.setHours(hours);
+          date.setMinutes(minutes);
+          
+          return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+        }
+      }
+      
+      // If all parsing fails, return the original time
+      return cleanTime;
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return time;
+    }
   };
 
   return (
