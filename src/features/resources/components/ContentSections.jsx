@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, BookOpen, Image, X, User, Calendar } from 'lucide-react';
+import {
+  ArrowRight,
+  Play,
+  BookOpen,
+  Image,
+  X,
+  User,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+} from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles } from './SectionComponents';
 import { blogAPI } from '../../../services/blogAPI';
@@ -362,7 +373,7 @@ export const ArticlesSection = () => {
             title={article.title}
             description={
               <>
-                <span className="mb-1 block text-xs text-gray-400">
+                <span className="block mb-1 text-xs text-gray-400">
                   {article.created_at
                     ? new Date(article.created_at).toLocaleDateString()
                     : 'Recent'}
@@ -526,6 +537,7 @@ export const ArticlesSection = () => {
  */
 export const GallerySection = () => {
   const [images, setImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -553,6 +565,19 @@ export const GallerySection = () => {
   const latestImages = [...images]
     .sort((a, b) => getItemTimestamp(b) - getItemTimestamp(a))
     .slice(0, 3);
+  const currentIndex = selectedImage
+    ? latestImages.findIndex((image) => image.id === selectedImage.id)
+    : -1;
+  const goToPrevious = (event) => {
+    event.stopPropagation();
+    if (currentIndex > 0) setSelectedImage(latestImages[currentIndex - 1]);
+  };
+  const goToNext = (event) => {
+    event.stopPropagation();
+    if (currentIndex < latestImages.length - 1) {
+      setSelectedImage(latestImages[currentIndex + 1]);
+    }
+  };
 
   return (
     <section className="relative px-4 py-16 overflow-hidden bg-[#FFFAF9] md:py-24 sm:px-8 md:px-16">
@@ -576,15 +601,21 @@ export const GallerySection = () => {
               return (
                 <div
                   key={image.id}
-                  className={`group relative overflow-hidden rounded-lg border border-[#F3E4E2] bg-white/80 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:rotate-0 hover:shadow-xl ${rotations[idx]}`}
+                  className={`group relative overflow-hidden rounded-lg border border-[#F3E4E2] bg-white/80 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:rotate-0 hover:shadow-xl cursor-pointer ${rotations[idx]}`}
+                  onClick={() => setSelectedImage(image)}
                 >
                   <div className="relative h-64 overflow-hidden">
                     <img
                       src={image.image_url || '/gallery1.jpg'}
                       alt={image.title || image.description || 'Gallery image'}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-[#1A1A1A]/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-[#1A1A1A]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                      <div className="p-3 rounded-full shadow-lg bg-white/90 backdrop-blur-md">
+                        <Eye className="w-5 h-5 text-[#FD90A7]" />
+                      </div>
+                    </div>
                     <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#FD90A7] shadow-sm">
                       {image.caption || 'Event'}
                     </span>
@@ -619,6 +650,65 @@ export const GallerySection = () => {
           </Link>
         </div>
       </div>
+
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 bg-black/70 backdrop-blur-md"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 z-10 p-2 text-white transition rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40"
+            aria-label="Close"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {currentIndex > 0 && (
+            <button
+              onClick={goToPrevious}
+              className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition hover:bg-white/40"
+              aria-label="Previous"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+          )}
+
+          {currentIndex < latestImages.length - 1 && (
+            <button
+              onClick={goToNext}
+              className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition hover:bg-white/40"
+              aria-label="Next"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          )}
+
+          <div
+            className="relative max-w-5xl max-h-[90vh] overflow-hidden rounded-lg"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <img
+              src={selectedImage.image_url || '/gallery1.jpg'}
+              alt={selectedImage.title || selectedImage.description || 'Gallery image'}
+              className="object-contain max-w-full max-h-[85vh]"
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-6 text-white">
+              <p className="mb-1 text-sm font-medium">
+                {selectedImage.caption || 'Event'}
+              </p>
+              <p className="text-lg font-semibold">
+                {selectedImage.title || selectedImage.description || 'Gallery image'}
+              </p>
+              {selectedImage.description && (
+                <p className="mt-2 text-sm text-white/80">
+                  {selectedImage.description}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
