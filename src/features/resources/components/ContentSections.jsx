@@ -140,10 +140,10 @@ export const WebinarsSection = ({ webinars = [] }) => {
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
             <h2 className="uppercase text-[#1D2130] font-bold text-sm tracking-[2px] mb-2">
-              Webinar Recordings
+              HPM Webinar Recordings
             </h2>
             <p className="text-[#525560] text-lg max-w-2xl">
-              Missed a live session? Explore our library with expert talks on demand.
+              Missed a live session? Explore our library of insightful discussions on women's health topics.
             </p>
           </div>
           <Link

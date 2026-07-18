@@ -62,22 +62,21 @@ const WebinarsComponent = () => {
     <main className="relative min-h-screen bg-[#FFFAF9] pt-20 pb-16 overflow-hidden">
       <BackgroundParticles variant="webinars" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
+      <div className="relative px-4 mx-auto mb-16 text-center max-w-7xl sm:px-6 lg:px-8">
         <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#F3E4E2] text-sm font-semibold text-[#FD90A7] mb-5">
           <Sparkles className="w-4 h-4" />
           Webinar Library
         </span>
         <h1 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4">
-          Webinar Recordings
+          HPM Webinar Recordings
         </h1>
         <div className="w-20 h-1 bg-linear-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
         <p className="text-[#A19390] max-w-xl mx-auto text-lg">
-          Watch expert-led sessions on pelvic health, movement, recovery, and
-          women&apos;s wellness at your own pace.
+          Listen to previous HPM webinars across a variety of women's health topics at your own pace.
         </p>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {webinars.length === 0 ? (
           <div className="text-center py-20 bg-white/40 backdrop-blur-sm rounded-2xl border border-[#F3E4E2]">
             <Play className="w-16 h-16 text-[#F3E4E2] mx-auto mb-4" />
@@ -86,7 +85,7 @@ const WebinarsComponent = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {webinars.map((webinar, index) => {
               const title = getWebinarTitle(webinar);
               const host = getWebinarHost(webinar);
@@ -102,19 +101,19 @@ const WebinarsComponent = () => {
                       <img
                         src={webinar.image_url || webinar.thumbnail_url}
                         alt={title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
                       <Play className="w-12 h-12 text-[#FD90A7]" />
                     )}
-                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition" />
+                    <div className="absolute inset-0 transition opacity-0 bg-black/10 group-hover:opacity-100" />
                     <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 text-[#FD90A7] text-xs font-semibold shadow-sm">
                       <Play className="w-3.5 h-3.5" />
                       Watch recording
                     </div>
                   </div>
 
-                  <div className="p-5 flex flex-col flex-1">
+                  <div className="flex flex-col flex-1 p-5">
                     <h2 className="text-xl font-bold text-[#1A1A1A] mb-2 line-clamp-2 group-hover:text-[#FD90A7] transition-colors">
                       {title}
                     </h2>
@@ -133,7 +132,7 @@ const WebinarsComponent = () => {
                     </p>
                     <div className="mt-4 flex items-center text-sm font-medium text-[#FD90A7]">
                       Open webinar
-                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
                     </div>
                   </div>
                 </article>
@@ -145,7 +144,7 @@ const WebinarsComponent = () => {
 
       {selectedWebinar && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 bg-black/40 backdrop-blur-sm"
           onClick={() => setSelectedWebinar(null)}
         >
           <div
@@ -166,7 +165,7 @@ const WebinarsComponent = () => {
 
             <div className="p-4 sm:p-6">
               {selectedEmbedUrl ? (
-                <div className="aspect-video rounded-xl overflow-hidden bg-gray-900 mb-5">
+                <div className="mb-5 overflow-hidden bg-gray-900 aspect-video rounded-xl">
                   <iframe
                     src={selectedEmbedUrl}
                     title={getWebinarTitle(selectedWebinar)}
