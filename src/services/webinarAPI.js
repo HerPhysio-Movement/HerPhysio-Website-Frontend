@@ -61,6 +61,7 @@ const normalizeWebinarList = (payload) => {
 };
 
 const cleanWebinarPayload = (data = {}) => {
+  console.log('Cleaning payload with data:', data); // Debug log
   const tags = Array.isArray(data.tags)
     ? data.tags
     : String(data.tags || '')
