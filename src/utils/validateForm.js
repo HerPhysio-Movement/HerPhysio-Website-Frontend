@@ -50,7 +50,7 @@ const rules = {
     webinar_title: [validators.required],
     webinar_host: [validators.required],
     description: [validators.required, validators.minLength(10)],
-    youtube_url: [validators.url],
+    youtube_url: [validators.required, validators.url],
   },
   Courses: {
     course_title: [validators.required],

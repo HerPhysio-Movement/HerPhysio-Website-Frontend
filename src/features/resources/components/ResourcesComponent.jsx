@@ -1,7 +1,6 @@
 // src/features/resources/components/ResourcesComponent.jsx
 import { useEffect, useState } from 'react';
 import { webinarAPI } from '../../../services/webinarAPI';
-import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import ContributionCTA from '../../home/components/ContributionCTA';
 import EventsSection from '../../events/components/EventsSection';
 import ResourcesIntro from './ResourcesIntro';
@@ -17,11 +16,7 @@ const ResourcesComponent = () => {
     setLoading(true);
     try {
       const webinarsData = await webinarAPI.getAllWebinars();
-      
-      // Handle inconsistent API response structures
-      const webinarsArray = extractArrayFromResponse(webinarsData, ['webinars', 'data', 'items']);
-      
-      setWebinars(webinarsArray);
+      setWebinars(Array.isArray(webinarsData) ? webinarsData : []);
     } catch (error) {
       console.error('Failed to load resources:', error);
       setWebinars([]);
@@ -62,7 +57,7 @@ const ResourcesComponent = () => {
       <CoursesSection />
 
       {/* Webinar Recordings */}
-      {/* <WebinarsSection webinars={webinars} /> */}
+      <WebinarsSection webinars={webinars} />
 
       {/* Articles & Insights */}
       <ArticlesSection />

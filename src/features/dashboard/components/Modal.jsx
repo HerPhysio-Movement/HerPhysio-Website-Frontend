@@ -47,7 +47,7 @@ const modalFields = {
     { name: 'webinar_host', label: 'Host', type: 'text', required: true },
     { name: 'caption', label: 'Caption', type: 'text' },
     { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
-    { name: 'youtube_url', label: 'YouTube URL', type: 'url' },
+    { name: 'youtube_url', label: 'Webinar Link', type: 'url', required: true },
     { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
   ],
   Courses: [
@@ -91,7 +91,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
       const data = { ...currentItem };
       // Flatten tags array to comma-separated string for the input
       delete data.image_file;
-      if ((activeFilter === 'Courses' || activeFilter === 'Projects' || activeFilter === 'Articles') && Array.isArray(data.tags)) {
+      if ((activeFilter === 'Courses' || activeFilter === 'Projects' || activeFilter === 'Articles' || activeFilter === 'Webinar') && Array.isArray(data.tags)) {
         data.tags = data.tags.join(', ');
       }
       if (activeFilter === 'Courses') {

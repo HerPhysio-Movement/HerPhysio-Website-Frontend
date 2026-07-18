@@ -127,7 +127,15 @@ const Dashboard = () => {
         case 'Events':
           return item.event_name?.toLowerCase().includes(q);
         case 'Webinar':
-          return item.title?.toLowerCase().includes(q);
+          return (
+            item.webinar_title?.toLowerCase().includes(q) ||
+            item.title?.toLowerCase().includes(q) ||
+            item.preview_title?.toLowerCase().includes(q) ||
+            item.webinar_host?.toLowerCase().includes(q) ||
+            item.preview_site_name?.toLowerCase().includes(q) ||
+            item.provider?.toLowerCase().includes(q) ||
+            (Array.isArray(item.tags) ? item.tags.join(' ') : item.tags || '').toLowerCase().includes(q)
+          );
         case 'Courses':
           return (
             item.course_title?.toLowerCase().includes(q) ||

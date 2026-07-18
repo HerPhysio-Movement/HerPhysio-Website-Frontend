@@ -2,22 +2,58 @@ export const getWebinarId = (webinar) =>
   webinar?.id || webinar?._id || webinar?.webinar_id || webinar?.webinarId;
 
 export const getWebinarTitle = (webinar) =>
-  webinar?.webinar_title || webinar?.title || 'Untitled webinar';
+  webinar?.webinar_title || webinar?.title || webinar?.preview_title || 'Untitled webinar';
 
 export const getWebinarHost = (webinar) =>
-  webinar?.webinar_host || webinar?.host || 'Expert Speaker';
+  webinar?.webinar_host || webinar?.host || webinar?.preview_site_name || 'Expert Speaker';
+
+export const getWebinarDescription = (webinar) =>
+  webinar?.description || webinar?.preview_description || webinar?.caption || '';
+
+export const getWebinarThumbnail = (webinar) => {
+  if (!webinar) return '';
+  if (webinar.preview_image || webinar.image_url || webinar.thumbnail_url || webinar.thumbnail) {
+    return webinar.preview_image || webinar.image_url || webinar.thumbnail_url || webinar.thumbnail;
+  }
+  if (typeof webinar.best_thumbnail === 'string') return webinar.best_thumbnail;
+  if (webinar.best_thumbnail && typeof webinar.best_thumbnail === 'object') {
+    return Object.values(webinar.best_thumbnail).find(Boolean) || '';
+  }
+  if (webinar.thumbnail_urls && typeof webinar.thumbnail_urls === 'object') {
+    return Object.values(webinar.thumbnail_urls).find(Boolean) || '';
+  }
+  return '';
+};
 
 export const getWebinarVideoUrl = (webinar) =>
   webinar?.youtube_url ||
   webinar?.youtubeUrl ||
   webinar?.video_url ||
   webinar?.videoUrl ||
-  webinar?.embed_url ||
-  webinar?.embedUrl ||
-  webinar?.iframe_url ||
-  webinar?.iframeUrl ||
   webinar?.link ||
   '';
+
+const isYouTubeUrl = (url = '') => {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    return host === 'youtube.com' || host === 'm.youtube.com' || host === 'youtu.be';
+  } catch {
+    return false;
+  }
+};
+
+export const getWebinarEmbedUrl = (webinar) => {
+  const resolvedEmbedUrl =
+    webinar?.embed_url ||
+    webinar?.embedUrl ||
+    webinar?.iframe_url ||
+    webinar?.iframeUrl ||
+    '';
+  if (resolvedEmbedUrl) return resolvedEmbedUrl;
+
+  const videoUrl = getWebinarVideoUrl(webinar);
+  return isYouTubeUrl(videoUrl) ? getYouTubeEmbedUrl(videoUrl) : '';
+};
 
 export const getYouTubeEmbedUrl = (url = '') => {
   if (!url || typeof url !== 'string') return '';

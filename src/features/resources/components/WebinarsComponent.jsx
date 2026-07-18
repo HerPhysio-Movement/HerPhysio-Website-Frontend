@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, Calendar, Play, Sparkles, User, X } from 'lucide-react';
 import { webinarAPI } from '../../../services/webinarAPI';
-import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import {
   getWebinarHost,
   getWebinarId,
   getWebinarTitle,
   getWebinarVideoUrl,
-  getYouTubeEmbedUrl,
+  getWebinarEmbedUrl,
+  getWebinarDescription,
+  getWebinarThumbnail,
 } from '../../../utils/videoHelpers';
 import { BackgroundParticles } from './SectionComponents';
 
@@ -34,9 +35,10 @@ const WebinarsComponent = () => {
     const fetchWebinars = async () => {
       try {
         const response = await webinarAPI.getAllWebinars();
-        setWebinars(extractArrayFromResponse(response, ['webinars', 'data', 'items']));
+        setWebinars(Array.isArray(response) ? response : []);
       } catch (error) {
         console.error('Failed to load webinars:', error);
+        setWebinars([]);
       } finally {
         setLoading(false);
       }
@@ -46,7 +48,7 @@ const WebinarsComponent = () => {
   }, []);
 
   const selectedVideoUrl = getWebinarVideoUrl(selectedWebinar);
-  const selectedEmbedUrl = getYouTubeEmbedUrl(selectedVideoUrl);
+  const selectedEmbedUrl = getWebinarEmbedUrl(selectedWebinar);
 
   if (loading) {
     return (
@@ -89,6 +91,8 @@ const WebinarsComponent = () => {
             {webinars.map((webinar, index) => {
               const title = getWebinarTitle(webinar);
               const host = getWebinarHost(webinar);
+              const thumbnail = getWebinarThumbnail(webinar);
+              const description = getWebinarDescription(webinar);
 
               return (
                 <article
@@ -97,9 +101,9 @@ const WebinarsComponent = () => {
                   onClick={() => setSelectedWebinar(webinar)}
                 >
                   <div className="relative aspect-video bg-linear-to-br from-[#FD90A7]/15 to-[#6020F0]/10 flex items-center justify-center overflow-hidden">
-                    {webinar.image_url || webinar.thumbnail_url ? (
+                    {thumbnail ? (
                       <img
-                        src={webinar.image_url || webinar.thumbnail_url}
+                        src={thumbnail}
                         alt={title}
                         className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                       />
@@ -128,7 +132,7 @@ const WebinarsComponent = () => {
                       </span>
                     </div>
                     <p className="text-[#A19390] text-sm leading-relaxed line-clamp-3 flex-1">
-                      {webinar.description || webinar.caption}
+                      {description}
                     </p>
                     <div className="mt-4 flex items-center text-sm font-medium text-[#FD90A7]">
                       Open webinar
@@ -192,7 +196,7 @@ const WebinarsComponent = () => {
               </div>
 
               <p className="text-[#1A1A1A] leading-relaxed whitespace-pre-line">
-                {selectedWebinar.description || selectedWebinar.caption}
+                {getWebinarDescription(selectedWebinar)}
               </p>
 
               {selectedVideoUrl && (

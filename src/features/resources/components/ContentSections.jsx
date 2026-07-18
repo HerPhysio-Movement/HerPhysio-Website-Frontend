@@ -23,7 +23,9 @@ import {
   getWebinarId,
   getWebinarTitle,
   getWebinarVideoUrl,
-  getYouTubeEmbedUrl,
+  getWebinarEmbedUrl,
+  getWebinarDescription,
+  getWebinarThumbnail,
   // extractArrayFromResponse,
 } from '../../../utils/videoHelpers';
 const ALLOWED_TAGS = new Set([
@@ -130,7 +132,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
   const zIndices = ['z-10', 'z-20', 'z-15'];
   const previewWebinars = webinars.slice(0, 3);
   const selectedWebinarVideoUrl = getWebinarVideoUrl(selectedWebinar);
-  const selectedWebinarEmbedUrl = getYouTubeEmbedUrl(selectedWebinarVideoUrl);
+  const selectedWebinarEmbedUrl = getWebinarEmbedUrl(selectedWebinar);
 
   return (
     <section id="webinars" className="relative px-4 py-16 overflow-hidden md:py-24 sm:px-8 md:px-16 bg-gradient-to-b from-white to-gray-50">
@@ -160,6 +162,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
             const webinarId = getWebinarId(webinar) || idx;
             const title = getWebinarTitle(webinar);
             const host = getWebinarHost(webinar);
+            const description = getWebinarDescription(webinar);
 
             return (
               <FloatingCard
@@ -182,7 +185,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
                       {host}
                     </p>
                     <p className="text-sm text-gray-500 line-clamp-2">
-                      {webinar.description || webinar.caption}
+                      {description}
                     </p>
                     <div className="mt-3 text-xs text-[#FD90A7] opacity-0 group-hover:opacity-100 transition">
                       Click to watch
@@ -209,7 +212,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
         onClose={() => setSelectedWebinar(null)}
         maxWidth="max-w-3xl"
         hasImage={!selectedWebinarEmbedUrl}
-        imageUrl={selectedWebinar?.image_url}
+        imageUrl={getWebinarThumbnail(selectedWebinar)}
       >
         {selectedWebinar && (
           <>
@@ -231,7 +234,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
               Presented by {getWebinarHost(selectedWebinar)}
             </p>
             <p className="mb-6 leading-relaxed text-gray-600">
-              {selectedWebinar.description || selectedWebinar.caption}
+              {getWebinarDescription(selectedWebinar)}
             </p>
             {selectedWebinarVideoUrl && (
               <a

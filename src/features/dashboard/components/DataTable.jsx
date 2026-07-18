@@ -1,6 +1,7 @@
 import { Clock, Eye } from 'lucide-react';
 import ActionButtons from '../../shared/components/ActionButtons';
 import StatusBadge from '../../shared/components/StatusBadge';
+import { getWebinarHost, getWebinarTitle, getWebinarVideoUrl } from '../../../utils/videoHelpers';
 
 const getPublishedDate = (item) =>
   item.published_at ||
@@ -12,7 +13,7 @@ const getPublishedDate = (item) =>
   item.createdAt;
 
 const formatDate = (value) => {
-  if (!value) return '—';
+  if (!value) return 'N/A';
 
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -24,7 +25,15 @@ const formatDate = (value) => {
   });
 };
 
-const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpdate, onEventRegistrationsClick, eventRegistrationCounts }) => {
+const DataTable = ({
+  data,
+  activeFilter,
+  onEdit,
+  onDelete,
+  onVolunteerStatusUpdate,
+  onEventRegistrationsClick,
+  eventRegistrationCounts,
+}) => {
   if (!Array.isArray(data) || data.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-12 text-center border border-gray-200">
@@ -36,15 +45,15 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
 
   const renderHeaders = () => {
     switch (activeFilter) {
-      case 'Projects':   return ['Name', 'Status', 'Published Date', 'Actions'];
-      case 'Articles':   return ['Title', 'Author', 'Category', 'Actions'];
-      case 'Blogs':      return ['Title', 'Author', 'Status', 'Published Date', 'Actions'];
-      case 'Events':     return ['Name', 'Date', 'Location', 'Registered', 'Actions'];
-      case 'Webinar':    return ['Title', 'Host', 'Date', 'Actions'];
-      case 'Courses':    return ['Course Title', 'Category', 'Caption', 'Link', 'Tags', 'Actions'];
-      case 'Gallery':    return ['Image', 'Title', 'Category', 'Description', 'Actions'];
+      case 'Projects': return ['Name', 'Status', 'Published Date', 'Actions'];
+      case 'Articles': return ['Title', 'Author', 'Category', 'Actions'];
+      case 'Blogs': return ['Title', 'Author', 'Status', 'Published Date', 'Actions'];
+      case 'Events': return ['Name', 'Date', 'Location', 'Registered', 'Actions'];
+      case 'Webinar': return ['Title', 'Host', 'Provider', 'Link', 'Date', 'Actions'];
+      case 'Courses': return ['Course Title', 'Category', 'Caption', 'Link', 'Tags', 'Actions'];
+      case 'Gallery': return ['Image', 'Title', 'Category', 'Description', 'Actions'];
       case 'Volunteers': return ['Name', 'Email', 'Phone', 'Status', 'Actions'];
-      default:           return [];
+      default: return [];
     }
   };
 
@@ -59,6 +68,7 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));
+
       case 'Articles':
         return data.map((item) => (
           <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
@@ -68,6 +78,7 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));
+
       case 'Blogs':
         return data.map((item) => (
           <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
@@ -78,18 +89,17 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));
+
       case 'Events':
         return data.map((item) => {
           const id = item._id || item.id;
-          const registrationCount = eventRegistrationCounts?.[id] ?? '—';
+          const registrationCount = eventRegistrationCounts?.[id] ?? 'N/A';
           return (
             <tr key={id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
               <td className="px-4 py-3 text-sm font-medium text-gray-800">{item.event_name || item.name}</td>
               <td className="px-4 py-3 text-sm text-gray-500">{item.event_date || item.date}</td>
               <td className="px-4 py-3 text-sm text-gray-500">{item.venue || item.location || 'TBD'}</td>
-              <td className="px-4 py-3 text-sm text-gray-500">
-                {registrationCount}
-              </td>
+              <td className="px-4 py-3 text-sm text-gray-500">{registrationCount}</td>
               <td className="px-4 py-3 flex items-center gap-2">
                 <button
                   type="button"
@@ -104,18 +114,31 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
             </tr>
           );
         });
+
       case 'Webinar':
         return data.map((item) => {
           const id = item._id || item.id;
+          const link = getWebinarVideoUrl(item);
           return (
             <tr key={id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-              <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.webinar_title || item.title}</td>
-              <td className="px-4 py-3 text-sm text-gray-500">{item.webinar_host || item.host || 'Expert Speaker'}</td>
-              <td className="px-4 py-3 text-sm text-gray-500">{item.created_at ? new Date(item.created_at).toLocaleDateString() : (item.date || '—')}</td>
+              <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{getWebinarTitle(item)}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">{getWebinarHost(item)}</td>
+              <td className="px-4 py-3 text-sm text-gray-500 capitalize">{item.provider || item.preview_site_name || 'N/A'}</td>
+              <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">
+                {link ? (
+                  <a href={link} target="_blank" rel="noopener noreferrer" className="text-[#FD90A7] hover:underline">
+                    Open link
+                  </a>
+                ) : (
+                  'N/A'
+                )}
+              </td>
+              <td className="px-4 py-3 text-sm text-gray-500">{formatDate(getPublishedDate(item))}</td>
               <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
             </tr>
           );
         });
+
       case 'Courses':
         return data.map((item) => {
           const id = item._id || item.id;
@@ -123,22 +146,23 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
           return (
             <tr key={id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
               <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.course_title || item.title}</td>
-              <td className="px-4 py-3 text-sm text-gray-500">{item.category || '—'}</td>
-              <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.caption || '—'}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">{item.category || 'N/A'}</td>
+              <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.caption || 'N/A'}</td>
               <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">
                 {item.link ? (
                   <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-[#FD90A7] hover:underline">
                     Open link
                   </a>
                 ) : (
-                  '—'
+                  'N/A'
                 )}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{tags || '—'}</td>
+              <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{tags || 'N/A'}</td>
               <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
             </tr>
           );
         });
+
       case 'Gallery':
         return data.map((item) => (
           <tr key={item.id || item._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
@@ -156,11 +180,12 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
               )}
             </td>
             <td className="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-50">{item.title || 'Untitled'}</td>
-            <td className="px-4 py-3 text-sm text-gray-500">{item.caption || '—'}</td>
-            <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.description || '—'}</td>
+            <td className="px-4 py-3 text-sm text-gray-500">{item.caption || 'N/A'}</td>
+            <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-50">{item.description || 'N/A'}</td>
             <td className="px-4 py-3"><ActionButtons item={item} onEdit={onEdit} onDelete={onDelete} size="sm" /></td>
           </tr>
         ));
+
       case 'Volunteers':
         return data.map((item) => {
           const id = item._id || item.id;
@@ -172,7 +197,7 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
               <td className="px-4 py-3">
                 <select
                   value={(item.status === 'approved' ? 'accepted' : item.status) || 'pending'}
-                  onChange={(e) => onVolunteerStatusUpdate(id, e.target.value)}
+                  onChange={(event) => onVolunteerStatusUpdate(id, event.target.value)}
                   className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white hover:border-[#FD90A7] transition focus:outline-none focus:ring-2 focus:ring-[#FD90A7]/20"
                 >
                   <option value="pending">Pending</option>
@@ -184,6 +209,7 @@ const DataTable = ({ data, activeFilter, onEdit, onDelete, onVolunteerStatusUpda
             </tr>
           );
         });
+
       default:
         return null;
     }
