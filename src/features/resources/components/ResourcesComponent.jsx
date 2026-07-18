@@ -1,39 +1,30 @@
 // src/features/resources/components/ResourcesComponent.jsx
 import { useEffect, useState } from 'react';
 import { webinarAPI } from '../../../services/webinarAPI';
-import { blogAPI } from '../../../services/blogAPI';
-import { articleAPI } from '../../../services/articleAPI';
 import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import ContributionCTA from '../../home/components/ContributionCTA';
 import EventsSection from '../../events/components/EventsSection';
 import ResourcesIntro from './ResourcesIntro';
 import { NewsSection } from './NewsSection';
 import { NotesSection, CoursesSection, SocialSection } from './ResourceSections';
-import { WebinarsSection, ArticlesSection } from './ContentSections';
+import { WebinarsSection, ArticlesSection, GallerySection } from './ContentSections';
 
 const ResourcesComponent = () => {
   const [webinars, setWebinars] = useState([]);
-  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [webinarsData, articlesData] = await Promise.all([
-        webinarAPI.getAllWebinars(),
-        blogAPI.getAllBlogsPublic(),
-      ]);
+      const webinarsData = await webinarAPI.getAllWebinars();
       
       // Handle inconsistent API response structures
       const webinarsArray = extractArrayFromResponse(webinarsData, ['webinars', 'data', 'items']);
-      const articlesArray = extractArrayFromResponse(articlesData, ['blogs', 'data', 'items']);
       
       setWebinars(webinarsArray);
-      setArticles(articlesArray);
     } catch (error) {
       console.error('Failed to load resources:', error);
       setWebinars([]);
-      setArticles([]);
     } finally {
       setLoading(false);
     }
@@ -74,7 +65,10 @@ const ResourcesComponent = () => {
       <WebinarsSection webinars={webinars} />
 
       {/* Articles & Insights */}
-      <ArticlesSection articles={articles} />
+      <ArticlesSection />
+
+      {/* Gallery Preview */}
+      <GallerySection />
 
       {/* Connect With Us (Social Media) */}
       <SocialSection />

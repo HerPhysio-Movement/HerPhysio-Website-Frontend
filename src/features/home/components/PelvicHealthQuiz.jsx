@@ -8,17 +8,17 @@ const questions = [
     id: 1,
     question: 'What stage of life are you currently in?',
     options: [
-      { label: 'Young Adult', value: 'adolescence', chipColor: '#FD90A7' },
+      { label: 'Adolescent', value: 'adolescent', chipColor: '#6020F0' },
+      { label: 'Young Adult', value: 'young adult', chipColor: '#FD90A7' },
       { label: 'Pregnancy / Postpartum', value: 'postpartum', chipColor: '#C7365B' },
       { label: 'Perimenopause / Menopause', value: 'menopause', chipColor: '#F08020' },
-      { label: 'General Wellness', value: 'general', chipColor: '#6020F0' },
     ],
   },
   {
     id: 2,
-    question: 'Are you experiencing any pelvic discomfort?',
+    question: 'Are you experiencing any discomfort?',
     options: [
-      { label: 'Pain or pressure', value: 'pain', chipColor: '#FD90A7' },
+      { label: 'Pain', value: 'pain', chipColor: '#FD90A7' },
       { label: 'Incontinence / leakage', value: 'incontinence', chipColor: '#C7365B' },
       { label: 'Other concerns', value: 'other', chipColor: '#F08020' },
       { label: 'No, I feel fine', value: 'none', chipColor: '#6020F0' },
@@ -28,10 +28,10 @@ const questions = [
     id: 3,
     question: 'What interests you most?',
     options: [
-      { label: 'Pelvic floor exercises', value: 'exercises', chipColor: '#FD90A7' },
-      { label: 'Nutrition & lifestyle', value: 'nutrition', chipColor: '#C7365B' },
-      { label: 'Emotional well‑being', value: 'wellbeing', chipColor: '#F08020' },
-      { label: 'Professional physiotherapy', value: 'physio', chipColor: '#6020F0' },
+      { label: 'Understand Physiotherapy', value: 'physiotherapy', chipColor: '#FD90A7' },
+      { label: 'Pain relief methods', value: 'pain relief', chipColor: '#C7365B' },
+      { label: 'Strengthening exercises', value: 'exercises', chipColor: '#F08020' },
+      { label: 'Exercise recommendations', value: 'exercise recommendations', chipColor: '#6020F0' },
     ],
   },
 ];
@@ -68,7 +68,7 @@ const getRecommendations = (answers) => {
     },
     { 
       title: 'Attend Our Events & Webinars', 
-      description: 'Learn from industry experts and gain practical insights.', 
+      description: 'Learn from health experts and gain more insights on your health.', 
       link: '/events',
       color: '#C7365B'
     }

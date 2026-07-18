@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, BookOpen, FileText, PenLine, X, User, Calendar } from 'lucide-react';
+import { ArrowRight, Play, BookOpen, Image, X, User, Calendar } from 'lucide-react';
 import { FloatingCard, CardContent, ResourceModal } from './FloatingCard';
 import { SectionHeader, BackgroundParticles } from './SectionComponents';
 import { blogAPI } from '../../../services/blogAPI';
 import { articleAPI } from '../../../services/articleAPI';
+import { galleryAPI } from '../../../services/galleryAPI';
 import { extractArrayFromResponse } from '../../../utils/apiHelpers';
 import {
   getWebinarHost,
@@ -41,6 +42,34 @@ const ALLOWED_TAGS = new Set([
 const ALLOWED_ATTRIBUTES = new Set(['href', 'target', 'rel', 'title']);
 
 const stripHtml = (value = '') => value.replace(/<[^>]*>/g, '').trim();
+
+const getItemTimestamp = (item) => {
+  const dateValue =
+    item.created_at ||
+    item.createdAt ||
+    item.published_at ||
+    item.publishedAt ||
+    item.date ||
+    item.updated_at ||
+    item.updatedAt;
+  const timestamp = Date.parse(dateValue);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+};
+
+const isPublishedItem = (item) =>
+  item.status === 'published' ||
+  item.status === 'Published' ||
+  item.is_published === true ||
+  item.published === true;
+
+const EmptySectionState = ({ icon: Icon, message }) => (
+  <div className="rounded-lg border border-dashed border-[#F3C7D2] bg-white/70 px-6 py-10 text-center">
+    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#FD90A7]/10">
+      <Icon className="h-6 w-6 text-[#FD90A7]" />
+    </div>
+    <p className="text-sm font-medium text-gray-500">{message}</p>
+  </div>
+);
 
 const sanitizeHtml = (html = '') => {
   if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
@@ -86,8 +115,6 @@ const sanitizeHtml = (html = '') => {
 export const WebinarsSection = ({ webinars = [] }) => {
   const [selectedWebinar, setSelectedWebinar] = useState(null);
 
-  if (webinars.length === 0) return null;
-
   const rotations = ['-rotate-3', 'rotate-0', 'rotate-2'];
   const zIndices = ['z-10', 'z-20', 'z-15'];
   const previewWebinars = webinars.slice(0, 3);
@@ -117,7 +144,8 @@ export const WebinarsSection = ({ webinars = [] }) => {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {previewWebinars.map((webinar, idx) => {
+          {previewWebinars.length > 0 ? (
+            previewWebinars.map((webinar, idx) => {
             const webinarId = getWebinarId(webinar) || idx;
             const title = getWebinarTitle(webinar);
             const host = getWebinarHost(webinar);
@@ -152,7 +180,15 @@ export const WebinarsSection = ({ webinars = [] }) => {
                 </div>
               </FloatingCard>
             );
-          })}
+            })
+          ) : (
+            <div className="sm:col-span-2 lg:col-span-3">
+              <EmptySectionState
+                icon={Play}
+                message="No webinar recordings are available yet."
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -208,6 +244,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
  */
 export const ArticlesSection = () => {
   const [articles, setArticles] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState(null);
   
@@ -215,16 +252,19 @@ export const ArticlesSection = () => {
     const normalizeItem = (item, source) => {
       const publishedAt =
         item.created_at || item.published_at || item.publishedAt || item.date || item.publish_date;
+      const itemId =
+        item.id ||
+        item._id ||
+        item.blog_id ||
+        item.article_id ||
+        item.articleId ||
+        item.title?.replace(/\s+/g, '-').toLowerCase() ||
+        'untitled';
+
       return {
         ...item,
         type: source,
-        id:
-          item.id ||
-          item._id ||
-          item.blog_id ||
-          item.article_id ||
-          item.articleId ||
-          `${source}-${item.title?.replace(/\s+/g, '-').toLowerCase()}`,
+        id: `${source}-${itemId}`,
         title: item.title || item.heading || 'Untitled',
         author: item.author || item.publisher || 'Her Physio',
         created_at: publishedAt,
@@ -254,21 +294,18 @@ export const ArticlesSection = () => {
 
         const publishedBlogs = blogItems
           .map((item) => normalizeItem(item, 'blog'))
-          .filter((item) => item.status === 'published');
+          .filter(isPublishedItem);
 
         const publishedArticles = articleItems
           .map((item) => normalizeItem(item, 'article'))
-          .filter((item) => item.status === 'published');
+          .filter(isPublishedItem);
 
-        const combined = [...publishedBlogs, ...publishedArticles].sort(
-          (a, b) =>
-            new Date(b.created_at || 0).getTime() -
-            new Date(a.created_at || 0).getTime()
-        );
-
-        setArticles(combined);
+        setArticles(publishedArticles);
+        setBlogs(publishedBlogs);
       } catch (error) {
         console.error('Failed to load articles:', error);
+        setArticles([]);
+        setBlogs([]);
       } finally {
         setLoading(false);
       }
@@ -278,50 +315,71 @@ export const ArticlesSection = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFFAF9] flex items-center justify-center">
+      <section className="relative px-4 py-16 overflow-hidden bg-white md:py-24 sm:px-8 md:px-16">
+        <BackgroundParticles variant="articles" />
+        <div className="relative mx-auto max-w-7xl">
+          <SectionHeader
+            tag="From our blog"
+            title="Articles & Insights"
+            subtitle="Practical advice, stories, and expert perspectives."
+          />
         <div className="animate-pulse text-[#FD90A7] text-lg">
           Loading articles...
         </div>
       </div>
+      </section>
     );
   }
-  
-  if (articles.length === 0) return null;
 
-  const isPublished = (article) =>
-    article.status === 'published' ||
-    article.status === 'Published' ||
-    article.is_published === true ||
-    article.published === true;
-
-  const getArticleType = (item) => {
-    const type = (item.type || item.category || '').toString().toLowerCase();
-    if (type.includes('blog')) return 'blog';
-    return 'article';
-  };
-
-  const getItemTimestamp = (item) => {
-    const dateValue =
-      item.created_at ||
-      item.createdAt ||
-      item.published_at ||
-      item.publishedAt ||
-      item.date ||
-      item.updated_at ||
-      item.updatedAt;
-    const timestamp = Date.parse(dateValue);
-    return Number.isNaN(timestamp) ? 0 : timestamp;
-  };
-
-  const publishedArticles = articles.filter(isPublished);
-  if (publishedArticles.length === 0) return null;
-
-  const latestArticles = [...publishedArticles]
+  const latestArticles = [...articles]
     .sort((a, b) => getItemTimestamp(b) - getItemTimestamp(a))
     .slice(0, 3);
+  const latestBlogs = [...blogs]
+    .sort((a, b) => getItemTimestamp(b) - getItemTimestamp(a))
+    .slice(0, 3);
+  const hasArticlesOrBlogs = latestArticles.length > 0 || latestBlogs.length > 0;
 
   const rotations = ['-rotate-2', 'rotate-1', 'rotate-2'];
   const zIndices = ['z-10', 'z-20', 'z-15'];
+  const renderArticleCards = (items) => (
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      {items.map((article, idx) => (
+        <FloatingCard
+          key={article.id}
+          item={article}
+          isSelected={selectedArticle?.id === article.id}
+          onSelect={() => setSelectedArticle(article)}
+          rotation={rotations[idx]}
+          zIndex={zIndices[idx]}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.12em] bg-[#FEE7E4] text-[#C7365B]">
+              {article.type === 'blog' ? 'Blog' : 'Article'}
+            </span>
+          </div>
+          <CardContent
+            icon={BookOpen}
+            title={article.title}
+            description={
+              <>
+                <span className="mb-1 block text-xs text-gray-400">
+                  {article.created_at
+                    ? new Date(article.created_at).toLocaleDateString()
+                    : 'Recent'}
+                </span>
+                <span className="line-clamp-3">
+                  {article.excerpt || article.content?.substring(0, 100)}
+                </span>
+              </>
+            }
+            bgColor="#FD90A7/10"
+            color="#FD90A7"
+            showHoverText={true}
+          />
+        </FloatingCard>
+      ))}
+    </div>
+  );
 
   return (
     <section className="relative px-4 py-16 overflow-hidden bg-white md:py-24 sm:px-8 md:px-16">
@@ -334,51 +392,49 @@ export const ArticlesSection = () => {
           subtitle="Practical advice, stories, and expert perspectives."
         />
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {latestArticles.map((article, idx) => (
-            <FloatingCard
-              key={article.id}
-              item={article}
-              isSelected={selectedArticle?.id === article.id}
-              onSelect={() => setSelectedArticle(article)}
-              rotation={rotations[idx]}
-              zIndex={zIndices[idx]}
-            >
-              
-              <div className="flex items-center justify-between mb-3">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.12em] bg-[#FEE7E4] text-[#C7365B]">
-                  {article.type === 'blog' ? 'Blog' : 'Article'}
-                </span>
-              </div>
-              <CardContent
-                icon={BookOpen}
-                title={article.title}
-                description={
-                  <>
-                    <div className="mb-1 text-xs text-gray-400">
-                      {article.created_at
-                        ? new Date(article.created_at).toLocaleDateString()
-                        : 'Recent'}
-                    </div>
-                    <p className="line-clamp-3">
-                      {article.excerpt || article.content?.substring(0, 100)}
-                    </p>
-                  </>
-                }
-                bgColor="#FD90A7/10"
-                color="#FD90A7"
-                showHoverText={true}
-              />
-            </FloatingCard>
-          ))}
-        </div>
+        {hasArticlesOrBlogs ? (
+          <div className="space-y-12">
+            <div>
+              <h3 className="mb-6 text-sm font-bold uppercase tracking-[0.16em] text-[#1D2130]">
+                Latest Articles
+              </h3>
+              {latestArticles.length > 0 ? (
+                renderArticleCards(latestArticles)
+              ) : (
+                <EmptySectionState
+                  icon={BookOpen}
+                  message="No articles are available yet."
+                />
+              )}
+            </div>
+
+            <div>
+              <h3 className="mb-6 text-sm font-bold uppercase tracking-[0.16em] text-[#1D2130]">
+                Latest Blogs
+              </h3>
+              {latestBlogs.length > 0 ? (
+                renderArticleCards(latestBlogs)
+              ) : (
+                <EmptySectionState
+                  icon={BookOpen}
+                  message="No blogs are available yet."
+                />
+              )}
+            </div>
+          </div>
+        ) : (
+          <EmptySectionState
+            icon={BookOpen}
+            message="No articles or blogs are available yet."
+          />
+        )}
 
         <div className="mt-12 text-center">
           <Link
             to="/blog"
             className="inline-flex items-center gap-2 text-sm font-medium text-[#FD90A7] hover:underline"
           >
-            View all articles <ArrowRight className="w-4 h-4" />
+            View all articles & blogs <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -461,6 +517,108 @@ export const ArticlesSection = () => {
           </div>
         )}
       {/* </ResourceModal> */}
+    </section>
+  );
+};
+
+/**
+ * Section: Gallery Preview (fetches latest images from API)
+ */
+export const GallerySection = () => {
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchGallery = async () => {
+      try {
+        const galleryItems = await galleryAPI.getGallery();
+        if (!isMounted) return;
+        setImages(Array.isArray(galleryItems) ? galleryItems : []);
+      } catch (error) {
+        console.error('Failed to load gallery preview:', error);
+        if (isMounted) setImages([]);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchGallery();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const latestImages = [...images]
+    .sort((a, b) => getItemTimestamp(b) - getItemTimestamp(a))
+    .slice(0, 3);
+
+  return (
+    <section className="relative px-4 py-16 overflow-hidden bg-[#FFFAF9] md:py-24 sm:px-8 md:px-16">
+      <BackgroundParticles variant="articles" />
+
+      <div className="relative mx-auto max-w-7xl">
+        <SectionHeader
+          tag="Gallery"
+          title="Latest Moments"
+          subtitle="A glimpse into our outreach events, training sessions, and community connections."
+        />
+
+        {loading ? (
+          <div className="text-center animate-pulse text-[#FD90A7] text-lg">
+            Loading gallery...
+          </div>
+        ) : latestImages.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {latestImages.map((image, idx) => {
+              const rotations = ['-rotate-2', 'rotate-1', 'rotate-2'];
+              return (
+                <div
+                  key={image.id}
+                  className={`group relative overflow-hidden rounded-lg border border-[#F3E4E2] bg-white/80 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:rotate-0 hover:shadow-xl ${rotations[idx]}`}
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={image.image_url || '/gallery1.jpg'}
+                      alt={image.title || image.description || 'Gallery image'}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-[#1A1A1A]/60 via-transparent to-transparent" />
+                    <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#FD90A7] shadow-sm">
+                      {image.caption || 'Event'}
+                    </span>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-[#1D2130] line-clamp-2">
+                      {image.title || image.description || 'Gallery image'}
+                    </h3>
+                    {image.description && (
+                      <p className="mt-2 text-sm leading-relaxed text-gray-500 line-clamp-2">
+                        {image.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <EmptySectionState
+            icon={Image}
+            message="No gallery images are available yet."
+          />
+        )}
+
+        <div className="mt-12 text-center">
+          <Link
+            to="/gallery"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#FD90A7] hover:underline"
+          >
+            View all gallery <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
     </section>
   );
 };
