@@ -136,7 +136,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log('Form data before processing:', formData); // Debug log
     // Build payload - convert comma-separated tags to arrays for APIs that expect them.
     const payload = { ...formData };
     if (['Courses', 'Webinar', 'Projects', 'Articles'].includes(activeFilter) && typeof payload.tags === 'string') {
