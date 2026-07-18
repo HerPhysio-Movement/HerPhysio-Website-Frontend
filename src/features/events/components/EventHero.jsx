@@ -1,5 +1,6 @@
 // src/features/events/components/EventHero.jsx
 import { MapPin, Calendar, Heart, ArrowRight, ExternalLink } from 'lucide-react';
+import {  formatEventTime } from '../utils/dateHelper';
 
 const EventHero = ({ event, loading, onReserveSpot }) => {
   const eventTitle = event?.event_name || 'A Day with Our Wonderful Women';
@@ -29,22 +30,7 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
   
   const { firstHalf, secondHalf } = splitTitle(eventTitle);
   
-  // Safe time formatter
-  const formatTime = (time) => {
-    if (!time || time === 'Time TBD') return 'Time TBD';
-  
-    // Create a date object with today's date and the provided time
-    const [hours, minutes] = time.split(':');
-    const date = new Date();
-    date.setHours(parseInt(hours, 10));
-    date.setMinutes(parseInt(minutes, 10));
-    
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
+  const formattedTime = formatEventTime(eventTime);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-white via-[#FFF5F7] to-[#FFD8E1] pt-20 pb-16 md:pt-28 md:pb-24">

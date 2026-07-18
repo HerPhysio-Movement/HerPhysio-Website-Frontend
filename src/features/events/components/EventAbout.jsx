@@ -1,6 +1,7 @@
 // src/features/events/components/EventAbout.jsx
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowRight, ExternalLink } from 'lucide-react';
+import { formatEventTime } from '../utils/dateHelper';
 
 const EventAbout = ({ event, loading, onReserveSpot }) => {
   const eventTitle = event?.event_name || 'A Day with Our Wonderful Women';
@@ -12,22 +13,7 @@ const EventAbout = ({ event, loading, onReserveSpot }) => {
   const eventLink = event?.link || event?.event_link || null;
   const isPastEvent = event?.event_date ? new Date(event.event_date) < new Date(new Date().setHours(0, 0, 0, 0)) : false;
 
-  // Safe time formatter
-  const formatTime = (time) => {
-    if (!time || time === 'Time TBD') return 'Time TBD';
-  
-    // Create a date object with today's date and the provided time
-    const [hours, minutes] = time.split(':');
-    const date = new Date();
-    date.setHours(parseInt(hours, 10));
-    date.setMinutes(parseInt(minutes, 10));
-    
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
+  const formattedTime = formatEventTime(eventTime);
 
   return (
     <section className="px-4 py-16 bg-white sm:px-8 md:px-16 lg:px-20 sm:py-20">
