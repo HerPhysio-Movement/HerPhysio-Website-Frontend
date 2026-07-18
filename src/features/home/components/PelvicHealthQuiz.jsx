@@ -36,25 +36,43 @@ const questions = [
   },
 ];
 
+// const getRecommendations = (answers) => {
+//   const recs = [];
+//   if (answers[0] === 'postpartum') {
+//     recs.push({ title: 'Postpartum Recovery', description: 'Our 3‑Month Mentorship Program is perfect for you.', link: '/volunteer-signup', color: '#FD90A7' });
+//   } else if (answers[0] === 'menopause') {
+//     recs.push({ title: 'Menopause & Pelvic Health', description: 'Watch our free webinar on managing pelvic health.', link: '/resources#webinars', color: '#C7365B' });
+//   }
+//   if (answers[1] === 'pain' || answers[1] === 'incontinence') {
+//     recs.push({ title: 'Virtual Consultation', description: 'Speak with a certified physiotherapist.', link: '/contact-us', color: '#F08020' });
+//   }
+//   if (answers[2] === 'exercises') {
+//     recs.push({ title: 'Pelvic Floor Basics', description: 'Learn anatomy and exercises you need.', link: '/resources#courses', color: '#3070F0' });
+//   } else if (answers[2] === 'physio') {
+//     recs.push({ title: 'Join Our Community', description: 'Connect with professionals and peers.', link: '/community', color: '#6020F0' });
+//   }
+//   if (recs.length === 0) {
+//     recs.push({ title: 'Explore Resources', description: 'Browse articles, videos, and guides.', link: '/resources', color: '#FD90A7' });
+//   }
+//   return recs;
+// };
+
 const getRecommendations = (answers) => {
-  const recs = [];
-  if (answers[0] === 'postpartum') {
-    recs.push({ title: 'Postpartum Recovery', description: 'Our 3‑Month Mentorship Program is perfect for you.', link: '/volunteer-signup', color: '#FD90A7' });
-  } else if (answers[0] === 'menopause') {
-    recs.push({ title: 'Menopause & Pelvic Health', description: 'Watch our free webinar on managing pelvic health.', link: '/resources#webinars', color: '#C7365B' });
-  }
-  if (answers[1] === 'pain' || answers[1] === 'incontinence') {
-    recs.push({ title: 'Virtual Consultation', description: 'Speak with a certified physiotherapist.', link: '/contact-us', color: '#F08020' });
-  }
-  if (answers[2] === 'exercises') {
-    recs.push({ title: 'Pelvic Floor Basics', description: 'Learn anatomy and exercises you need.', link: '/resources#courses', color: '#3070F0' });
-  } else if (answers[2] === 'physio') {
-    recs.push({ title: 'Join Our Community', description: 'Connect with professionals and peers.', link: '/community', color: '#6020F0' });
-  }
-  if (recs.length === 0) {
-    recs.push({ title: 'Explore Resources', description: 'Browse articles, videos, and guides.', link: '/resources', color: '#FD90A7' });
-  }
-  return recs;
+  // Always return these two specific recommendations
+  return [
+    { 
+      title: 'Virtual Consultation', 
+      description: 'Speak with a certified physiotherapist.', 
+      link: '/contact-us',
+      color: '#FD90A7'
+    },
+    { 
+      title: 'Attend Our Events & Webinars', 
+      description: 'Learn from industry experts and gain practical insights.', 
+      link: '/events',
+      color: '#C7365B'
+    }
+  ];
 };
 
 const PelvicHealthQuiz = () => {
