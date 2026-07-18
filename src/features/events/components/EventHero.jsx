@@ -30,7 +30,22 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
   
   const { firstHalf, secondHalf } = splitTitle(eventTitle);
   
-  const formattedTime = formatEventTime(eventTime);
+  // Safe time formatter
+  const formatTime = (time) => {
+    if (!time || time === 'Time TBD') return 'Time TBD';
+  
+    // Create a date object with today's date and the provided time
+    const [hours, minutes] = time.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours, 10));
+    date.setMinutes(parseInt(minutes, 10));
+    
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-white via-[#FFF5F7] to-[#FFD8E1] pt-20 pb-16 md:pt-28 md:pb-24">
@@ -78,7 +93,7 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
           </div>
           <div className="flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm bg-white/60 backdrop-blur-sm border-white/50">
             <Calendar className="w-5 h-5 text-[#FD90A7]" />
-            <span>{eventDate} • {formattedTime(eventTime)}</span>
+            <span>{eventDate} • {formatTime(eventTime)}</span>
           </div>
         </div>
 

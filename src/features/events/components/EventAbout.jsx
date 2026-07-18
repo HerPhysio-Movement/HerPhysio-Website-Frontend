@@ -1,7 +1,6 @@
 // src/features/events/components/EventAbout.jsx
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowRight, ExternalLink } from 'lucide-react';
-import { formatEventTime } from '../utils/dateHelper';
 
 const EventAbout = ({ event, loading, onReserveSpot }) => {
   const eventTitle = event?.event_name || 'A Day with Our Wonderful Women';
@@ -13,7 +12,22 @@ const EventAbout = ({ event, loading, onReserveSpot }) => {
   const eventLink = event?.link || event?.event_link || null;
   const isPastEvent = event?.event_date ? new Date(event.event_date) < new Date(new Date().setHours(0, 0, 0, 0)) : false;
 
-  const formattedTime = formatEventTime(eventTime);
+  // Safe time formatter
+  const formatTime = (time) => {
+    if (!time || time === 'Time TBD') return 'Time TBD';
+  
+    // Create a date object with today's date and the provided time
+    const [hours, minutes] = time.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours, 10));
+    date.setMinutes(parseInt(minutes, 10));
+    
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
 
   return (
     <section className="px-4 py-16 bg-white sm:px-8 md:px-16 lg:px-20 sm:py-20">
@@ -85,7 +99,7 @@ const EventAbout = ({ event, loading, onReserveSpot }) => {
               <div className="text-3xl font-bold text-[#1D2130]">{registeredCount}</div>
               <p className="text-sm text-gray-500">Women already registered</p> */}
               <Calendar className="w-5 h-5 text-[#FD90A7] mt-3 mb-1" />
-              <p className="text-sm text-gray-500">{eventDate} · {formattedTime(eventTime)}</p>
+              <p className="text-sm text-gray-500">{eventDate} · {formatTime(eventTime)}</p>
               <MapPin className="w-5 h-5 text-[#FD90A7] mt-2 mb-1" />
               <p className="text-sm text-gray-500">{eventLocation}</p>
             </div>
