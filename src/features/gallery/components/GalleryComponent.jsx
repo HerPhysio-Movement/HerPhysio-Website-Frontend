@@ -85,7 +85,7 @@ const GalleryComponent = () => {
         </h1>
         <div className="w-20 h-1 bg-linear-to-r from-[#FD90A7] to-[#C7365B] mx-auto mb-4 rounded-full" />
         <p className="text-[#A19390] max-w-xl mx-auto text-lg">
-          A visual journey through our outreach events, training sessions, and community connections.
+          A visual journey through our outreach programs, collaborative events, and mentorship activities.
         </p>
       </div>
 

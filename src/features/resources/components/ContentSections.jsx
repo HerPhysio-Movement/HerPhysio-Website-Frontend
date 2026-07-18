@@ -587,7 +587,7 @@ export const GallerySection = () => {
         <SectionHeader
           tag="Gallery"
           title="Latest Moments"
-          subtitle="A glimpse into our outreach events, training sessions, and community connections."
+          subtitle="A glimpse into our outreach programs, collaborative events, and mentorship activities."
         />
 
         {loading ? (

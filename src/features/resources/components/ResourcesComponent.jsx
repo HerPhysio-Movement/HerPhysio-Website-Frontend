@@ -62,7 +62,7 @@ const ResourcesComponent = () => {
       <CoursesSection />
 
       {/* Webinar Recordings */}
-      <WebinarsSection webinars={webinars} />
+      {/* <WebinarsSection webinars={webinars} /> */}
 
       {/* Articles & Insights */}
       <ArticlesSection />
