@@ -47,8 +47,10 @@ const modalFields = {
     { name: 'webinar_host', label: 'Host', type: 'text', required: true },
     { name: 'caption', label: 'Caption', type: 'text' },
     { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
-    { name: 'youtube_url', label: 'Webinar Link', type: 'url', required: true },
+    { name: 'link', label: 'Webinar Link', type: 'url', required: true },
     { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
+    { name: 'thumbnail_url', label: 'Thumbnail URL', type: 'url' },
+    { name: 'thumbnail_file', label: 'Thumbnail File', type: 'file', accept: 'image/*' },
   ],
   Courses: [
     { name: 'course_title', label: 'Course Title', type: 'text', required: true },
@@ -184,7 +186,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
             className={`${baseClass} ${errorClass} resize-none`}
             required={field.required}
           />
-          {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+          {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
       );
     }
@@ -206,7 +208,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
               <option key={opt} value={opt}>{opt}</option>
             ))}
           </select>
-          {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+          {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
       );
     }
@@ -233,7 +235,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
                 ? 'Optional. Upload an image file to use as the project thumbnail.'
               : 'Optional. Upload an image file to use as the event thumbnail.'}
           </p>
-          {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+          {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
       );
     }
@@ -251,7 +253,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
           className={`${baseClass} ${errorClass}`}
           required={field.required}
         />
-        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+        {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
       </div>
     );
   };
@@ -273,12 +275,12 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
           visible && !exiting ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
         }`}
       >
-        <div className="sticky top-0 z-10 flex justify-between items-center px-6 py-4 border-b border-gray-200/60 bg-white/80 backdrop-blur-md rounded-t-2xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-200/60 bg-white/80 backdrop-blur-md rounded-t-2xl">
           <div>
             <h2 className="text-xl font-bold text-gray-800">{title}</h2>
             <div className="w-12 h-1 bg-linear-to-r from-[#FD90A7] to-[#C7365B] mt-1 rounded-full" />
           </div>
-          <button onClick={handleClose} className="p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-gray-600">
+          <button onClick={handleClose} className="p-2 text-gray-400 transition rounded-lg hover:bg-gray-100 hover:text-gray-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -286,17 +288,17 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
         <form onSubmit={handleSubmit} className="px-6 py-5">
           <div className="space-y-1">{fields.map(renderField)}</div>
 
-          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200/80">
+          <div className="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-200/80">
             {mode === 'edit' && (
               <button
                 type="button"
                 onClick={() => onSave({ ...formData, _delete: true })}
-                className="px-5 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition flex items-center gap-2"
+                className="flex items-center gap-2 px-5 py-2 text-red-600 transition border border-red-200 rounded-lg hover:bg-red-50"
               >
                 <Trash2 className="w-4 h-4" /> Delete
               </button>
             )}
-            <button type="button" onClick={handleClose} className="px-5 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition">
+            <button type="button" onClick={handleClose} className="px-5 py-2 text-gray-700 transition border border-gray-200 rounded-lg hover:bg-gray-50">
               Cancel
             </button>
             <button
@@ -306,7 +308,7 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
