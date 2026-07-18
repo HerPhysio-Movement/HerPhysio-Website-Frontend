@@ -604,14 +604,14 @@ export const GallerySection = () => {
                   className={`group relative overflow-hidden rounded-lg border border-[#F3E4E2] bg-white/80 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:rotate-0 hover:shadow-xl cursor-pointer ${rotations[idx]}`}
                   onClick={() => setSelectedImage(image)}
                 >
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="relative h-56 overflow-hidden">
                     <img
                       src={image.image_url || '/gallery1.jpg'}
                       alt={image.title || image.description || 'Gallery image'}
                       className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-[#1A1A1A]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                    <div className="absolute inset-0 bg-linear-to-t from-[#1A1A1A]/60 to-transparent opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-100 lg:opacity-0 group-hover:opacity-100">
                       <div className="p-3 rounded-full shadow-lg bg-white/90 backdrop-blur-md">
                         <Eye className="w-5 h-5 text-[#FD90A7]" />
                       </div>
@@ -658,7 +658,7 @@ export const GallerySection = () => {
         >
           <button
             onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 z-10 p-2 text-white transition rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40"
+            className="absolute z-10 p-2 text-white transition rounded-full top-4 right-4 bg-white/20 backdrop-blur-sm hover:bg-white/40"
             aria-label="Close"
           >
             <X className="w-6 h-6" />
@@ -667,7 +667,7 @@ export const GallerySection = () => {
           {currentIndex > 0 && (
             <button
               onClick={goToPrevious}
-              className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition hover:bg-white/40"
+              className="absolute z-10 p-2 text-white transition -translate-y-1/2 rounded-full left-4 top-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40"
               aria-label="Previous"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -677,7 +677,7 @@ export const GallerySection = () => {
           {currentIndex < latestImages.length - 1 && (
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition hover:bg-white/40"
+              className="absolute z-10 p-2 text-white transition -translate-y-1/2 rounded-full right-4 top-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40"
               aria-label="Next"
             >
               <ChevronRight className="w-6 h-6" />
@@ -693,7 +693,7 @@ export const GallerySection = () => {
               alt={selectedImage.title || selectedImage.description || 'Gallery image'}
               className="object-contain max-w-full max-h-[85vh]"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-6 text-white">
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-linear-to-t from-black/80 to-transparent">
               <p className="mb-1 text-sm font-medium">
                 {selectedImage.caption || 'Event'}
               </p>
