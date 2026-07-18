@@ -85,7 +85,7 @@ const EventAbout = ({ event, loading, onReserveSpot }) => {
               <div className="text-3xl font-bold text-[#1D2130]">{registeredCount}</div>
               <p className="text-sm text-gray-500">Women already registered</p> */}
               <Calendar className="w-5 h-5 text-[#FD90A7] mt-3 mb-1" />
-              <p className="text-sm text-gray-500">{eventDate} · {formatTime(eventTime)}</p>
+              <p className="text-sm text-gray-500">{eventDate} · {formattedTime(eventTime)}</p>
               <MapPin className="w-5 h-5 text-[#FD90A7] mt-2 mb-1" />
               <p className="text-sm text-gray-500">{eventLocation}</p>
             </div>

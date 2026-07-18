@@ -78,7 +78,7 @@ const EventHero = ({ event, loading, onReserveSpot }) => {
           </div>
           <div className="flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm bg-white/60 backdrop-blur-sm border-white/50">
             <Calendar className="w-5 h-5 text-[#FD90A7]" />
-            <span>{eventDate} • {formatTime(eventTime)}</span>
+            <span>{eventDate} • {formattedTime(eventTime)}</span>
           </div>
         </div>
 
