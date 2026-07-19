@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -75,10 +75,10 @@ const isPublishedItem = (item) =>
   item.is_published === true ||
   item.published === true;
 
-const EmptySectionState = ({ icon: Icon, message }) => (
+const EmptySectionState = ({ icon, message }) => (
   <div className="rounded-lg border border-dashed border-[#F3C7D2] bg-white/70 px-6 py-10 text-center">
     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#FD90A7]/10">
-      <Icon className="h-6 w-6 text-[#FD90A7]" />
+      {createElement(icon, { className: 'h-6 w-6 text-[#FD90A7]' })}
     </div>
     <p className="text-sm font-medium text-gray-500">{message}</p>
   </div>
@@ -163,6 +163,7 @@ export const WebinarsSection = ({ webinars = [] }) => {
             const title = getWebinarTitle(webinar);
             const host = getWebinarHost(webinar);
             const description = getWebinarDescription(webinar);
+            const thumbnail = getWebinarThumbnail(webinar);
 
             return (
               <FloatingCard
@@ -172,6 +173,8 @@ export const WebinarsSection = ({ webinars = [] }) => {
                 onSelect={() => setSelectedWebinar(webinar)}
                 rotation={rotations[idx]}
                 zIndex={zIndices[idx]}
+                backgroundImage={thumbnail}
+                backgroundAlt={title}
               >
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-[#FD90A7]/10 flex items-center justify-center flex-shrink-0">

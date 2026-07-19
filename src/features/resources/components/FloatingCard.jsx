@@ -8,19 +8,31 @@ export const FloatingCard = ({
   item, 
   isSelected, 
   onSelect, 
-  onClose, 
   children,
   rotation = '',
-  zIndex = 'z-10'
+  zIndex = 'z-10',
+  backgroundImage = '',
+  backgroundAlt = ''
 }) => {
   if (!isSelected) {
     return (
       <div
         onClick={onSelect}
-        className={`relative bg-white/90 backdrop-blur-sm shadow-lg rounded-lg p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer group ${rotation} ${zIndex}`}
+        className={`relative overflow-hidden bg-white/90 backdrop-blur-sm shadow-lg rounded-lg p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer group ${rotation} ${zIndex}`}
       >
-        {children}
-        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-12 h-6 bg-[#FD90A7]/20 rounded-b-full" />
+        {backgroundImage && (
+          <>
+            <img
+              src={backgroundImage}
+              alt={backgroundAlt || item?.title || ''}
+              aria-hidden="true"
+              className="absolute inset-0 object-cover w-full h-full opacity-20 transition-opacity duration-300 group-hover:opacity-25"
+            />
+            <div className="absolute inset-0 bg-white/75" />
+          </>
+        )}
+        <div className="relative z-10">{children}</div>
+        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-12 h-6 bg-[#FD90A7]/20 rounded-b-full z-20" />
       </div>
     );
   }

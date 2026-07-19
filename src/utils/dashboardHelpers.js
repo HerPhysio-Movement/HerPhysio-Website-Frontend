@@ -178,13 +178,18 @@ export const prepareItemPayload = (item, filterType) => {
   }
 
   if (filterType === 'Webinar') {
-    // Build payload with new API fields
+    const link = payload.link || payload.youtube_url || payload.youtubeUrl || payload.video_url || payload.videoUrl || '';
+    const thumbnailUrl = payload.thumbnail_url || payload.preview_image || payload.image_url || payload.thumbnail || '';
+    const thumbnailFile = payload.thumbnail_file;
+
     payload = {
-      webinar_title: payload.webinar_title,
-      webinar_host: payload.webinar_host,
-      caption: payload.caption,
-      description: payload.description,
-      link: payload.link || payload.youtube_url || payload.youtubeUrl || payload.video_url || payload.videoUrl || '',
+      webinar_title: payload.webinar_title || payload.title || '',
+      webinar_host: payload.webinar_host || payload.host || '',
+      caption: payload.caption || payload.preview_title || '',
+      description: payload.description || payload.preview_description || payload.caption || '',
+      link,
+      youtube_url: payload.youtube_url || payload.youtubeUrl || link,
+      video_url: payload.video_url || payload.videoUrl || link,
       tags: Array.isArray(payload.tags)
         ? payload.tags
         : String(payload.tags || '')
@@ -193,13 +198,8 @@ export const prepareItemPayload = (item, filterType) => {
             .filter(Boolean),
     };
 
-    // Handle thumbnail fields
-    if (payload.thumbnail_url) {
-      payload.thumbnail_url = payload.thumbnail_url;
-    }
-    if (payload.thumbnail_file) {
-      payload.thumbnail_file = payload.thumbnail_file;
-    }
+    if (thumbnailUrl) payload.thumbnail_url = thumbnailUrl;
+    if (thumbnailFile) payload.thumbnail_file = thumbnailFile;
   }
 
   return payload;
@@ -243,7 +243,7 @@ export const validateItemData = (item, filterType) => {
  * @param {Object} currentUser - Current user
  * @returns {Promise} - API response
  */
-export const createItem = async (item, filterType, currentUser) => {
+export const createItem = async (item, filterType) => {
   // Validate
   const validation = validateItemData(item, filterType);
   if (!validation.isValid) throw new Error(validation.error);
@@ -285,7 +285,7 @@ export const createItem = async (item, filterType, currentUser) => {
  * @param {Object} currentUser - Current user
  * @returns {Promise} - API response
  */
-export const updateItem = async (id, item, filterType, currentUser) => {
+export const updateItem = async (id, item, filterType) => {
   // Validate
   const validation = validateItemData(item, filterType);
   if (!validation.isValid) throw new Error(validation.error);

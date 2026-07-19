@@ -46,7 +46,7 @@ const modalFields = {
     { name: 'webinar_title', label: 'Title', type: 'text', required: true },
     { name: 'webinar_host', label: 'Host', type: 'text', required: true },
     { name: 'caption', label: 'Caption', type: 'text' },
-    { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
+    { name: 'description', label: 'Description', type: 'textarea', rows: 3, required: true },
     { name: 'link', label: 'Webinar Link', type: 'url', required: true },
     { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
     { name: 'thumbnail_url', label: 'Thumbnail URL', type: 'url' },
@@ -233,6 +233,8 @@ const Modal = ({ mode, activeFilter, currentItem, onClose, onSave }) => {
                 : 'Optional. Upload a new file to replace the current gallery image.'
               : activeFilter === 'Projects'
                 ? 'Optional. Upload an image file to use as the project thumbnail.'
+              : activeFilter === 'Webinar'
+                ? 'Optional. Upload an image file to use as the webinar thumbnail.'
               : 'Optional. Upload an image file to use as the event thumbnail.'}
           </p>
           {error && <p className="mt-1 text-xs text-red-500">{error}</p>}

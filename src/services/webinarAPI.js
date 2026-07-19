@@ -1,6 +1,9 @@
 import { apiClient } from './apiClient';
 
 const pickThumbnail = (item = {}) => {
+  if (typeof item.preview_image === 'string' && item.preview_image) return item.preview_image;
+  if (typeof item.image_url === 'string' && item.image_url) return item.image_url;
+  if (typeof item.thumbnail === 'string' && item.thumbnail) return item.thumbnail;
   if (typeof item.best_thumbnail === 'string') return item.best_thumbnail;
   if (item.best_thumbnail && typeof item.best_thumbnail === 'object') {
     return Object.values(item.best_thumbnail).find(Boolean) || '';
@@ -17,6 +20,9 @@ const pickThumbnail = (item = {}) => {
 const normalizeWebinar = (item) => {
   if (!item || typeof item !== 'object') return null;
 
+  const link = item.link || item.youtube_url || item.youtubeUrl || item.video_url || item.videoUrl || '';
+  const thumbnail = pickThumbnail(item);
+
   return {
     ...item,
     id: item.id || item._id || item.webinar_id || item.webinarId,
@@ -24,7 +30,9 @@ const normalizeWebinar = (item) => {
     webinar_host: item.webinar_host || item.host || item.preview_site_name || 'Expert Speaker',
     caption: item.caption || item.preview_title || '',
     description: item.description || item.preview_description || item.caption || '',
-    link: item.link || item.youtube_url || item.youtubeUrl || item.video_url || item.videoUrl || '',
+    link,
+    youtube_url: item.youtube_url || item.youtubeUrl || link,
+    video_url: item.video_url || item.videoUrl || link,
     youtube_id: item.youtube_id || '',
     vimeo_id: item.vimeo_id || '',
     provider: item.provider || '',
@@ -32,19 +40,14 @@ const normalizeWebinar = (item) => {
     embed_url: item.embed_url || item.embedUrl || item.iframe_url || item.iframeUrl || '',
     preview_title: item.preview_title || '',
     preview_description: item.preview_description || '',
-    preview_image: item.preview_image || '',
+    preview_image: thumbnail,
+    image_url: item.image_url || thumbnail,
     preview_site_name: item.preview_site_name || '',
-    thumbnail_url: item.thumbnail_url || '',
+    thumbnail_url: item.thumbnail_url || thumbnail,
     thumbnail_file: item.thumbnail_file || null,
     thumbnail_urls: item.thumbnail_urls || {},
-    best_thumbnail: item.best_thumbnail || {},
+    best_thumbnail: item.best_thumbnail || thumbnail || {},
     tags: Array.isArray(item.tags) ? item.tags : [],
-    // Keep for backward compatibility
-    preview_image: item.preview_image || 
-      item.image_url || 
-      item.thumbnail_url || 
-      item.thumbnail || 
-      pickThumbnail(item),
   };
 };
 
@@ -61,7 +64,6 @@ const normalizeWebinarList = (payload) => {
 };
 
 const cleanWebinarPayload = (data = {}) => {
-  console.log('Cleaning payload with data:', data); // Debug log
   const tags = Array.isArray(data.tags)
     ? data.tags
     : String(data.tags || '')
@@ -69,22 +71,37 @@ const cleanWebinarPayload = (data = {}) => {
         .map((tag) => tag.trim())
         .filter(Boolean);
 
+  const link = data.link || data.youtube_url || data.youtubeUrl || data.video_url || data.videoUrl || '';
+
   const payload = {
     webinar_title: data.webinar_title || data.title || '',
     webinar_host: data.webinar_host || data.host || '',
-    caption: data.caption || '',
-    description: data.description || '',
-    link: data.link || data.youtube_url || data.youtubeUrl || data.video_url || data.videoUrl || '',
-    tags: tags,
+    caption: data.caption || data.preview_title || '',
+    description: data.description || data.preview_description || data.caption || '',
+    link,
+    youtube_url: data.youtube_url || data.youtubeUrl || link,
+    video_url: data.video_url || data.videoUrl || link,
+    tags,
   };
 
-  // Only add thumbnail fields if they exist
-  if (data.thumbnail_url) {
-    payload.thumbnail_url = data.thumbnail_url;
-  }
+  const thumbnailUrl = data.thumbnail_url || data.preview_image || data.image_url || data.thumbnail || '';
+  if (thumbnailUrl) payload.thumbnail_url = thumbnailUrl;
   
-  if (data.thumbnail_file) {
-    payload.thumbnail_file = data.thumbnail_file;
+  if (
+    typeof File !== 'undefined' &&
+    typeof FormData !== 'undefined' &&
+    data.thumbnail_file instanceof File
+  ) {
+    const formData = new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((item) => formData.append('tags', item));
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
+    });
+    formData.append('thumbnail_file', data.thumbnail_file);
+    return formData;
   }
 
   return payload;
